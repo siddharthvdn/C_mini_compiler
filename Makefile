@@ -4,4 +4,4 @@ all:
 	./a.out
 	
 clean:
-	rm -rf *.c *.out
+	rm -rf lex.yy.c *.out

@@ -1,0 +1,13 @@
+Test cases titles
+
+1. Hello world
+2. Nested comment
+3. Multiline string
+4. Unbalanced paranthesis and curly braces
+5. Single character escape sequence
+6. Integer constants and operations
+7. Character constants and operations
+8. Nested if-else
+9. Nested while
+10. Function call and pointer
+11. Comments that dont end until end of the file

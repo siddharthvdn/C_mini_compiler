@@ -21,6 +21,9 @@ endline \n
 
 %%
 
+{strconst} printf("Operator: %s", yytext);
+
+
 %%
 
 int yywrap()
@@ -30,6 +33,11 @@ int yywrap()
 
 int main()
 {
+	//{arithoperator,logicaloperator,bitwiseoperator,relationaloperator,assignmentoperator} printf("Operator: %s", yytext);
+
+
+	yyin = fopen("program.c", "r");
+	
 	yylex();
 	
 	return 0;
