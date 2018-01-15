@@ -33,7 +33,9 @@
 	#define UNSIGNED 29 
 	#define VOID 30
 	#define VOLATILE 31
-	#define WHILE 32	
+	#define WHILE 32
+	
+	#define IDENTIFIER 33	
 	
 	typedef struct node
 	{
@@ -78,6 +80,8 @@
  	
  	void display()
  	{
+ 		printf("\n----------------------------\n\tSymbol table\n----------------------------\n");
+ 	
  		int i;	
  	
  		for(i=0; i<100; i++)
@@ -100,7 +104,7 @@
 
 
 
-identifier [a-zA-Z_][a-zA-Z0-9]*
+
 
 intconst -?[0-9]*
 fltconst -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
@@ -134,53 +138,70 @@ mulcomment "/*"([^*]|\*+[^*/])*"*/"
 
 %%
 
-"auto"      { printf("Keyword: %s\n", yytext); return AUTO; }
-"break"     { printf("Keyword: %s\n", yytext); return BREAK; }
-"case"      { printf("Keyword: %s\n", yytext); return CASE; }
-"char"      { printf("Keyword: %s\n", yytext); return CHAR; }
-"const"     { printf("Keyword: %s\n", yytext); return CONST; }
-"continue"  { printf("Keyword: %s\n", yytext); return CONTINUE; }
-"default"   { printf("Keyword: %s\n", yytext); return DEFAULT; }
-"do"        { printf("Keyword: %s\n", yytext); return DO; }
-"double"    { printf("Keyword: %s\n", yytext); return DOUBLE; }
-"else"      { printf("Keyword: %s\n", yytext); return ELSE; }
-"num"       { printf("Keyword: %s\n", yytext); return NUM; }
-"extern"    { printf("Keyword: %s\n", yytext); return EXTERN; }
-"float"     { printf("Keyword: %s\n", yytext); return FLOAT; }
-"for"       { printf("Keyword: %s\n", yytext); return FOR; }
-"goto"      { printf("Keyword: %s\n", yytext); return GOTO; }
-"if"        { printf("Keyword: %s\n", yytext); return IF; }
+"auto"      { printf("Keyword: %s\n", yytext); insert(yytext, AUTO); return AUTO; }
+"break"     { printf("Keyword: %s\n", yytext); insert(yytext, BREAK); return BREAK; }
+"case"      { printf("Keyword: %s\n", yytext); insert(yytext, CASE); return CASE; }
+"char"      { printf("Keyword: %s\n", yytext); insert(yytext, CHAR); return CHAR; }
+"const"     { printf("Keyword: %s\n", yytext); insert(yytext, CONST); return CONST; }
+"continue"  { printf("Keyword: %s\n", yytext); insert(yytext, CONTINUE); return CONTINUE; }
+"default"   { printf("Keyword: %s\n", yytext); insert(yytext, DEFAULT); return DEFAULT; }
+"do"        { printf("Keyword: %s\n", yytext); insert(yytext, DO); return DO; }
+"double"    { printf("Keyword: %s\n", yytext); insert(yytext, DOUBLE); return DOUBLE; }
+"else"      { printf("Keyword: %s\n", yytext); insert(yytext, ELSE); return ELSE; }
+"num"       { printf("Keyword: %s\n", yytext); insert(yytext, NUM); return NUM; }
+"extern"    { printf("Keyword: %s\n", yytext); insert(yytext, EXTERN); return EXTERN; }
+"float"     { printf("Keyword: %s\n", yytext); insert(yytext, FLOAT); return FLOAT; }
+"for"       { printf("Keyword: %s\n", yytext); insert(yytext, FOR); return FOR; }
+"goto"      { printf("Keyword: %s\n", yytext); insert(yytext, GOTO); return GOTO; }
+"if"        { printf("Keyword: %s\n", yytext); insert(yytext, IF); return IF; }
 "int"       { printf("Keyword: %s\n", yytext); insert(yytext, INT); return INT; }
-"long"      { printf("Keyword: %s\n", yytext); return LONG; }
-"register"  { printf("Keyword: %s\n", yytext); return REGISTER; }
-"return"    { printf("Keyword: %s\n", yytext); return RETURN; }
-"short"     { printf("Keyword: %s\n", yytext); return SHORT; }
-"signed"    { printf("Keyword: %s\n", yytext); return SIGNED; }
-"sizeof"    { printf("Keyword: %s\n", yytext); return SIZEOF; }
-"static"    { printf("Keyword: %s\n", yytext); return STATIC; }
-"struct"    { printf("Keyword: %s\n", yytext); return STRUCT; }
-"switch"    { printf("Keyword: %s\n", yytext); return SWITCH; }
-"typedef"   { printf("Keyword: %s\n", yytext); return TYPEDEF; }
-"union"     { printf("Keyword: %s\n", yytext); return UNION; }
-"unsigned"  { printf("Keyword: %s\n", yytext); return UNSIGNED; }
-"void"      { printf("Keyword: %s\n", yytext); return VOID; }
-"volatile"  { printf("Keyword: %s\n", yytext); return VOLATILE; }
-"while"     { printf("Keyword: %s\n", yytext); return WHILE; }
+"long"      { printf("Keyword: %s\n", yytext); insert(yytext, LONG); return LONG; }
+"register"  { printf("Keyword: %s\n", yytext); insert(yytext, REGISTER); return REGISTER; }
+"return"    { printf("Keyword: %s\n", yytext); insert(yytext, RETURN); return RETURN; }
+"short"     { printf("Keyword: %s\n", yytext); insert(yytext, SHORT); return SHORT; }
+"signed"    { printf("Keyword: %s\n", yytext); insert(yytext, SIGNED); return SIGNED; }
+"sizeof"    { printf("Keyword: %s\n", yytext); insert(yytext, SIZEOF); return SIZEOF; }
+"static"    { printf("Keyword: %s\n", yytext); insert(yytext, STATIC); return STATIC; }
+"struct"    { printf("Keyword: %s\n", yytext); insert(yytext, STRUCT); return STRUCT; }
+"switch"    { printf("Keyword: %s\n", yytext); insert(yytext, SWITCH); return SWITCH; }
+"typedef"   { printf("Keyword: %s\n", yytext); insert(yytext, TYPEDEF); return TYPEDEF; }
+"union"     { printf("Keyword: %s\n", yytext); insert(yytext, UNION); return UNION; }
+"unsigned"  { printf("Keyword: %s\n", yytext); insert(yytext, UNSIGNED); return UNSIGNED; }
+"void"      { printf("Keyword: %s\n", yytext); insert(yytext, VOID); return VOID; }
+"volatile"  { printf("Keyword: %s\n", yytext); insert(yytext, VOLATILE); return VOLATILE; }
+"while"     { printf("Keyword: %s\n", yytext); insert(yytext, WHILE); return WHILE; }
 
 
-{strconst} printf("String constant: %s\n", yytext);
+[a-zA-Z_][a-zA-Z0-9]*   {printf("Identifier: %s\n", yytext);  insert(yytext, IDENTIFIER); return IDENTIFIER; }
 
-{sincomment} printf("This is a Single line comment\n");
+"!"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '!'); return('!'); }
+"%"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '%'); return('%'); }
+"^"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '^'); return('^'); }
+"&"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '&'); return('&'); }
+"*"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '*'); return('*'); }
+"("			{ printf("Punctuator: %s\n", yytext); insert(yytext, '('); return('('); }
+")"			{ printf("Punctuator: %s\n", yytext); insert(yytext, ')'); return(')'); }
+"-"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '-'); return('-'); }
+"+"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '+'); return('+'); }
+"="			{ printf("Punctuator: %s\n", yytext); insert(yytext, '='); return('='); }
+"{"		        { printf("Punctuator: %s\n", yytext); insert(yytext, '{'); return('{'); }
+"}"		        { printf("Punctuator: %s\n", yytext); insert(yytext, '}'); return('}'); }
+"|"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '|'); return('|'); }
+"~"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '~'); return('~'); }
+"["		        { printf("Punctuator: %s\n", yytext); insert(yytext, '['); return('['); }
+"]"     		{ printf("Punctuator: %s\n", yytext); insert(yytext, ']'); return(']'); }
+";"			{ printf("Punctuator: %s\n", yytext); insert(yytext, ';'); return(';'); }
+"'"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '\''); return('\''); }
+":"			{ printf("Punctuator: %s\n", yytext); insert(yytext, ':'); return(':'); }
+"<"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '<'); return('<'); }
+">"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '>'); return('>'); }
+"?"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '?'); return('?'); }
+","			{ printf("Punctuator: %s\n", yytext); insert(yytext, ','); return(','); }
+"."			{ printf("Punctuator: %s\n", yytext); insert(yytext, '.'); return('.'); }
+"/"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '/'); return('/'); }
+"#"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '#'); return('#'); }
 
-{mulcomment} printf("This is a multi line comment\n");
-
-
-
-{identifier} printf("Identifier: %s\n", yytext);
-
-{intconst} printf("Integer constant");
-
-
+[ \t\n] ;
 
 %%
 
