@@ -162,7 +162,7 @@
 
 
 [a-zA-Z_][a-zA-Z0-9]*   {printf("Identifier: %s\n", yytext);  insert(yytext, IDENTIFIER); return IDENTIFIER; }
-
+"*/" printf("\n Unexpected end of comment ");
 
 "++"                    { printf("Operator: %s\n", yytext); insert(yytext, INCREMENT); return INCREMENT; }
 "--"                    { printf("Operator: %s\n", yytext); insert(yytext, DECREMENT); return DECREMENT; }
@@ -200,9 +200,11 @@
 "/"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '/'); return('/'); }
 "#"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '#'); return('#'); }
 
-[ \t] ;
-[\n] ;
+"\n" printf("\n");
+" " printf(" ");
+"\t" printf("\t");
 
+. printf("\n Invalid token ");
 
 %%
 
@@ -216,7 +218,7 @@ int main()
 
 	printf("\n\n");
 
-	yyin = fopen("test_cases/1.c", "r");
+	yyin = fopen("test_cases/2.c", "r");
 	
 	int token;
 	while(yylex());
