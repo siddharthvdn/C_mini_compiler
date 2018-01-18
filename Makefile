@@ -1,5 +1,5 @@
 all:
-	lex basic.l
+	lex scanner.l
 	cc lex.yy.c 
 	./a.out
 	

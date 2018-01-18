@@ -35,7 +35,16 @@
 	#define VOLATILE 31
 	#define WHILE 32
 	
-	#define IDENTIFIER 33	
+	#define IDENTIFIER 33
+	
+	#define INCREMENT 33
+	#define DECREMENT 34
+	#define AND 35
+	#define OR 36
+	#define EQUAL 37
+	#define GREATEQUAL 38
+	#define LESSEQUAL 39
+	#define NOTEQUAL 40	
 	
 	typedef struct node
 	{
@@ -108,27 +117,6 @@
 
 
 
-
-
-
-chrconst [a-zA-Z]
-
-arithoperator "+"|"-"|"*"|"%"|"++"|"--"
-logicaloperator "&&"|"||"|"!"
-bitwiseoperator "&"|"|"|"^"
-relationaloperator "=="|"<"|">"|">="|"<="|"!="
-
-
-
-
-
-
-
-
-
-
-
-
 %%
 
 "//".*\n                  {printf("Single line comment\n");}
@@ -175,6 +163,16 @@ relationaloperator "=="|"<"|">"|">="|"<="|"!="
 
 [a-zA-Z_][a-zA-Z0-9]*   {printf("Identifier: %s\n", yytext);  insert(yytext, IDENTIFIER); return IDENTIFIER; }
 
+
+"++"                    { printf("Operator: %s\n", yytext); insert(yytext, INCREMENT); return INCREMENT; }
+"--"                    { printf("Operator: %s\n", yytext); insert(yytext, DECREMENT); return DECREMENT; }
+"&&"                    { printf("Operator: %s\n", yytext); insert(yytext, AND); return AND; }
+"||"                    { printf("Operator: %s\n", yytext); insert(yytext, OR); return OR; }
+"=="                    { printf("Operator: %s\n", yytext); insert(yytext, EQUAL); return EQUAL; }
+">="                    { printf("Operator: %s\n", yytext); insert(yytext, GREATEQUAL); return GREATEQUAL; }
+"<="                    { printf("Operator: %s\n", yytext); insert(yytext, LESSEQUAL); return LESSEQUAL; }
+"!="                    { printf("Operator: %s\n", yytext); insert(yytext, NOTEQUAL); return NOTEQUAL; }
+
 "!"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '!'); return('!'); }
 "%"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '%'); return('%'); }
 "^"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '^'); return('^'); }
@@ -191,7 +189,7 @@ relationaloperator "=="|"<"|">"|">="|"<="|"!="
 "~"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '~'); return('~'); }
 "["		        { printf("Punctuator: %s\n", yytext); insert(yytext, '['); return('['); }
 "]"     		{ printf("Punctuator: %s\n", yytext); insert(yytext, ']'); return(']'); }
-";"			{ printf("Punctuator: %s\n", yytext);  return(';'); }
+";"			{ printf("Punctuator: %s\n", yytext); insert(yytext, ';'); return(';'); }
 "'"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '\''); return('\''); }
 ":"			{ printf("Punctuator: %s\n", yytext); insert(yytext, ':'); return(':'); }
 "<"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '<'); return('<'); }
@@ -216,6 +214,7 @@ int yywrap()
 int main()
 {
 
+	printf("\n\n");
 
 	yyin = fopen("test_cases/1.c", "r");
 	
