@@ -57,6 +57,9 @@
  	
  	void insert(char* x, int type)
  	{
+ 		if(type!=IDENTIFIER)
+ 			return;
+ 			
  		int idx = hash(x, 100);
  		
  		node* cell = (node*)malloc(sizeof(node));
@@ -73,7 +76,8 @@
  		
  		node* t = sym_tbl[idx];
  		
- 		while(t->next!=NULL);
+ 		while(t->next!=NULL)
+ 		t = t->next;
  		
  		t->next = cell; 		
  	}
@@ -106,37 +110,34 @@
 
 
 
-intconst -?[0-9]*
-fltconst -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
+
 chrconst [a-zA-Z]
-strconst \"(\\.|[^"\\])*\"
 
 arithoperator "+"|"-"|"*"|"%"|"++"|"--"
 logicaloperator "&&"|"||"|"!"
 bitwiseoperator "&"|"|"|"^"
 relationaloperator "=="|"<"|">"|">="|"<="|"!="
-assignmentoperator "="
-
-sqopen [ 
-sqclose ] 
-paopen (
-paclose ) 
-cuopen {
-cuclose } 
-pointer * , : = ; ... #
-
-whitespace [ \t] 
-
-endline \n
 
 
 
-sincomment "//".*\n
 
-mulcomment "/*"([^*]|\*+[^*/])*"*/"
+
+
+
+
+
+
 
 
 %%
+
+"//".*\n                  {printf("Single line comment\n");}
+"/*"([^*]|\*+[^*/])*"*/"  {printf("Multi line comment\n");}
+
+
+\"(\\.|[^"\\])*\"                                  {printf("String constant: %s\n", yytext);}
+-?[0-9]*                                           {printf("Integer constant: %s\n", yytext);}
+-?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)    {printf("Float constant: %s\n", yytext);}
 
 "auto"      { printf("Keyword: %s\n", yytext); insert(yytext, AUTO); return AUTO; }
 "break"     { printf("Keyword: %s\n", yytext); insert(yytext, BREAK); return BREAK; }
@@ -190,7 +191,7 @@ mulcomment "/*"([^*]|\*+[^*/])*"*/"
 "~"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '~'); return('~'); }
 "["		        { printf("Punctuator: %s\n", yytext); insert(yytext, '['); return('['); }
 "]"     		{ printf("Punctuator: %s\n", yytext); insert(yytext, ']'); return(']'); }
-";"			{ printf("Punctuator: %s\n", yytext); insert(yytext, ';'); return(';'); }
+";"			{ printf("Punctuator: %s\n", yytext);  return(';'); }
 "'"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '\''); return('\''); }
 ":"			{ printf("Punctuator: %s\n", yytext); insert(yytext, ':'); return(':'); }
 "<"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '<'); return('<'); }
@@ -201,7 +202,9 @@ mulcomment "/*"([^*]|\*+[^*/])*"*/"
 "/"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '/'); return('/'); }
 "#"			{ printf("Punctuator: %s\n", yytext); insert(yytext, '#'); return('#'); }
 
-[ \t\n] ;
+[ \t] ;
+[\n] ;
+
 
 %%
 
@@ -216,7 +219,9 @@ int main()
 
 	yyin = fopen("test_cases/1.c", "r");
 	
+	int token;
 	while(yylex());
+
 	
 	display();
 	
