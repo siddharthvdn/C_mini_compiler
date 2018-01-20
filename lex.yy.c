@@ -375,8 +375,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 84
-#define YY_END_OF_BUFFER 85
+#define YY_NUM_RULES 83
+#define YY_END_OF_BUFFER 84
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -386,9 +386,9 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[215] =
     {   0,
-        0,    0,   85,   83,   81,   79,   80,   53,   82,   78,
-       54,   56,    8,   58,   59,   57,   61,   75,   60,   76,
-       77,    5,    5,   71,   69,   72,   62,   73,   74,   43,
+        0,    0,   84,   82,   80,   78,   79,   53,   81,   77,
+       54,   56,    8,   58,   59,   57,   61,   74,   60,   75,
+       76,    5,    5,   70,   69,   71,   62,   72,   73,   43,
        67,   68,   55,   43,   43,   43,   43,   43,   43,   43,
        43,   43,   43,   43,   43,   43,   43,   43,   43,   63,
        65,   64,   66,   52,    0,    3,    0,   47,    0,    9,
@@ -1080,7 +1080,7 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 #line 162 "scanner.l"
-{printf("\n Error: Character constant too long\n\n", yytext); }
+{printf("\n Error: Character constant too long\n\n"); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
@@ -1379,81 +1379,76 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 228 "scanner.l"
+#line 229 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 229 "scanner.l"
+#line 230 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 230 "scanner.l"
+#line 231 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 231 "scanner.l"
+#line 232 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 232 "scanner.l"
+#line 233 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 233 "scanner.l"
+#line 234 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 234 "scanner.l"
+#line 235 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 235 "scanner.l"
-{ printf("Punctuator:\t\t%s\n", yytext); }
-	YY_BREAK
-case 78:
-YY_RULE_SETUP
 #line 236 "scanner.l"
 { printf("Punctuator:\t\t%s\n", yytext); }
 	YY_BREAK
-case 79:
-/* rule 79 can match eol */
+case 78:
+/* rule 78 can match eol */
 YY_RULE_SETUP
 #line 238 "scanner.l"
 { /*printf("\n");*/ }
 	YY_BREAK
-case 80:
+case 79:
 YY_RULE_SETUP
 #line 239 "scanner.l"
 { /*printf(" ");*/ }
 	YY_BREAK
-case 81:
+case 80:
 YY_RULE_SETUP
 #line 240 "scanner.l"
 { /*printf("\t");*/ }
 	YY_BREAK
-case 82:
+case 81:
 YY_RULE_SETUP
 #line 242 "scanner.l"
 {printf("\n Error: Unmatched quotation\n\n");}
 	YY_BREAK
-case 83:
+case 82:
 YY_RULE_SETUP
 #line 243 "scanner.l"
 { printf("\n Error: Invalid token \n\n"); }
 	YY_BREAK
-case 84:
+case 83:
 YY_RULE_SETUP
 #line 245 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1457 "lex.yy.c"
+#line 1452 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

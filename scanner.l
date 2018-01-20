@@ -159,7 +159,7 @@
 '([^'\\\n]|\\.)'                                     {printf("Char const:\t\t%s\n", yytext); insert(yytext, 4, CONST_TBL); }
 '                                                    {printf("\n Error: Unterminated Character constant\n\n"); }
 ''                                                   {printf("Char const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL); }
-'([^'\\\n]|\\.)+'                                    {printf("\n Error: Character constant too long\n\n", yytext); }
+'([^'\\\n]|\\.)+'                                    {printf("\n Error: Character constant too long\n\n"); }
 
 "auto"                  { printf("Keyword:\t\t%s\n", yytext); }
 "break"                 { printf("Keyword:\t\t%s\n", yytext); }
@@ -225,7 +225,7 @@
 "["                     { printf("Punctuator:\t\t%s\n", yytext); }
 "]"                     { printf("Punctuator:\t\t%s\n", yytext); }
 ";"                     { printf("Punctuator:\t\t%s\n", yytext); }
-"'"                     { printf("Punctuator:\t\t%s\n", yytext); }
+
 ":"                     { printf("Punctuator:\t\t%s\n", yytext); }
 "<"                     { printf("Punctuator:\t\t%s\n", yytext); }
 ">"                     { printf("Punctuator:\t\t%s\n", yytext); }
