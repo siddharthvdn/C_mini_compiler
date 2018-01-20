@@ -2463,7 +2463,7 @@ int main()
 
 	printf("\n\n");
 
-	yyin = fopen("test_cases/6.c", "r");
+	yyin = fopen("test_cases/8.c", "r");
 	
 	int token;
 	while(yylex());

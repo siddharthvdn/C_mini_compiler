@@ -4,11 +4,11 @@
 void main()
 {
 
-	/* This /* is a nested */ comment */
+	/* The /* comment ends here */ invalid extension */
 	
 	printf("Hello world!");
 	
-	/* This is an /* unbalanced comment */
+	/* This is an /* valid comment */
 
 }
 
