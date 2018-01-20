@@ -103,6 +103,7 @@
  	void display()
  	{
  		printf("\n----------------------------\n\tSymbol table\n----------------------------\n");
+ 		printf("Value\t\t-\tType\n----------------------------\n");
  	
  		int i;	
  	
@@ -123,6 +124,7 @@
  		
  		
  		printf("\n\n----------------------------\n\tConstant table\n----------------------------\n");
+ 		printf("Value\t\t-\tType\n----------------------------\n");
  		
  		for(i=0; i<100; i++)
  		{
@@ -150,13 +152,14 @@
 "/*"([^*]|\*+[^*/])*"*/"  {printf("Multi line comment\n");}
 
 \"(\\.|[^"\n\\])*\"                                  {printf("String const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL); }
+0[xX][0-9a-fA-F]+                                    {printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL); }
 [0-9]+                                               {printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL); }
 (([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)        {printf("Float const:\t\t%s\n", yytext); insert(yytext, 3, CONST_TBL); }
 
 '([^'\\\n]|\\.)'                                     {printf("Char const:\t\t%s\n", yytext); insert(yytext, 4, CONST_TBL); }
-'                                                    {printf("\n Error: Unterminated Character constant\n"); }
+'                                                    {printf("\n Error: Unterminated Character constant\n\n"); }
 ''                                                   {printf("Char const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL); }
-'([^'\\\n]|\\.)+'                                    {printf("\n Error: Too long Character constant\n", yytext); }
+'([^'\\\n]|\\.)+'                                    {printf("\n Error: Character constant too long\n\n", yytext); }
 
 "auto"                  { printf("Keyword:\t\t%s\n", yytext); }
 "break"                 { printf("Keyword:\t\t%s\n", yytext); }
@@ -194,8 +197,8 @@
 
 [a-zA-Z_][a-zA-Z0-9_]*   {printf("Identifier:\t\t%s\n", yytext);  insert(yytext, 0, SYM_TBL); }
 
-"*/"                    { printf("\n Error: Unexpected end of comment\n "); }
-"/*"                    { printf("\n Error: Unterminated Multi line comment\n "); }
+"*/"                    { printf("\n Error: Unexpected end of comment\n\n"); }
+"/*"                    { printf("\n Error: Unterminated Multi line comment\n\n"); }
 
 "--"                    { printf("Operator:\t\t%s\n", yytext); }
 "&&"                    { printf("Operator:\t\t%s\n", yytext); }
@@ -236,8 +239,8 @@
 " "                     { /*printf(" ");*/ }
 "\t"                    { /*printf("\t");*/ }
 
-"\""                    {printf("\n Error: Unmatched quotation\n");}
-.                       { printf("\n Error: Invalid token \n"); }
+"\""                    {printf("\n Error: Unmatched quotation\n\n");}
+.                       { printf("\n Error: Invalid token \n\n"); }
 
 %%
 
@@ -251,13 +254,15 @@ int main()
 
 	printf("\n\n");
 
-	yyin = fopen("test_cases/5.c", "r");
+	yyin = fopen("test_cases/6.c", "r");
 	
 	int token;
 	while(yylex());
 
 	
 	display();
+	
+	printf("\n\n");
 	
 	return 0;
 }
