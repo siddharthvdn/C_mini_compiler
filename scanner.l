@@ -149,8 +149,7 @@
 "//".*\n                  {printf("Single line comment\n");}
 "/*"([^*]|\*+[^*/])*"*/"  {printf("Multi line comment\n");}
 
-
-\"(\\.|[^"\\])*\"                                  {printf("String constant: %s\n", yytext); insert(yytext, 1, CONST_TBL); }
+\"(\\.|[^"\n\\])*\"                                  {printf("String constant: %s\n", yytext); insert(yytext, 1, CONST_TBL); }
 -?[0-9]*                                           {printf("Integer constant: %s\n", yytext); insert(yytext, 2, CONST_TBL); }
 -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)    {printf("Float constant: %s\n", yytext); insert(yytext, 3, CONST_TBL); }
 
@@ -188,9 +187,10 @@
 "while"                 { printf("Keyword: %s\n", yytext); }
 
 
-[a-zA-Z_][a-zA-Z0-9]*   {printf("Identifier: %s\n", yytext);  insert(yytext, 0, SYM_TBL); }
+[a-zA-Z_][a-zA-Z0-9_]*   {printf("Identifier: %s\n", yytext);  insert(yytext, 0, SYM_TBL); }
 
-"*/"                    { printf("\n Unexpected end of comment "); }
+"*/"                    { printf("\n Error: Unexpected end of comment\n "); }
+"/*"                    { printf("\n Error: neverending multi line comment\n "); }
 
 "--"                    { printf("Operator: %s\n", yytext); }
 "&&"                    { printf("Operator: %s\n", yytext); }
@@ -228,10 +228,11 @@
 "#"	                    { printf("Punctuator: %s\n", yytext); }
 
 "\n"                    { printf("\n"); }
-" "                     { printf(""); }
+" "                     { printf(" "); }
 "\t"                    { printf("\t"); }
 
-.                       { printf("\n Invalid token "); }
+"\"" {printf("\n Error: unmatched quotation\n");}
+.                       { printf("\n Error: Invalid token \n"); }
 
 %%
 
@@ -245,7 +246,7 @@ int main()
 
 	printf("\n\n");
 
-	yyin = fopen("test_cases/2.c", "r");
+	yyin = fopen("test_cases/10.c", "r");
 	
 	int token;
 	while(yylex());
