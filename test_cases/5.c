@@ -6,7 +6,7 @@ void main()
 	char a = 'a';
 	
 	//Character variable with two characters(escape sequence)
-	char new_line = '\a';			
+	char new_line = '\n';			
 					
 }
 
