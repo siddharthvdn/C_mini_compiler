@@ -154,9 +154,9 @@
 (([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)        {printf("Float const:\t\t%s\n", yytext); insert(yytext, 3, CONST_TBL); }
 
 '([^'\\\n]|\\.)'                                     {printf("Char const:\t\t%s\n", yytext); insert(yytext, 4, CONST_TBL); }
-'                                                    {printf("Unterminated Character constant\n"); }
+'                                                    {printf("\n Error: Unterminated Character constant\n"); }
 ''                                                   {printf("Char const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL); }
-'([^'\\\n]|\\.)+'                                    {printf("Too long Character constant\n", yytext); }
+'([^'\\\n]|\\.)+'                                    {printf("\n Error: Too long Character constant\n", yytext); }
 
 "auto"                  { printf("Keyword:\t\t%s\n", yytext); }
 "break"                 { printf("Keyword:\t\t%s\n", yytext); }
@@ -195,7 +195,7 @@
 [a-zA-Z_][a-zA-Z0-9_]*   {printf("Identifier:\t\t%s\n", yytext);  insert(yytext, 0, SYM_TBL); }
 
 "*/"                    { printf("\n Error: Unexpected end of comment\n "); }
-"/*"                    { printf("\n Error: neverending multi line comment\n "); }
+"/*"                    { printf("\n Error: Unterminated Multi line comment\n "); }
 
 "--"                    { printf("Operator:\t\t%s\n", yytext); }
 "&&"                    { printf("Operator:\t\t%s\n", yytext); }
@@ -205,38 +205,38 @@
 "<="                    { printf("Operator:\t\t%s\n", yytext); }
 "!="                    { printf("Operator:\t\t%s\n", yytext); }
 
-"!"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"%"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"^"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"&"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"*"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"("	                    { printf("Punctuator:\t\t%s\n", yytext); }
-")"                         { printf("Punctuator:\t\t%s\n", yytext); }
-"-"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"+"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"="	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"{"                         { printf("Punctuator:\t\t%s\n", yytext); }
-"}"                         { printf("Punctuator:\t\t%s\n", yytext); }
-"|"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"~"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"["                         { printf("Punctuator:\t\t%s\n", yytext); }
-"]"                         { printf("Punctuator:\t\t%s\n", yytext); }
-";"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"'"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-":"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"<"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-">"                         { printf("Punctuator:\t\t%s\n", yytext); }
-"?"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-","	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"."	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"/"	                    { printf("Punctuator:\t\t%s\n", yytext); }
-"#"	                    { printf("Punctuator:\t\t%s\n", yytext); }
+"!"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"%"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"^"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"&"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"*"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"("                     { printf("Punctuator:\t\t%s\n", yytext); }
+")"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"-"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"+"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"="                     { printf("Punctuator:\t\t%s\n", yytext); }
+"{"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"}"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"|"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"~"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"["                     { printf("Punctuator:\t\t%s\n", yytext); }
+"]"                     { printf("Punctuator:\t\t%s\n", yytext); }
+";"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"'"                     { printf("Punctuator:\t\t%s\n", yytext); }
+":"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"<"                     { printf("Punctuator:\t\t%s\n", yytext); }
+">"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"?"                     { printf("Punctuator:\t\t%s\n", yytext); }
+","                     { printf("Punctuator:\t\t%s\n", yytext); }
+"."                     { printf("Punctuator:\t\t%s\n", yytext); }
+"/"                     { printf("Punctuator:\t\t%s\n", yytext); }
+"#"                     { printf("Punctuator:\t\t%s\n", yytext); }
 
 "\n"                    { /*printf("\n");*/ }
 " "                     { /*printf(" ");*/ }
 "\t"                    { /*printf("\t");*/ }
 
-"\"" {printf("\n Error: unmatched quotation\n");}
+"\""                    {printf("\n Error: Unmatched quotation\n");}
 .                       { printf("\n Error: Invalid token \n"); }
 
 %%
