@@ -1,0 +1,9 @@
+int main()
+{
+	int a = 5,b = 4;
+	if(a == 4)
+		else
+			a++;
+	else 
+		c++;
+}
