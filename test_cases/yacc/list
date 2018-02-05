@@ -4,3 +4,7 @@ Test cases titles
 2. Unbalanced paranthesis and curly braces
 3. Incorrect function call
 4. Incorrect floating point number
+5. Fully functioning correct code to calculate compound interest
+6. Dangling else 
+7. Else with missing if
+8. Variable not in scope
