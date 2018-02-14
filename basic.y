@@ -1,5 +1,11 @@
 %{
 	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+
+	#include "symtbl.h"
+
+	#include <stdio.h>
 	extern FILE *yyin;
 	
 	int yylineno;
@@ -365,6 +371,8 @@ int main()
 	yyparse();
 	
 	printf("SUCCESS!\n");
+	
+	display();
 	
 	return 0;
 }
