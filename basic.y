@@ -4,6 +4,8 @@
 	
 	int yylineno;
 	
+	char* yytext;
+	
 	void yyerror(char*);
 %}
 
@@ -15,19 +17,19 @@
 %start translation_unit
 
 %%
+
 primary_expression
 	: IDENTIFIER
 	| STRCONST | INTCONST | FLTCONST | CHARCONST
 	| '(' expression ')'
 	;
 
+/* a[10] or func(10, 10) or b++ */
 postfix_expression
 	: primary_expression
 	| postfix_expression '[' expression ']'
 	| postfix_expression '(' ')'
 	| postfix_expression '(' argument_expression_list ')'
-	| postfix_expression '.' IDENTIFIER
-	| postfix_expression '*' IDENTIFIER
 	| postfix_expression INCREMENT
 	| postfix_expression DECREMENT
 	;
@@ -205,7 +207,7 @@ direct_declarator
 	| direct_declarator '(' identifier_list ')'
 	| direct_declarator '(' ')'
 	;
-
+/* * or ** or **const */
 pointer
 	: '*'
 	| '*' type_qualifier_list
@@ -328,11 +330,12 @@ jump_statement
 	| RETURN expression ';'
 	;
 
+/* start state: series of function declaraton/definition, variable declaration */
 translation_unit
 	: external_declaration
 	| translation_unit external_declaration
 	;
-
+/* function variable declaration */
 external_declaration
 	: function_definition
 	| declaration
@@ -351,14 +354,17 @@ function_definition
 void yyerror(char* s)
 {
 	//printf("ERROR: %s\n", s);
-	fprintf(stderr, "Line %d: %s\n", yylineno, s);
+	fprintf(stderr, "LINE %d: %s \nERRROR: %s\n", yylineno, s, yytext);
 }
 
 int main()
 {
 	//yyin = fopen("test_cases/program.c", "r");
-	yyin = fopen("test_cases/yacc/4.c", "r");
+	yyin = fopen("test_cases/yacc/1.c", "r");
 
 	yyparse();
+	
+	printf("SUCCESS!\n");
+	
 	return 0;
 }
