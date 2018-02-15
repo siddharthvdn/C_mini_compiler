@@ -45,101 +45,111 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    STRCONST = 258,
-    INTCONST = 259,
-    FLTCONST = 260,
-    CHARCONST = 261,
-    AUTO = 262,
-    BREAK = 263,
-    CASE = 264,
-    CHAR = 265,
-    CONST = 266,
-    CONTINUE = 267,
-    DEFAULT = 268,
-    DO = 269,
-    DOUBLE = 270,
-    ELSE = 271,
-    ENUM = 272,
-    EXTERN = 273,
-    FLOAT = 274,
-    FOR = 275,
-    IF = 276,
-    INT = 277,
-    LONG = 278,
-    REGISTER = 279,
-    RETURN = 280,
-    SHORT = 281,
-    SIGNED = 282,
-    SIZEOF = 283,
-    STATIC = 284,
-    STRUCT = 285,
-    SWITCH = 286,
-    TYPEDEF = 287,
-    UNION = 288,
-    UNSIGNED = 289,
-    VOID = 290,
-    VOLATILE = 291,
-    WHILE = 292,
-    IDENTIFIER = 293,
-    INCREMENT = 294,
-    DECREMENT = 295,
-    AND = 296,
-    OR = 297,
-    EQUAL = 298,
-    GREATER = 299,
-    LESSER = 300,
-    NOTEQUAL = 301
+    OR = 258,
+    AND = 259,
+    EQUAL = 260,
+    NOTEQUAL = 261,
+    LESSER = 262,
+    GREATER = 263,
+    ELSE = 264,
+    STRCONST = 265,
+    INTCONST = 266,
+    FLTCONST = 267,
+    CHARCONST = 268,
+    AUTO = 269,
+    BREAK = 270,
+    CASE = 271,
+    CHAR = 272,
+    CONST = 273,
+    CONTINUE = 274,
+    DEFAULT = 275,
+    DO = 276,
+    DOUBLE = 277,
+    ENUM = 278,
+    EXTERN = 279,
+    FLOAT = 280,
+    FOR = 281,
+    IF = 282,
+    INT = 283,
+    LONG = 284,
+    REGISTER = 285,
+    RETURN = 286,
+    SHORT = 287,
+    SIGNED = 288,
+    SIZEOF = 289,
+    STATIC = 290,
+    STRUCT = 291,
+    SWITCH = 292,
+    TYPEDEF = 293,
+    UNION = 294,
+    UNSIGNED = 295,
+    VOID = 296,
+    VOLATILE = 297,
+    WHILE = 298,
+    IDENTIFIER = 299,
+    INCREMENT = 300,
+    DECREMENT = 301
   };
 #endif
 /* Tokens.  */
-#define STRCONST 258
-#define INTCONST 259
-#define FLTCONST 260
-#define CHARCONST 261
-#define AUTO 262
-#define BREAK 263
-#define CASE 264
-#define CHAR 265
-#define CONST 266
-#define CONTINUE 267
-#define DEFAULT 268
-#define DO 269
-#define DOUBLE 270
-#define ELSE 271
-#define ENUM 272
-#define EXTERN 273
-#define FLOAT 274
-#define FOR 275
-#define IF 276
-#define INT 277
-#define LONG 278
-#define REGISTER 279
-#define RETURN 280
-#define SHORT 281
-#define SIGNED 282
-#define SIZEOF 283
-#define STATIC 284
-#define STRUCT 285
-#define SWITCH 286
-#define TYPEDEF 287
-#define UNION 288
-#define UNSIGNED 289
-#define VOID 290
-#define VOLATILE 291
-#define WHILE 292
-#define IDENTIFIER 293
-#define INCREMENT 294
-#define DECREMENT 295
-#define AND 296
-#define OR 297
-#define EQUAL 298
-#define GREATER 299
-#define LESSER 300
-#define NOTEQUAL 301
+#define OR 258
+#define AND 259
+#define EQUAL 260
+#define NOTEQUAL 261
+#define LESSER 262
+#define GREATER 263
+#define ELSE 264
+#define STRCONST 265
+#define INTCONST 266
+#define FLTCONST 267
+#define CHARCONST 268
+#define AUTO 269
+#define BREAK 270
+#define CASE 271
+#define CHAR 272
+#define CONST 273
+#define CONTINUE 274
+#define DEFAULT 275
+#define DO 276
+#define DOUBLE 277
+#define ENUM 278
+#define EXTERN 279
+#define FLOAT 280
+#define FOR 281
+#define IF 282
+#define INT 283
+#define LONG 284
+#define REGISTER 285
+#define RETURN 286
+#define SHORT 287
+#define SIGNED 288
+#define SIZEOF 289
+#define STATIC 290
+#define STRUCT 291
+#define SWITCH 292
+#define TYPEDEF 293
+#define UNION 294
+#define UNSIGNED 295
+#define VOID 296
+#define VOLATILE 297
+#define WHILE 298
+#define IDENTIFIER 299
+#define INCREMENT 300
+#define DECREMENT 301
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 160 "basic.y" /* yacc.c:1909  */
+
+    char str[1000];
+
+#line 150 "y.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

@@ -7,4 +7,5 @@ int main()
 	return 0;
 }*/
 
-asdf = 1235
+auto int a, b;
+int c, d;

@@ -3,17 +3,163 @@
 	#include <stdlib.h>
 	#include <string.h>
 
-	#include "symtbl.h"
+	#define SYM_TBL 0
+	#define CONST_TBL 1
 
-	#include <stdio.h>
+	typedef struct node
+	{
+		char* name;		
+		char* type;
+			
+		struct node* next;
+	}node;
+
+	node* sym_tbl[100];
+	node* const_tbl[100];
+
+	int hash(char* x, int M) 
+	{
+	   int i, sum;
+	   for (sum=0, i=0; i < strlen(x); i++)
+	     sum += x[i];
+	   return sum % M;
+	}
+
+	int lookup(char* x, int table)
+	{
+		int idx = hash(x, 100);
+
+		node* t = NULL;
+
+		if(table==0)
+		{
+	 		if(sym_tbl[idx]==NULL)
+	 			return 0;
+	 		
+	 		t = sym_tbl[idx];
+	 	}
+	 	else
+	 	{
+	 		if(const_tbl[idx]==NULL)
+		 		return 0;
+	 		
+	 		t = const_tbl[idx];
+	 	}
+	
+		while(t!=NULL)
+		{
+			if(strcmp(t->name, x)==0)
+				return 1;
+			t = t->next;
+		}
+	
+		return 0;
+			
+	}
+
+
+	void insert(char* x, char* type, int table)
+	{
+		if(lookup(x, table))
+			return;
+
+		int idx = hash(x, 100);
+	
+		node* cell = (node*)malloc(sizeof(node));
+		cell->name = (char*)malloc(strlen(x));
+		cell->type = (char*)malloc(strlen(type));
+		strcpy(cell->name, x);
+		strcpy(cell->type, type);
+		cell->next = NULL;		
+	
+		node* t = NULL;
+	
+		if(table==0)
+		{
+	 		if(sym_tbl[idx]==NULL)
+	 		{
+	 			sym_tbl[idx] = cell;
+	 			return;
+	 		}
+	 		
+	 		t = sym_tbl[idx];
+	 	}
+	 	else
+	 	{
+	 		if(const_tbl[idx]==NULL)
+	 		{
+	 			const_tbl[idx] = cell;
+	 			return;
+	 		}
+	 		
+	 		t = const_tbl[idx];
+	 	}
+	
+		while(t->next!=NULL)
+		t = t->next;
+	
+		t->next = cell; 		
+	}
+
+	void display()
+	{
+		printf("\n----------------------------\n\tSymbol table\n----------------------------\n");
+		printf("Value\t\t-\tType\n----------------------------\n");
+
+		int i;	
+
+		for(i=0; i<100; i++)
+		{
+			if(sym_tbl[i]==NULL)
+				continue;
+		
+			node* t = sym_tbl[i];
+		
+			while(t!=NULL)	
+			{
+				printf("%s\t\t-\t%s\n", t->name, t->type);
+				t = t->next;
+			}
+			
+		}
+	
+	
+		printf("\n\n----------------------------\n\tConstant table\n----------------------------\n");
+		printf("Value\t\t-\tType\n----------------------------\n");
+	
+		for(i=0; i<100; i++)
+		{
+			if(const_tbl[i]==NULL)
+				continue;
+		
+			node* t = const_tbl[i];
+		
+			while(t!=NULL)	
+			{
+				printf("%s\t\t-\t%s\n", t->name, t->type);
+				t = t->next;
+			}
+			
+		}
+	}
+
 	extern FILE *yyin;
 	
 	int yylineno;
-	
+		
 	char* yytext;
 	
 	void yyerror(char*);
+	
+	
+	char datatype_str[100];
+	char vars[100][1000];
+	int varpt = 1; 
 %}
+
+%union{
+    char str[1000];
+}
 
 %right '='
 %left OR
@@ -40,8 +186,8 @@ S
 	:func_def S
 	|id_dec ';' S
 	|id_assign_dec';' S
-	|multidec
-	|
+	|multidec S
+	|	
 	;
 func_def
 	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}'
@@ -50,17 +196,26 @@ func_def
 	|modifiers datatype IDENTIFIER '('')' ';'
 	;
 id_dec
-	:modifiers datatype IDENTIFIER 
-	|modifiers datatype IDENTIFIER '['INTCONST']'
-	|modifiers datatype '*' IDENTIFIER 
+	:modifiers datatype IDENTIFIER { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype IDENTIFIER '['INTCONST']' { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype IDENTIFIER '['']' { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype '*' IDENTIFIER {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}
 	;
 id_assign_dec
-	:modifiers datatype IDENTIFIER '=' expression 
-	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}'	
-	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}'
+	:modifiers datatype IDENTIFIER '=' expression { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, 0);}	
+	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, 0);}	
 	;
 multidec
-	:modifiers datatype id_chain
+	:modifiers datatype id_chain 
+	{
+		while(varpt)
+		{
+			insert (vars[varpt--], $<str>2, 0);
+			printf("pop\n");
+		}
+		varpt++;
+	} ';'
 	;
 datatype
 	:INT
@@ -114,10 +269,10 @@ statement_list
 	|statement statement_list
 	;
 constant
-	:INTCONST
-	|STRCONST
-	|FLTCONST
-	|CHARCONST
+	:INTCONST { insert ($<str>$, "int", 1);}
+	|STRCONST { insert ($<str>$, "string", 1);}
+	|FLTCONST { insert ($<str>$, "float", 1);}
+	|CHARCONST { insert ($<str>$, "char", 1);}
 	;
 bin_op
 	:'+'
@@ -167,10 +322,10 @@ statement
 	|IDENTIFIER DECREMENT ';'
 	;
 id_chain
-	:IDENTIFIER
-	|IDENTIFIER '=' constant
-	|IDENTIFIER '=' constant ',' id_chain
-	|IDENTIFIER ',' id_chain
+	:IDENTIFIER { strcpy(vars[varpt++],$<str>1); printf("push\n");}
+	|IDENTIFIER '=' constant { strcpy(vars[varpt++],$<str>1); }
+	|IDENTIFIER '=' constant ',' id_chain { strcpy(vars[varpt++],$<str>1); }
+	|IDENTIFIER ',' id_chain { strcpy(vars[varpt++],$<str>1); printf("push\n");}
 	;
 if_block
 	:IF '('expression')' statement 
@@ -200,6 +355,7 @@ void yyerror(char* s)
 	//printf("ERROR: %s\n", s);
 	fprintf(stderr, "LINE %d: %s \nERRROR: %s\n", yylineno, s, yytext);
 	//exit(0);	
+	
 }
 
 int main()
