@@ -12,7 +12,7 @@ int c[5];
 
 void main()
 {
-	char k = "lala";
+	char* k = "lala";
 	
 	c++;
 	

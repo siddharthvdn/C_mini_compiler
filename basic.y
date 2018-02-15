@@ -154,6 +154,7 @@
 	
 	char datatype_str[100];
 	char vars[100][1000];
+	int pnt[100]={0};
 	int varpt = 0; 
 %}
 
@@ -204,7 +205,8 @@ id_dec
 id_assign_dec
 	:modifiers datatype IDENTIFIER '=' expression { insert ($<str>3, $<str>2, 0);}
 	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, 0);}	
-	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, 0);}	
+	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, 0);}
+	|modifiers datatype '*' IDENTIFIER '=' expression {char temp[1000]; strcpy(temp,$<str>2); strcat(temp,"*"); insert ($<str>4,temp, 0);}
 	;
 multidec
 	:modifiers datatype id_chain 
@@ -212,7 +214,16 @@ multidec
 		varpt--;
 		while(varpt>=0)
 		{
-			insert (vars[varpt--], $<str>2, 0);
+			if(pnt[varpt])
+			{
+				char temp[1000];
+				strcpy(temp,$<str>2);
+				strcat(temp,"*"); 
+				pnt[varpt] = 0;
+				insert (vars[varpt--], $<str>2, 0);
+			}
+			else
+				insert (vars[varpt--], $<str>2, 0);
 		}		
 	} ';'
 	;
@@ -324,8 +335,12 @@ statement
 	;
 id_chain
 	:IDENTIFIER { strcpy(vars[varpt++],$<str>1); }
-	|IDENTIFIER '=' constant { strcpy(vars[varpt++],$<str>1); }
-	|IDENTIFIER '=' constant ',' id_chain { strcpy(vars[varpt++],$<str>1); }
+	|IDENTIFIER '=' expression { strcpy(vars[varpt++],$<str>1); }
+	|'*'IDENTIFIER { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
+	|'*'IDENTIFIER ',' id_chain { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
+	|'*'IDENTIFIER '=' expression { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
+	|'*'IDENTIFIER '=' expression ',' id_chain { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
+	|IDENTIFIER '=' expression ',' id_chain { strcpy(vars[varpt++],$<str>1); }
 	|IDENTIFIER ',' id_chain { strcpy(vars[varpt++],$<str>1); }
 	;
 if_block
@@ -355,7 +370,7 @@ void yyerror(char* s)
 {
 	error = 1;
 	//printf("ERROR: %s\n", s);
-	fprintf(stderr, "LINE %d: %s \nERRROR: %s\n", yylineno, s, yytext);
+	fprintf(stderr, "\nLINE %d: %s \nERRROR: %s\n", yylineno, s, yytext);
 	//exit(0);	
 	
 }
