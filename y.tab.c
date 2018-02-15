@@ -215,11 +215,11 @@
 	char* yytext;
 	
 	void yyerror(char*);
-	
+	int error = 0;
 	
 	char datatype_str[100];
 	char vars[100][1000];
-	int varpt = 1; 
+	int varpt = 0; 
 
 #line 225 "y.tab.c" /* yacc.c:339  */
 
@@ -678,16 +678,16 @@ static const yytype_uint16 yyrline[] =
 {
        0,   186,   186,   187,   188,   189,   190,   193,   194,   195,
      196,   199,   200,   201,   202,   205,   206,   207,   211,   210,
-     221,   222,   223,   224,   225,   226,   227,   231,   232,   233,
-     234,   235,   236,   237,   238,   241,   242,   245,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   264,   265,   268,   269,   272,   273,   274,   275,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,   291,   292,   295,   296,   297,   298,   299,
-     300,   301,   304,   305,   308,   309,   312,   313,   314,   315,
-     316,   317,   318,   319,   320,   321,   322,   325,   326,   327,
-     328,   331,   332,   335,   336,   337,   340,   341,   344,   345,
-     346
+     220,   221,   222,   223,   224,   225,   226,   230,   231,   232,
+     233,   234,   235,   236,   237,   241,   242,   246,   249,   250,
+     251,   252,   253,   254,   255,   256,   257,   258,   259,   260,
+     261,   262,   265,   266,   269,   270,   273,   274,   275,   276,
+     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
+     289,   290,   291,   292,   293,   296,   297,   298,   299,   300,
+     301,   302,   305,   306,   309,   310,   313,   314,   315,   316,
+     317,   318,   319,   320,   321,   322,   323,   326,   327,   328,
+     329,   332,   333,   336,   337,   338,   341,   342,   345,   346,
+     347
 };
 #endif
 
@@ -1639,111 +1639,134 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 11:
+        case 7:
+#line 193 "basic.y" /* yacc.c:1646  */
+    { insert ((yyvsp[-6].str), (yyvsp[-7].str), 0);}
+#line 1646 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 194 "basic.y" /* yacc.c:1646  */
+    { insert ((yyvsp[-5].str), (yyvsp[-6].str), 0);}
+#line 1652 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 195 "basic.y" /* yacc.c:1646  */
+    { insert ((yyvsp[-4].str), (yyvsp[-5].str), 0);}
+#line 1658 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 196 "basic.y" /* yacc.c:1646  */
+    { insert ((yyvsp[-3].str), (yyvsp[-4].str), 0);}
+#line 1664 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
 #line 199 "basic.y" /* yacc.c:1646  */
     { insert ((yyvsp[0].str), (yyvsp[-1].str), 0);}
-#line 1646 "y.tab.c" /* yacc.c:1646  */
+#line 1670 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 200 "basic.y" /* yacc.c:1646  */
     { insert ((yyvsp[-3].str), (yyvsp[-4].str), 0);}
-#line 1652 "y.tab.c" /* yacc.c:1646  */
+#line 1676 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 201 "basic.y" /* yacc.c:1646  */
     { insert ((yyvsp[-2].str), (yyvsp[-3].str), 0);}
-#line 1658 "y.tab.c" /* yacc.c:1646  */
+#line 1682 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
 #line 202 "basic.y" /* yacc.c:1646  */
     {char temp[1000];strcpy(temp,(yyvsp[-2].str));strcat(temp,"*"); insert ((yyvsp[0].str),temp, 0);}
-#line 1664 "y.tab.c" /* yacc.c:1646  */
+#line 1688 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
 #line 205 "basic.y" /* yacc.c:1646  */
     { insert ((yyvsp[-2].str), (yyvsp[-3].str), 0);}
-#line 1670 "y.tab.c" /* yacc.c:1646  */
+#line 1694 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
 #line 206 "basic.y" /* yacc.c:1646  */
     {char temp[1000];strcpy(temp,(yyvsp[-7].str));strcat(temp,"*"); insert ((yyvsp[-6].str),temp, 0);}
-#line 1676 "y.tab.c" /* yacc.c:1646  */
+#line 1700 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
 #line 207 "basic.y" /* yacc.c:1646  */
     {char temp[1000];strcpy(temp,(yyvsp[-8].str));strcat(temp,"*"); insert ((yyvsp[-7].str),temp, 0);}
-#line 1682 "y.tab.c" /* yacc.c:1646  */
+#line 1706 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
 #line 211 "basic.y" /* yacc.c:1646  */
     {
-		while(varpt)
+		varpt--;
+		while(varpt>=0)
 		{
 			insert (vars[varpt--], (yyvsp[-1].str), 0);
-			printf("pop\n");
-		}
-		varpt++;
+		}		
 	}
-#line 1695 "y.tab.c" /* yacc.c:1646  */
+#line 1718 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 272 "basic.y" /* yacc.c:1646  */
+#line 273 "basic.y" /* yacc.c:1646  */
     { insert ((yyval.str), "int", 1);}
-#line 1701 "y.tab.c" /* yacc.c:1646  */
+#line 1724 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 273 "basic.y" /* yacc.c:1646  */
+#line 274 "basic.y" /* yacc.c:1646  */
     { insert ((yyval.str), "string", 1);}
-#line 1707 "y.tab.c" /* yacc.c:1646  */
+#line 1730 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 274 "basic.y" /* yacc.c:1646  */
+#line 275 "basic.y" /* yacc.c:1646  */
     { insert ((yyval.str), "float", 1);}
-#line 1713 "y.tab.c" /* yacc.c:1646  */
+#line 1736 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 275 "basic.y" /* yacc.c:1646  */
+#line 276 "basic.y" /* yacc.c:1646  */
     { insert ((yyval.str), "char", 1);}
-#line 1719 "y.tab.c" /* yacc.c:1646  */
+#line 1742 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 325 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt++],(yyvsp[0].str)); printf("push\n");}
-#line 1725 "y.tab.c" /* yacc.c:1646  */
+#line 326 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt++],(yyvsp[0].str)); }
+#line 1748 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 326 "basic.y" /* yacc.c:1646  */
+#line 327 "basic.y" /* yacc.c:1646  */
     { strcpy(vars[varpt++],(yyvsp[-2].str)); }
-#line 1731 "y.tab.c" /* yacc.c:1646  */
+#line 1754 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 327 "basic.y" /* yacc.c:1646  */
+#line 328 "basic.y" /* yacc.c:1646  */
     { strcpy(vars[varpt++],(yyvsp[-4].str)); }
-#line 1737 "y.tab.c" /* yacc.c:1646  */
+#line 1760 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 328 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt++],(yyvsp[-2].str)); printf("push\n");}
-#line 1743 "y.tab.c" /* yacc.c:1646  */
+#line 329 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt++],(yyvsp[-2].str)); }
+#line 1766 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1747 "y.tab.c" /* yacc.c:1646  */
+#line 1770 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1971,12 +1994,13 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 350 "basic.y" /* yacc.c:1906  */
+#line 351 "basic.y" /* yacc.c:1906  */
 
 
 
 void yyerror(char* s)
 {
+	error = 1;
 	//printf("ERROR: %s\n", s);
 	fprintf(stderr, "LINE %d: %s \nERRROR: %s\n", yylineno, s, yytext);
 	//exit(0);	
@@ -1989,8 +2013,11 @@ int main()
 	yyin = fopen("test_cases/program.c", "r");
 
 	yyparse();
-	
-	printf("SUCCESS!\n");
+
+	if(error)
+		printf("\nUNSUCCESSFUL\n");
+	else
+		printf("\nSUCCESS!\n");
 	
 	display();
 	

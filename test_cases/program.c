@@ -8,4 +8,20 @@ int main()
 }*/
 
 auto int a, b;
-int c, d;
+int c[5];
+
+void main()
+{
+	char k = "lala";
+	
+	c++;
+	
+	if(c>5)
+		a++;
+	else if (c<5)
+		b++;
+	else
+	{
+		d++;
+	}
+}

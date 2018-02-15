@@ -51,7 +51,7 @@
 "typedef"               { /*printf("Keyword:\t\t%s\n", yytext);*/ return TYPEDEF; }
 "union"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ return UNION; }
 "unsigned"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return UNSIGNED; }
-"void"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ return VOID; }
+"void"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return VOID; }
 "volatile"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return VOLATILE; }
 "while"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ return WHILE; }
 

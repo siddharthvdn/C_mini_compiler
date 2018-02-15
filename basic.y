@@ -150,11 +150,11 @@
 	char* yytext;
 	
 	void yyerror(char*);
-	
+	int error = 0;
 	
 	char datatype_str[100];
 	char vars[100][1000];
-	int varpt = 1; 
+	int varpt = 0; 
 %}
 
 %union{
@@ -190,10 +190,10 @@ S
 	|	
 	;
 func_def
-	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}'
-	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}'
-	|modifiers datatype IDENTIFIER '(' params_list')' ';'
-	|modifiers datatype IDENTIFIER '('')' ';'
+	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype IDENTIFIER '(' params_list')' ';' { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype IDENTIFIER '('')' ';' { insert ($<str>3, $<str>2, 0);}
 	;
 id_dec
 	:modifiers datatype IDENTIFIER { insert ($<str>3, $<str>2, 0);}
@@ -209,12 +209,11 @@ id_assign_dec
 multidec
 	:modifiers datatype id_chain 
 	{
-		while(varpt)
+		varpt--;
+		while(varpt>=0)
 		{
 			insert (vars[varpt--], $<str>2, 0);
-			printf("pop\n");
-		}
-		varpt++;
+		}		
 	} ';'
 	;
 datatype
@@ -237,10 +236,12 @@ modifiers
 	|VOLATILE
 	|
 	;
+	
 params_list
 	:id_dec
 	|id_dec ',' params_list
 	;
+	
 brackets
 	:'('expression')'
 	;
@@ -322,10 +323,10 @@ statement
 	|IDENTIFIER DECREMENT ';'
 	;
 id_chain
-	:IDENTIFIER { strcpy(vars[varpt++],$<str>1); printf("push\n");}
+	:IDENTIFIER { strcpy(vars[varpt++],$<str>1); }
 	|IDENTIFIER '=' constant { strcpy(vars[varpt++],$<str>1); }
 	|IDENTIFIER '=' constant ',' id_chain { strcpy(vars[varpt++],$<str>1); }
-	|IDENTIFIER ',' id_chain { strcpy(vars[varpt++],$<str>1); printf("push\n");}
+	|IDENTIFIER ',' id_chain { strcpy(vars[varpt++],$<str>1); }
 	;
 if_block
 	:IF '('expression')' statement 
@@ -352,6 +353,7 @@ assignment
 
 void yyerror(char* s)
 {
+	error = 1;
 	//printf("ERROR: %s\n", s);
 	fprintf(stderr, "LINE %d: %s \nERRROR: %s\n", yylineno, s, yytext);
 	//exit(0);	
@@ -364,8 +366,11 @@ int main()
 	yyin = fopen("test_cases/program.c", "r");
 
 	yyparse();
-	
-	printf("SUCCESS!\n");
+
+	if(error)
+		printf("\nUNSUCCESSFUL\n");
+	else
+		printf("\nSUCCESS!\n");
 	
 	display();
 	

@@ -1085,7 +1085,7 @@ YY_RULE_SETUP
 case 39:
 YY_RULE_SETUP
 #line 54 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ return VOID; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return VOID; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
