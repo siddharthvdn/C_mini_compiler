@@ -195,6 +195,10 @@ func_def
 	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert ($<str>3, $<str>2, 0);}
 	|modifiers datatype IDENTIFIER '(' params_list')' ';' { insert ($<str>3, $<str>2, 0);}
 	|modifiers datatype IDENTIFIER '('')' ';' { insert ($<str>3, $<str>2, 0);}
+	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
+	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
+	|modifiers datatype'*' IDENTIFIER '(' params_list')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
+	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
 	;
 id_dec
 	:modifiers datatype IDENTIFIER { insert ($<str>3, $<str>2, 0);}
@@ -379,8 +383,8 @@ void yyerror(char* s)
 
 int main()
 {
-	yyin = fopen("test_cases/yacc/8.c", "r");
-	//yyin = fopen("test_cases/program.c", "r");
+	//yyin = fopen("test_cases/yacc/8.c", "r");
+	yyin = fopen("test_cases/program.c", "r");
 
 	yyparse();
 
