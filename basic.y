@@ -187,7 +187,7 @@ S
 	:func_def S
 	|id_dec ';' S
 	|id_assign_dec';' S
-	|multidec S
+	|multidec';' S
 	|	
 	;
 func_def
@@ -225,7 +225,7 @@ multidec
 			else
 				insert (vars[varpt--], $<str>2, 0);
 		}		
-	} ';'
+	} 
 	;
 datatype
 	:INT
@@ -332,6 +332,8 @@ statement
 	|func_call';'
 	|IDENTIFIER INCREMENT ';'
 	|IDENTIFIER DECREMENT ';'
+	|'{'statement_list'}'
+	|';'
 	;
 id_chain
 	:IDENTIFIER { strcpy(vars[varpt++],$<str>1); }
@@ -370,15 +372,15 @@ void yyerror(char* s)
 {
 	error = 1;
 	//printf("ERROR: %s\n", s);
-	fprintf(stderr, "\nLINE %d: %s \nERRROR: %s\n", yylineno, s, yytext);
+	fprintf(stderr, "\nLINE %d: %s \nERROR: %s\n", yylineno, s, yytext);
 	//exit(0);	
 	
 }
 
 int main()
 {
+	yyin = fopen("test_cases/yacc/8.c", "r");
 	//yyin = fopen("test_cases/program.c", "r");
-	yyin = fopen("test_cases/program.c", "r");
 
 	yyparse();
 

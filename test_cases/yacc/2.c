@@ -5,19 +5,19 @@ void main()
 {
 	int a = 1, b = 2, c = 3;
 	
-	//Unbalaced paranthesis
+	//Balaced paranthesis
 	int d = (a + (b+c));
 	
-	//Balanced paranthesis
+	//Unbalanced paranthesis
 	int e = (a + (b+c);
 		
 	
 	{
-		//Balanced block
+		;//Balanced block
 	}
 	
 	{{
-		//Unbalanced block
+		;//Unbalanced block
 	}
 	
 	

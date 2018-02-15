@@ -1,4 +1,5 @@
 //Incorrect function call
+
 int fun(
 {
 	return 5;

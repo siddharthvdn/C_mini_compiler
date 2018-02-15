@@ -894,7 +894,7 @@ case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
 #line 13 "scanner.l"
-{ /*printf("Single line comment\n");*/ }
+{ /*printf("Single line comment\n");*/ yylineno++;}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */

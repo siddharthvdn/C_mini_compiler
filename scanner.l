@@ -10,7 +10,7 @@
 
 %%
 
-"//".*\n                  { /*printf("Single line comment\n");*/ }
+"//".*\n                  { /*printf("Single line comment\n");*/ yylineno++;}
 "/*"([^*]|\*+[^*/])*"*/"  { /*printf("Multi line comment\n");*/ }
 
 \"(\\.|[^"\n\\])*\"                                  {/*printf("String const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL);*/ strcpy(yylval.str,yytext); return STRCONST; }

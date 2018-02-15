@@ -1,7 +1,7 @@
 float compound_interest(float p, float r, float n)
 {
       float interest;
-      interest = p*((1 + r/100)^n) - 1);
+      interest = p*((1 + r/100)^n - 1);
       return interest;
 }
  
