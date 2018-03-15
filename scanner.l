@@ -4,6 +4,9 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
+	extern int level; 
+	extern int depth ;
+	extern int scope[1000];
 	
 %}
 
@@ -81,7 +84,7 @@
 "-"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '-'; }
 "+"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '+'; }
 "="                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '='; }
-"{"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ depth++; level++; return '{'; }
+"{"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ depth++; level++;scope[depth-1]=level;return '{'; }
 "}"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ scope[depth]=0; depth--; return '}'; }
 "|"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '|'; }
 "~"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '~'; }

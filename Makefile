@@ -1,5 +1,5 @@
 all:
-	yacc -d basic.y -Wother
+	yacc -d basic.y -Wnone
 	lex scanner.l
 	cc y.tab.c lex.yy.c -ll
 	./a.out

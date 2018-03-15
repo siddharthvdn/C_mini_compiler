@@ -181,10 +181,10 @@
 	int yylineno;
 
 	/* Scope Evaluation */
-	int level = 0;
-	int depth = 0;
-	int scope[1000];
-	scope[0] = 0;
+	 int level = 0;
+	 int depth = 0;
+	 int scope[1000];
+	//scope[0] = 0;
 		
 	char* yytext;
 	
