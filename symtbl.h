@@ -17,7 +17,7 @@ node* const_tbl[100];
 
 int hash(char* x, int M);
 
-int lookup(char* x, int table);
+node* lookup(char* x, int table);
 
 void insert(char* x, char* type, int* scope_in, int depth_in, int table);
 

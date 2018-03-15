@@ -16,7 +16,7 @@ int hash(char* x, int M)
    return sum % M;
 }
 
-int lookup(char* x, int table)
+node* lookup(char* x, int table)
 {
 	int idx = hash(x, 100);
 
@@ -25,14 +25,14 @@ int lookup(char* x, int table)
 	if(table==0)
 	{
  		if(sym_tbl[idx]==NULL)
- 			return 0;
+ 			return NULL;
  		
  		t = sym_tbl[idx];
  	}
  	else
  	{
  		if(const_tbl[idx]==NULL)
-	 		return 0;
+	 		return NULL;
  		
  		t = const_tbl[idx];
  	}
@@ -40,18 +40,18 @@ int lookup(char* x, int table)
 	while(t!=NULL)
 	{
 		if(strcmp(t->name, x)==0)
-			return 1;
+			return t;
 		t = t->next;
 	}
 
-	return 0;
+	return NULL;
 		
 }
 
 
 void insert(char* x, char* type, int* scope_in, int depth_in, int table)
 {
-	if(lookup(x, table))
+	if(lookup(x, table)!=NULL)
 		return;
 
 	int idx = hash(x, 100);
@@ -114,28 +114,17 @@ void insert(char* x, char* type, int* scope_in, int depth_in, int table)
 
 void check_scope(char* x, int* scope_in, int depth_in)
 {
-	int idx = hash(x, 100);
+	char error_msg[100];	
+ 		
+ 	node* t = lookup(x, 0);
 
-	char error_msg[100];
-	
-
-	if(sym_tbl[idx]==NULL)
+ 	if(t==NULL)
  	{
  		strcpy(error_msg,"Variable undeclared: ");
  		strcat(error_msg, x); 
  		yyerror(error_msg); 
  		return;
  	}
- 		
- 	node* t = NULL;	
- 	t = sym_tbl[idx];
- 	
- 	while(t!=NULL)
-	{
-		if(strcmp(t->name, x)==0)
-			break;
-		t = t->next;
-	}
 	
 	int i;
 	if(depth_in<t->depth)
@@ -161,30 +150,14 @@ void check_scope(char* x, int* scope_in, int depth_in)
 
 void change_scope(char* x, int level_in)
 {
-	int idx = hash(x, 100);
-
 	char error_msg[100];
 	
+ 	node* t = lookup(x, 0);
 
-	if(sym_tbl[idx]==NULL)
- 	{
- 		strcpy(error_msg,"Variable undeclared: ");
- 		strcat(error_msg, x); 
- 		yyerror(error_msg); 
+ 	if(t==NULL)
  		return;
- 	}
- 		
- 	node* t = NULL;	
- 	t = sym_tbl[idx];
- 	
- 	while(t!=NULL)
-	{
-		if(strcmp(t->name, x)==0)
-			break;
-		t = t->next;
-	}
-	
-	t->depth = t->depth + 1;
+
+ 	t->depth = t->depth + 1;
 	
 	int *temp = (int*)malloc(sizeof(int)*(t->depth));
 	for(int i=0; i<t->depth-1; i++)
@@ -198,8 +171,8 @@ void change_scope(char* x, int level_in)
 
 void display()
 {
-	printf("\n----------------------------\n\tSymbol table\n----------------------------\n");
-	printf("Value\t\t-\tType\t-\tScope\n----------------------------\n");
+	printf("\n------------------------------------------------\n\t\tSymbol table\n------------------------------------------------\n");
+	printf("Value\t\t-\tType\t-\tScope\n------------------------------------------------\n");
 
 	int i,j;	
 
