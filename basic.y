@@ -123,6 +123,54 @@
 		t->next = cell; 		
 	}
 
+
+	void check_scope(char* x, int* scope_in, int depth_in)
+	{
+		int idx = hash(x, 100);
+
+		char error_msg[100];
+		
+
+		if(sym_tbl[idx]==NULL)
+	 	{
+	 		strcpy(error_msg,"Variable undeclared: ");
+	 		strcat(error_msg, x); 
+	 		yyerror(error_msg); 
+	 		return;
+	 	}
+	 		
+	 	node* t = NULL;	
+	 	t = sym_tbl[idx];
+	 	
+	 	while(t!=NULL)
+		{
+			if(strcmp(t->name, x)==0)
+				break;
+			t = t->next;
+		}
+		
+		int i;
+		if(depth_in<t->depth)
+		{
+	 		strcpy(error_msg,"Variable out of scope: ");
+	 		strcat(error_msg, x); 
+	 		yyerror(error_msg); 
+	 		return;
+	 	}
+	
+		for(i = 0; i<t->depth;i++)
+		{
+			if(scope_in[i] != t->scope[i])	
+			{
+		 		strcpy(error_msg,"Variable out of scope: ");
+		 		strcat(error_msg, x); 
+		 		yyerror(error_msg); 
+		 		return;
+	 		}
+		}
+		
+	}
+	
 	void display()
 	{
 		printf("\n----------------------------\n\tSymbol table\n----------------------------\n");
@@ -301,13 +349,13 @@ brackets
 	;
 expression
 	:constant
-	|IDENTIFIER bin_op expression
+	|IDENTIFIER bin_op expression {check_scope($<str>1, scope, depth);}
 	|constant bin_op expression
-	|IDENTIFIER
-	|un_op IDENTIFIER
+	|IDENTIFIER {check_scope($<str>1, scope, depth);}
+	|un_op IDENTIFIER {check_scope($<str>1, scope, depth);}
 	|un_op constant
-	|IDENTIFIER INCREMENT
-	|IDENTIFIER DECREMENT
+	|IDENTIFIER INCREMENT {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER DECREMENT {check_scope($<str>1, scope, depth);}
 	|func_call bin_op expression
 	|func_call
 	|un_op func_call
@@ -356,8 +404,8 @@ un_op
 	|DECREMENT %prec '$'
 	;
 func_call
-	:IDENTIFIER '('expression_list')'
-	|IDENTIFIER '('')'
+	:IDENTIFIER '('expression_list')' {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER '('')' {check_scope($<str>1, scope, depth);}
 	;
 expression_list
 	:expression
@@ -373,8 +421,8 @@ statement
 	|if_block
 	|RETURN expression ';'
 	|func_call';'
-	|IDENTIFIER INCREMENT ';'
-	|IDENTIFIER DECREMENT ';'
+	|IDENTIFIER INCREMENT ';' {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER DECREMENT ';' {check_scope($<str>1, scope, depth);}
 	|'{'statement_list'}'
 	|';'
 	;
@@ -402,9 +450,9 @@ iterative
 	|WHILE '('expression')''{'statement_list'}'
 	;
 assignment
-	:IDENTIFIER '=' expression ';'
-	|'*'IDENTIFIER '=' expression';'
-	|IDENTIFIER'['INTCONST']' '=' expression';'
+	:IDENTIFIER '=' expression ';'{check_scope($<str>1, scope, depth);}
+	|'*'IDENTIFIER '=' expression';' {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER'['INTCONST']' '=' expression';' {check_scope($<str>1, scope, depth);}
 	;
 
 

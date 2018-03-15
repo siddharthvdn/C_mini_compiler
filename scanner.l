@@ -7,7 +7,7 @@
 	extern int level; 
 	extern int depth ;
 	extern int scope[1000];
-	
+	extern int yylineno;
 %}
 
 
