@@ -1,4 +1,7 @@
-int g;
+int func1(int ax, int bx)
+{
+	int func2(int cx, int sc);
+}
 
 int main()
 {
@@ -11,6 +14,6 @@ int main()
 
 	{
 		int d;
-		c = 4+d*b;
+		//c = 4+d*b;
 	}
 }

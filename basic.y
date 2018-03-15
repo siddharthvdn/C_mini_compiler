@@ -171,6 +171,43 @@
 		
 	}
 	
+	void change_scope(char* x, int level_in)
+	{
+		int idx = hash(x, 100);
+
+		char error_msg[100];
+		
+
+		if(sym_tbl[idx]==NULL)
+	 	{
+	 		strcpy(error_msg,"Variable undeclared: ");
+	 		strcat(error_msg, x); 
+	 		yyerror(error_msg); 
+	 		return;
+	 	}
+	 		
+	 	node* t = NULL;	
+	 	t = sym_tbl[idx];
+	 	
+	 	while(t!=NULL)
+		{
+			if(strcmp(t->name, x)==0)
+				break;
+			t = t->next;
+		}
+		
+		t->depth = t->depth + 1;
+		
+		int *temp = (int*)malloc(sizeof(int)*(t->depth));
+		for(int i=0; i<t->depth-1; i++)
+		{
+			temp[i] = t->scope[i];
+		}
+		t->scope = temp;
+		
+		t->scope[t->depth-1] = level_in + 1;	
+	}
+	
 	void display()
 	{
 		printf("\n----------------------------\n\tSymbol table\n----------------------------\n");
@@ -288,10 +325,10 @@ func_def
 	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
 	;
 id_dec
-	:modifiers datatype IDENTIFIER { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '['INTCONST']' { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '['']' { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype '*' IDENTIFIER {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}
+	:modifiers datatype IDENTIFIER { strcpy($<str>$,$<str>3); insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER '['INTCONST']' { strcpy($<str>$,$<str>3); insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER '['']' { strcpy($<str>$,$<str>3); insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype '*' IDENTIFIER { strcpy($<str>$,$<str>3); char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}
 	;
 id_assign_dec
 	:modifiers datatype IDENTIFIER '=' expression { insert ($<str>3, $<str>2, scope, depth, 0);}
@@ -340,7 +377,7 @@ modifiers
 	;
 	
 params_list
-	:id_dec
+	:id_dec {change_scope($<str>1, level);}
 	|id_dec ',' params_list
 	;
 	
@@ -421,6 +458,7 @@ statement
 	|if_block
 	|RETURN expression ';'
 	|func_call';'
+	|func_def
 	|IDENTIFIER INCREMENT ';' {check_scope($<str>1, scope, depth);}
 	|IDENTIFIER DECREMENT ';' {check_scope($<str>1, scope, depth);}
 	|'{'statement_list'}'

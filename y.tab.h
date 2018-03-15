@@ -142,7 +142,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 248 "basic.y" /* yacc.c:1909  */
+#line 285 "basic.y" /* yacc.c:1909  */
 
     char str[1000];
 
