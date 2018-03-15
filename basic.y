@@ -10,6 +10,9 @@
 	{
 		char* name;		
 		char* type;
+
+		int* scope;
+		int depth;
 			
 		struct node* next;
 	}node;
@@ -58,7 +61,7 @@
 	}
 
 
-	void insert(char* x, char* type, int table)
+	void insert(char* x, char* type, int* scope_in, int depth_in, int table)
 	{
 		if(lookup(x, table))
 			return;
@@ -67,9 +70,27 @@
 	
 		node* cell = (node*)malloc(sizeof(node));
 		cell->name = (char*)malloc(strlen(x));
-		cell->type = (char*)malloc(strlen(type));
 		strcpy(cell->name, x);
+
+		cell->type = (char*)malloc(strlen(type));		
 		strcpy(cell->type, type);
+		
+		if(depth_in==0)
+		{
+			cell->scope = NULL;
+			cell->depth = 0;
+		else
+		{
+			cell->scope = (int*)malloc(sizeof(int)*depth_in);
+			cell->depth = depth_in;
+		}
+
+		for(int i=0; i<depth_in; i++)
+		{
+			cell->scope[i] = scope_in[i];
+		}		
+
+	
 		cell->next = NULL;		
 	
 		node* t = NULL;
@@ -104,9 +125,9 @@
 	void display()
 	{
 		printf("\n----------------------------\n\tSymbol table\n----------------------------\n");
-		printf("Value\t\t-\tType\n----------------------------\n");
+		printf("Value\t\t-\tType\t-\tScope\n----------------------------\n");
 
-		int i;	
+		int i,j;	
 
 		for(i=0; i<100; i++)
 		{
@@ -114,10 +135,21 @@
 				continue;
 		
 			node* t = sym_tbl[i];
+
+			
+				
 		
 			while(t!=NULL)	
 			{
-				printf("%s\t\t-\t%s\n", t->name, t->type);
+				printf("%s\t\t-\t%s\t-\t", t->name, t->type);
+
+				if(t->depth==0)
+					printf("Global");
+				
+				for(j=0; j<t->depth; j++)
+					printf("%d ", t->scope[j]);
+
+				print("\n");
 				t = t->next;
 			}
 			
@@ -146,6 +178,12 @@
 	extern FILE *yyin;
 	
 	int yylineno;
+
+	/* Scope Evaluation */
+	int level = 0;
+	int depth = 0;
+	int scope[1000];
+	scope[0] = 0;
 		
 	char* yytext;
 	
@@ -201,7 +239,7 @@ func_def
 	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
 	;
 id_dec
-	:modifiers datatype IDENTIFIER { insert ($<str>3, $<str>2, 0);}
+	:modifiers datatype IDENTIFIER { insert ($<str>3, $<str>2, scope, depth, 0);}
 	|modifiers datatype IDENTIFIER '['INTCONST']' { insert ($<str>3, $<str>2, 0);}
 	|modifiers datatype IDENTIFIER '['']' { insert ($<str>3, $<str>2, 0);}
 	|modifiers datatype '*' IDENTIFIER {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}

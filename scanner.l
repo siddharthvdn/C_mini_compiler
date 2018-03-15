@@ -3,6 +3,7 @@
 	
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <string.h>
 	
 %}
 
@@ -80,8 +81,8 @@
 "-"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '-'; }
 "+"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '+'; }
 "="                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '='; }
-"{"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '{'; }
-"}"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '}'; }
+"{"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ depth++; level++; return '{'; }
+"}"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ scope[depth]=0; depth--; return '}'; }
 "|"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '|'; }
 "~"                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '~'; }
 "["                     { /*printf("Punctuator:\t\t%s\n", yytext);*/ return '['; }
