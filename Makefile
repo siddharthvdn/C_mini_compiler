@@ -1,8 +1,11 @@
-all:
+all: symtbl.o symtbl.h
 	yacc -d basic.y -Wnone
 	lex scanner.l
-	cc y.tab.c lex.yy.c -ll
+	cc symtbl.o y.tab.c lex.yy.c -ll
 	./a.out
+
+symtbl.o: symtbl.c
+	gcc -c symtbl.c
 
 lex:
 	lex scanner.l
@@ -10,4 +13,4 @@ lex:
 	./a.out
 	
 clean:
-	rm -rf lex.yy.c *.out *.h
+	rm -rf lex.yy.c *.out y.tab.h y.tab.c symtbl.o
