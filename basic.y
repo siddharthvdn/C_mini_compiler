@@ -79,6 +79,7 @@
 		{
 			cell->scope = NULL;
 			cell->depth = 0;
+		}
 		else
 		{
 			cell->scope = (int*)malloc(sizeof(int)*depth_in);
@@ -149,7 +150,7 @@
 				for(j=0; j<t->depth; j++)
 					printf("%d ", t->scope[j]);
 
-				print("\n");
+				printf("\n");
 				t = t->next;
 			}
 			
@@ -229,26 +230,26 @@ S
 	|	
 	;
 func_def
-	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' { insert ($<str>3, $<str>2, 0);}
-	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert ($<str>3, $<str>2, 0);}
-	|modifiers datatype IDENTIFIER '(' params_list')' ';' { insert ($<str>3, $<str>2, 0);}
-	|modifiers datatype IDENTIFIER '('')' ';' { insert ($<str>3, $<str>2, 0);}
-	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
-	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
-	|modifiers datatype'*' IDENTIFIER '(' params_list')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
-	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}	
+	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' { insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER '(' params_list')' ';' { insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER '('')' ';' { insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
+	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
+	|modifiers datatype'*' IDENTIFIER '(' params_list')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
+	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
 	;
 id_dec
 	:modifiers datatype IDENTIFIER { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '['INTCONST']' { insert ($<str>3, $<str>2, 0);}
-	|modifiers datatype IDENTIFIER '['']' { insert ($<str>3, $<str>2, 0);}
-	|modifiers datatype '*' IDENTIFIER {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, 0);}
+	|modifiers datatype IDENTIFIER '['INTCONST']' { insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER '['']' { insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype '*' IDENTIFIER {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}
 	;
 id_assign_dec
-	:modifiers datatype IDENTIFIER '=' expression { insert ($<str>3, $<str>2, 0);}
-	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, 0);}	
-	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, 0);}
-	|modifiers datatype '*' IDENTIFIER '=' expression {char temp[1000]; strcpy(temp,$<str>2); strcat(temp,"*"); insert ($<str>4,temp, 0);}
+	:modifiers datatype IDENTIFIER '=' expression { insert ($<str>3, $<str>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, scope, depth, 0);}	
+	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, scope, depth, 0);}
+	|modifiers datatype '*' IDENTIFIER '=' expression {char temp[1000]; strcpy(temp,$<str>2); strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}
 	;
 multidec
 	:modifiers datatype id_chain 
@@ -262,10 +263,10 @@ multidec
 				strcpy(temp,$<str>2);
 				strcat(temp,"*"); 
 				pnt[varpt] = 0;
-				insert (vars[varpt--], $<str>2, 0);
+				insert (vars[varpt--], $<str>2, scope, depth, 0);
 			}
 			else
-				insert (vars[varpt--], $<str>2, 0);
+				insert (vars[varpt--], $<str>2, scope, depth, 0);
 		}		
 	} 
 	;
@@ -323,10 +324,10 @@ statement_list
 	|statement statement_list
 	;
 constant
-	:INTCONST { insert ($<str>$, "int", 1);}
-	|STRCONST { insert ($<str>$, "string", 1);}
-	|FLTCONST { insert ($<str>$, "float", 1);}
-	|CHARCONST { insert ($<str>$, "char", 1);}
+	:INTCONST { insert ($<str>$, "int", scope, depth, 1);}
+	|STRCONST { insert ($<str>$, "string", scope, depth, 1);}
+	|FLTCONST { insert ($<str>$, "float", scope, depth, 1);}
+	|CHARCONST { insert ($<str>$, "char", scope, depth, 1);}
 	;
 bin_op
 	:'+'
