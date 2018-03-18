@@ -1,4 +1,4 @@
-int func1(int ax, int bx)
+int func1(int ax, int bx[], char gg)
 {
 	int func2(int cx, int sc);
 }

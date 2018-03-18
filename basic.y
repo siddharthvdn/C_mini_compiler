@@ -27,7 +27,10 @@
 %}
 
 %union{
-    char str[1000];
+    char name[1000];
+
+    char type[1000];
+    char params[1000];
 }
 
 %right '='
@@ -59,26 +62,26 @@ S
 	|	
 	;
 func_def
-	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '(' params_list')' ';' { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '('')' ';' { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
-	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
-	|modifiers datatype'*' IDENTIFIER '(' params_list')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
-	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}	
+	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' { insert_fun ($<name>3, $<name>2, scope, depth, $<params>5);}
+	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert_fun ($<name>3, $<name>2, scope, depth, NULL);}
+	|modifiers datatype IDENTIFIER '(' params_list')' ';' { insert_fun ($<name>3, $<name>2, scope, depth, $<params>5);}
+	|modifiers datatype IDENTIFIER '('')' ';' {insert_fun ($<name>3, $<name>2, scope, depth, NULL);}
+	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, $<params>6);}	
+	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, NULL);}	
+	|modifiers datatype'*' IDENTIFIER '(' params_list')' ';' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, $<params>6);}	
+	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, NULL);}	
 	;
 id_dec
-	:modifiers datatype IDENTIFIER { strcpy($<str>$,$<str>3); insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '['INTCONST']' { strcpy($<str>$,$<str>3); insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER '['']' { strcpy($<str>$,$<str>3); insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype '*' IDENTIFIER { strcpy($<str>$,$<str>3); char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}
+	:modifiers datatype IDENTIFIER { strcpy($<name>$,$<name>3); insert ($<name>3, $<name>2, scope, depth, 0); strcpy($<type>$,$<name>2); }
+	|modifiers datatype IDENTIFIER '['INTCONST']' { strcpy($<name>$,$<name>3); char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert ($<name>3, temp, scope, depth, 0); strcpy($<type>$,temp); }
+	|modifiers datatype IDENTIFIER '['']' { strcpy($<name>$,$<name>3); char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert ($<name>3, temp, scope, depth, 0); strcpy($<type>$,temp); }
+	|modifiers datatype '*' IDENTIFIER { strcpy($<name>$,$<name>3); char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert ($<name>4,temp, scope, depth, 0); strcpy($<type>$,temp);}
 	;
 id_assign_dec
-	:modifiers datatype IDENTIFIER '=' expression { insert ($<str>3, $<str>2, scope, depth, 0);}
-	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, scope, depth, 0);}	
-	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<str>2);strcat(temp,"*"); insert ($<str>3,temp, scope, depth, 0);}
-	|modifiers datatype '*' IDENTIFIER '=' expression {char temp[1000]; strcpy(temp,$<str>2); strcat(temp,"*"); insert ($<str>4,temp, scope, depth, 0);}
+	:modifiers datatype IDENTIFIER '=' expression { insert ($<name>3, $<name>2, scope, depth, 0);}
+	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert ($<name>3,temp, scope, depth, 0);}	
+	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert ($<name>3,temp, scope, depth, 0);}
+	|modifiers datatype '*' IDENTIFIER '=' expression {char temp[1000]; strcpy(temp,$<name>2); strcat(temp,"*"); insert ($<name>4,temp, scope, depth, 0);}
 	;
 multidec
 	:modifiers datatype id_chain 
@@ -89,13 +92,13 @@ multidec
 			if(pnt[varpt])
 			{
 				char temp[1000];
-				strcpy(temp,$<str>2);
+				strcpy(temp,$<name>2);
 				strcat(temp,"*"); 
 				pnt[varpt] = 0;
-				insert (vars[varpt--], $<str>2, scope, depth, 0);
+				insert (vars[varpt--], $<name>2, scope, depth, 0);
 			}
 			else
-				insert (vars[varpt--], $<str>2, scope, depth, 0);
+				insert (vars[varpt--], $<name>2, scope, depth, 0);
 		}		
 	} 
 	;
@@ -121,8 +124,8 @@ modifiers
 	;
 	
 params_list
-	:id_dec {change_scope($<str>1, level);}
-	|id_dec ',' params_list
+	:id_dec {change_scope($<name>1, level); strcpy($<params>$, $<type>1); }
+	|id_dec ',' params_list {change_scope($<name>1, level); char temp[1000]; strcpy(temp, $<type>1); strcat(temp, $<params>3); strcpy($<params>$, temp); }
 	;
 	
 brackets
@@ -130,13 +133,13 @@ brackets
 	;
 expression
 	:constant
-	|IDENTIFIER bin_op expression {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER bin_op expression {check_scope($<name>1, scope, depth);}
 	|constant bin_op expression
-	|IDENTIFIER {check_scope($<str>1, scope, depth);}
-	|un_op IDENTIFIER {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER {check_scope($<name>1, scope, depth);}
+	|un_op IDENTIFIER {check_scope($<name>1, scope, depth);}
 	|un_op constant
-	|IDENTIFIER INCREMENT {check_scope($<str>1, scope, depth);}
-	|IDENTIFIER DECREMENT {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER INCREMENT {check_scope($<name>1, scope, depth);}
+	|IDENTIFIER DECREMENT {check_scope($<name>1, scope, depth);}
 	|func_call bin_op expression
 	|func_call
 	|un_op func_call
@@ -153,10 +156,10 @@ statement_list
 	|statement statement_list
 	;
 constant
-	:INTCONST { insert ($<str>$, "int", scope, depth, 1);}
-	|STRCONST { insert ($<str>$, "string", scope, depth, 1);}
-	|FLTCONST { insert ($<str>$, "float", scope, depth, 1);}
-	|CHARCONST { insert ($<str>$, "char", scope, depth, 1);}
+	:INTCONST { insert ($<name>$, "int", scope, depth, 1);}
+	|STRCONST { insert ($<name>$, "string", scope, depth, 1);}
+	|FLTCONST { insert ($<name>$, "float", scope, depth, 1);}
+	|CHARCONST { insert ($<name>$, "char", scope, depth, 1);}
 	;
 bin_op
 	:'+'
@@ -185,8 +188,8 @@ un_op
 	|DECREMENT %prec '$'
 	;
 func_call
-	:IDENTIFIER '('expression_list')' {check_scope($<str>1, scope, depth);}
-	|IDENTIFIER '('')' {check_scope($<str>1, scope, depth);}
+	:IDENTIFIER '('expression_list')' {check_scope($<name>1, scope, depth);}
+	|IDENTIFIER '('')' {check_scope($<name>1, scope, depth);}
 	;
 expression_list
 	:expression
@@ -203,20 +206,20 @@ statement
 	|RETURN expression ';'
 	|func_call';'
 	|func_def
-	|IDENTIFIER INCREMENT ';' {check_scope($<str>1, scope, depth);}
-	|IDENTIFIER DECREMENT ';' {check_scope($<str>1, scope, depth);}
+	|IDENTIFIER INCREMENT ';' {check_scope($<name>1, scope, depth);}
+	|IDENTIFIER DECREMENT ';' {check_scope($<name>1, scope, depth);}
 	|'{'statement_list'}'
 	|';'
 	;
 id_chain
-	:IDENTIFIER { strcpy(vars[varpt++],$<str>1); }
-	|IDENTIFIER '=' expression { strcpy(vars[varpt++],$<str>1); }
-	|'*'IDENTIFIER { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
-	|'*'IDENTIFIER ',' id_chain { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
-	|'*'IDENTIFIER '=' expression { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
-	|'*'IDENTIFIER '=' expression ',' id_chain { strcpy(vars[varpt],$<str>1); pnt[varpt] = 1; varpt++;}
-	|IDENTIFIER '=' expression ',' id_chain { strcpy(vars[varpt++],$<str>1); }
-	|IDENTIFIER ',' id_chain { strcpy(vars[varpt++],$<str>1); }
+	:IDENTIFIER { strcpy(vars[varpt++],$<name>1); }
+	|IDENTIFIER '=' expression { strcpy(vars[varpt++],$<name>1); }
+	|'*'IDENTIFIER { strcpy(vars[varpt],$<name>1); pnt[varpt] = 1; varpt++;}
+	|'*'IDENTIFIER ',' id_chain { strcpy(vars[varpt],$<name>1); pnt[varpt] = 1; varpt++;}
+	|'*'IDENTIFIER '=' expression { strcpy(vars[varpt],$<name>1); pnt[varpt] = 1; varpt++;}
+	|'*'IDENTIFIER '=' expression ',' id_chain { strcpy(vars[varpt],$<name>1); pnt[varpt] = 1; varpt++;}
+	|IDENTIFIER '=' expression ',' id_chain { strcpy(vars[varpt++],$<name>1); }
+	|IDENTIFIER ',' id_chain { strcpy(vars[varpt++],$<name>1); }
 	;
 if_block
 	:IF '('expression')' statement 
@@ -232,9 +235,9 @@ iterative
 	|WHILE '('expression')''{'statement_list'}'
 	;
 assignment
-	:IDENTIFIER '=' expression ';'{check_scope($<str>1, scope, depth);}
-	|'*'IDENTIFIER '=' expression';' {check_scope($<str>1, scope, depth);}
-	|IDENTIFIER'['INTCONST']' '=' expression';' {check_scope($<str>1, scope, depth);}
+	:IDENTIFIER '=' expression ';'{check_scope($<name>1, scope, depth);}
+	|'*'IDENTIFIER '=' expression';' {check_scope($<name>1, scope, depth);}
+	|IDENTIFIER'['INTCONST']' '=' expression';' {check_scope($<name>1, scope, depth);}
 	;
 
 

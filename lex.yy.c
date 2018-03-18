@@ -909,27 +909,27 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 20 "scanner.l"
-{/*printf("String const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL);*/ strcpy(yylval.str,yytext); return STRCONST; }
+{/*printf("String const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL);*/ strcpy(yylval.name,yytext); return STRCONST; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 21 "scanner.l"
-{/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.str,yytext); return INTCONST; }
+{/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.name,yytext); return INTCONST; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 22 "scanner.l"
-{/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.str,yytext); return INTCONST; }
+{/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.name,yytext); return INTCONST; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 23 "scanner.l"
-{/*printf("Float const:\t\t%s\n", yytext); insert(yytext, 3, CONST_TBL);*/  strcpy(yylval.str,yytext); return FLTCONST; }
+{/*printf("Float const:\t\t%s\n", yytext); insert(yytext, 3, CONST_TBL);*/  strcpy(yylval.name,yytext); return FLTCONST; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 25 "scanner.l"
-{/*printf("Char const:\t\t%s\n", yytext); insert(yytext, 4, CONST_TBL);*/  strcpy(yylval.str,yytext); return CHARCONST; }
+{/*printf("Char const:\t\t%s\n", yytext); insert(yytext, 4, CONST_TBL);*/  strcpy(yylval.name,yytext); return CHARCONST; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
@@ -964,7 +964,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 33 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return CHAR; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return CHAR; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
@@ -989,7 +989,7 @@ YY_RULE_SETUP
 case 19:
 YY_RULE_SETUP
 #line 38 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return DOUBLE; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return DOUBLE; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
@@ -1009,7 +1009,7 @@ YY_RULE_SETUP
 case 23:
 YY_RULE_SETUP
 #line 42 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return FLOAT; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return FLOAT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
@@ -1024,12 +1024,12 @@ YY_RULE_SETUP
 case 26:
 YY_RULE_SETUP
 #line 45 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return INT; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return INT; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 46 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return LONG; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return LONG; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
@@ -1044,7 +1044,7 @@ YY_RULE_SETUP
 case 30:
 YY_RULE_SETUP
 #line 49 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return SHORT; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return SHORT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
@@ -1089,7 +1089,7 @@ YY_RULE_SETUP
 case 39:
 YY_RULE_SETUP
 #line 58 "scanner.l"
-{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return VOID; }
+{ /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return VOID; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
@@ -1104,7 +1104,7 @@ YY_RULE_SETUP
 case 42:
 YY_RULE_SETUP
 #line 63 "scanner.l"
-{ /*printf("Identifier:\t\t%s\n", yytext);*/  /*insert(yytext, 0, SYM_TBL);*/ strcpy(yylval.str,yytext); return IDENTIFIER; }
+{ /*printf("Identifier:\t\t%s\n", yytext);*/  /*insert(yytext, 0, SYM_TBL);*/ strcpy(yylval.name,yytext); return IDENTIFIER; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP

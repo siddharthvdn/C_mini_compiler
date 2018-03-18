@@ -144,9 +144,12 @@ union YYSTYPE
 {
 #line 29 "basic.y" /* yacc.c:1909  */
 
-    char str[1000];
+    char name[1000];
 
-#line 150 "y.tab.h" /* yacc.c:1909  */
+    char type[1000];
+    char params[1000];
+
+#line 153 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

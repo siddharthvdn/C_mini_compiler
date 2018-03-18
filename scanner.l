@@ -17,12 +17,12 @@
 "//".*\n                  { /*printf("Single line comment\n");*/ yylineno++;}
 "/*"([^*]|\*+[^*/])*"*/"  { /*printf("Multi line comment\n");*/ }
 
-\"(\\.|[^"\n\\])*\"                                  {/*printf("String const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL);*/ strcpy(yylval.str,yytext); return STRCONST; }
-0[xX][0-9a-fA-F]+                                    {/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.str,yytext); return INTCONST; }
-[0-9]+                                               {/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.str,yytext); return INTCONST; }
-(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)        {/*printf("Float const:\t\t%s\n", yytext); insert(yytext, 3, CONST_TBL);*/  strcpy(yylval.str,yytext); return FLTCONST; }
+\"(\\.|[^"\n\\])*\"                                  {/*printf("String const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL);*/ strcpy(yylval.name,yytext); return STRCONST; }
+0[xX][0-9a-fA-F]+                                    {/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.name,yytext); return INTCONST; }
+[0-9]+                                               {/*printf("Int const:\t\t%s\n", yytext); insert(yytext, 2, CONST_TBL);*/ strcpy(yylval.name,yytext); return INTCONST; }
+(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)        {/*printf("Float const:\t\t%s\n", yytext); insert(yytext, 3, CONST_TBL);*/  strcpy(yylval.name,yytext); return FLTCONST; }
 
-'([^'\\\n]|\\.)'                                     {/*printf("Char const:\t\t%s\n", yytext); insert(yytext, 4, CONST_TBL);*/  strcpy(yylval.str,yytext); return CHARCONST; }
+'([^'\\\n]|\\.)'                                     {/*printf("Char const:\t\t%s\n", yytext); insert(yytext, 4, CONST_TBL);*/  strcpy(yylval.name,yytext); return CHARCONST; }
 '                                                    {/*printf("\n Error: Unterminated Character constant\n\n");*/ }
 ''                                                   {/*printf("Char const:\t\t%s\n", yytext); insert(yytext, 1, CONST_TBL);*/ }
 '([^'\\\n]|\\.)+'                                    {/*printf("\n Error: Character constant too long\n\n");*/ }
@@ -30,23 +30,23 @@
 "auto"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ return AUTO; }
 "break"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ return BREAK; }
 "case"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ return CASE; }
-"char"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return CHAR; }
+"char"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return CHAR; }
 "const"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ return CONST; }
 "continue"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return CONTINUE; }
 "default"               { /*printf("Keyword:\t\t%s\n", yytext);*/ return DEFAULT; }
 "do"                    { /*printf("Keyword:\t\t%s\n", yytext);*/ return DO; }
-"double"                { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return DOUBLE; }
+"double"                { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return DOUBLE; }
 "else"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ return ELSE; }
 "enum"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ return ENUM; }
 "extern"                { /*printf("Keyword:\t\t%s\n", yytext);*/ return EXTERN; }
-"float"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return FLOAT; }
+"float"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return FLOAT; }
 "for"                   { /*printf("Keyword:\t\t%s\n", yytext);*/ return FOR; }
 "if"                    { /*printf("Keyword:\t\t%s\n", yytext);*/ return IF; }
-"int"                   { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return INT; }
-"long"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return LONG; }
+"int"                   { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return INT; }
+"long"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return LONG; }
 "register"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return REGISTER; }
 "return"                { /*printf("Keyword:\t\t%s\n", yytext);*/ return RETURN; }
-"short"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return SHORT; }
+"short"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return SHORT; }
 "signed"                { /*printf("Keyword:\t\t%s\n", yytext);*/ return SIGNED; }
 "sizeof"                { /*printf("Keyword:\t\t%s\n", yytext);*/ return SIZEOF; }
 "static"                { /*printf("Keyword:\t\t%s\n", yytext);*/ return STATIC; }
@@ -55,12 +55,12 @@
 "typedef"               { /*printf("Keyword:\t\t%s\n", yytext);*/ return TYPEDEF; }
 "union"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ return UNION; }
 "unsigned"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return UNSIGNED; }
-"void"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.str,yytext); return VOID; }
+"void"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return VOID; }
 "volatile"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return VOLATILE; }
 "while"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ return WHILE; }
 
 
-[a-zA-Z_][a-zA-Z0-9_]*   { /*printf("Identifier:\t\t%s\n", yytext);*/  /*insert(yytext, 0, SYM_TBL);*/ strcpy(yylval.str,yytext); return IDENTIFIER; }
+[a-zA-Z_][a-zA-Z0-9_]*   { /*printf("Identifier:\t\t%s\n", yytext);*/  /*insert(yytext, 0, SYM_TBL);*/ strcpy(yylval.name,yytext); return IDENTIFIER; }
 
 "*/"                    { /*printf("\n Error: Unexpected end of comment\n\n");*/ }
 "/*"                    { /*printf("\n Error: Unterminated Multi line comment\n\n");*/ }

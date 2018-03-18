@@ -224,9 +224,12 @@ union YYSTYPE
 {
 #line 29 "basic.y" /* yacc.c:355  */
 
-    char str[1000];
+    char name[1000];
 
-#line 230 "y.tab.c" /* yacc.c:355  */
+    char type[1000];
+    char params[1000];
+
+#line 233 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -243,7 +246,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 247 "y.tab.c" /* yacc.c:358  */
+#line 250 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -545,19 +548,19 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    55,    55,    56,    57,    58,    59,    62,    63,    64,
-      65,    66,    67,    68,    69,    72,    73,    74,    75,    78,
-      79,    80,    81,    84,   103,   104,   105,   106,   107,   108,
-     109,   113,   114,   115,   116,   117,   118,   119,   120,   124,
-     125,   129,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   148,   149,   152,   153,
-     156,   157,   158,   159,   162,   163,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   179,
-     180,   181,   182,   183,   184,   185,   188,   189,   192,   193,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   212,   213,   214,   215,   216,   217,
-     218,   219,   222,   223,   226,   227,   228,   231,   232,   235,
-     236,   237
+       0,    58,    58,    59,    60,    61,    62,    65,    66,    67,
+      68,    69,    70,    71,    72,    75,    76,    77,    78,    81,
+      82,    83,    84,    87,   106,   107,   108,   109,   110,   111,
+     112,   116,   117,   118,   119,   120,   121,   122,   123,   127,
+     128,   132,   135,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   146,   147,   148,   151,   152,   155,   156,
+     159,   160,   161,   162,   165,   166,   167,   168,   169,   170,
+     171,   172,   173,   174,   175,   176,   177,   178,   179,   182,
+     183,   184,   185,   186,   187,   188,   191,   192,   195,   196,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
+     209,   210,   211,   212,   215,   216,   217,   218,   219,   220,
+     221,   222,   225,   226,   229,   230,   231,   234,   235,   238,
+     239,   240
 };
 #endif
 
@@ -1525,103 +1528,103 @@ yyreduce:
   switch (yyn)
     {
         case 7:
-#line 62 "basic.y" /* yacc.c:1646  */
-    { insert ((yyvsp[-6].str), (yyvsp[-7].str), scope, depth, 0);}
-#line 1531 "y.tab.c" /* yacc.c:1646  */
+#line 65 "basic.y" /* yacc.c:1646  */
+    { insert_fun ((yyvsp[-6].name), (yyvsp[-7].name), scope, depth, (yyvsp[-4].params));}
+#line 1534 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 63 "basic.y" /* yacc.c:1646  */
-    { insert ((yyvsp[-5].str), (yyvsp[-6].str), scope, depth, 0);}
-#line 1537 "y.tab.c" /* yacc.c:1646  */
+#line 66 "basic.y" /* yacc.c:1646  */
+    { insert_fun ((yyvsp[-5].name), (yyvsp[-6].name), scope, depth, NULL);}
+#line 1540 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 64 "basic.y" /* yacc.c:1646  */
-    { insert ((yyvsp[-4].str), (yyvsp[-5].str), scope, depth, 0);}
-#line 1543 "y.tab.c" /* yacc.c:1646  */
+#line 67 "basic.y" /* yacc.c:1646  */
+    { insert_fun ((yyvsp[-4].name), (yyvsp[-5].name), scope, depth, (yyvsp[-2].params));}
+#line 1546 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 65 "basic.y" /* yacc.c:1646  */
-    { insert ((yyvsp[-3].str), (yyvsp[-4].str), scope, depth, 0);}
-#line 1549 "y.tab.c" /* yacc.c:1646  */
+#line 68 "basic.y" /* yacc.c:1646  */
+    {insert_fun ((yyvsp[-3].name), (yyvsp[-4].name), scope, depth, NULL);}
+#line 1552 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 66 "basic.y" /* yacc.c:1646  */
-    {char temp[1000];strcpy(temp,(yyvsp[-8].str));strcat(temp,"*"); insert ((yyvsp[-6].str),temp, scope, depth, 0);}
-#line 1555 "y.tab.c" /* yacc.c:1646  */
+#line 69 "basic.y" /* yacc.c:1646  */
+    {char temp[1000];strcpy(temp,(yyvsp[-8].name));strcat(temp,"*"); insert_fun ((yyvsp[-7].name), (yyvsp[-8].name), scope, depth, (yyvsp[-4].params));}
+#line 1558 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 67 "basic.y" /* yacc.c:1646  */
-    {char temp[1000];strcpy(temp,(yyvsp[-7].str));strcat(temp,"*"); insert ((yyvsp[-5].str),temp, scope, depth, 0);}
-#line 1561 "y.tab.c" /* yacc.c:1646  */
+#line 70 "basic.y" /* yacc.c:1646  */
+    {char temp[1000];strcpy(temp,(yyvsp[-7].name));strcat(temp,"*"); insert_fun ((yyvsp[-6].name), (yyvsp[-7].name), scope, depth, NULL);}
+#line 1564 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 68 "basic.y" /* yacc.c:1646  */
-    {char temp[1000];strcpy(temp,(yyvsp[-6].str));strcat(temp,"*"); insert ((yyvsp[-4].str),temp, scope, depth, 0);}
-#line 1567 "y.tab.c" /* yacc.c:1646  */
+#line 71 "basic.y" /* yacc.c:1646  */
+    {char temp[1000];strcpy(temp,(yyvsp[-6].name));strcat(temp,"*"); insert_fun ((yyvsp[-5].name), (yyvsp[-6].name), scope, depth, (yyvsp[-2].params));}
+#line 1570 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 69 "basic.y" /* yacc.c:1646  */
-    {char temp[1000];strcpy(temp,(yyvsp[-5].str));strcat(temp,"*"); insert ((yyvsp[-3].str),temp, scope, depth, 0);}
-#line 1573 "y.tab.c" /* yacc.c:1646  */
+#line 72 "basic.y" /* yacc.c:1646  */
+    {char temp[1000];strcpy(temp,(yyvsp[-5].name));strcat(temp,"*"); insert_fun ((yyvsp[-4].name), (yyvsp[-5].name), scope, depth, NULL);}
+#line 1576 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 72 "basic.y" /* yacc.c:1646  */
-    { strcpy((yyval.str),(yyvsp[0].str)); insert ((yyvsp[0].str), (yyvsp[-1].str), scope, depth, 0);}
-#line 1579 "y.tab.c" /* yacc.c:1646  */
+#line 75 "basic.y" /* yacc.c:1646  */
+    { strcpy((yyval.name),(yyvsp[0].name)); insert ((yyvsp[0].name), (yyvsp[-1].name), scope, depth, 0); strcpy((yyval.type),(yyvsp[-1].name)); }
+#line 1582 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 73 "basic.y" /* yacc.c:1646  */
-    { strcpy((yyval.str),(yyvsp[-3].str)); insert ((yyvsp[-3].str), (yyvsp[-4].str), scope, depth, 0);}
-#line 1585 "y.tab.c" /* yacc.c:1646  */
+#line 76 "basic.y" /* yacc.c:1646  */
+    { strcpy((yyval.name),(yyvsp[-3].name)); char temp[1000];strcpy(temp,(yyvsp[-4].name));strcat(temp,"*"); insert ((yyvsp[-3].name), temp, scope, depth, 0); strcpy((yyval.type),temp); }
+#line 1588 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 74 "basic.y" /* yacc.c:1646  */
-    { strcpy((yyval.str),(yyvsp[-2].str)); insert ((yyvsp[-2].str), (yyvsp[-3].str), scope, depth, 0);}
-#line 1591 "y.tab.c" /* yacc.c:1646  */
+#line 77 "basic.y" /* yacc.c:1646  */
+    { strcpy((yyval.name),(yyvsp[-2].name)); char temp[1000];strcpy(temp,(yyvsp[-3].name));strcat(temp,"*"); insert ((yyvsp[-2].name), temp, scope, depth, 0); strcpy((yyval.type),temp); }
+#line 1594 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 75 "basic.y" /* yacc.c:1646  */
-    { strcpy((yyval.str),(yyvsp[-1].str)); char temp[1000];strcpy(temp,(yyvsp[-2].str));strcat(temp,"*"); insert ((yyvsp[0].str),temp, scope, depth, 0);}
-#line 1597 "y.tab.c" /* yacc.c:1646  */
+#line 78 "basic.y" /* yacc.c:1646  */
+    { strcpy((yyval.name),(yyvsp[-1].name)); char temp[1000];strcpy(temp,(yyvsp[-2].name));strcat(temp,"*"); insert ((yyvsp[0].name),temp, scope, depth, 0); strcpy((yyval.type),temp);}
+#line 1600 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 78 "basic.y" /* yacc.c:1646  */
-    { insert ((yyvsp[-2].str), (yyvsp[-3].str), scope, depth, 0);}
-#line 1603 "y.tab.c" /* yacc.c:1646  */
+#line 81 "basic.y" /* yacc.c:1646  */
+    { insert ((yyvsp[-2].name), (yyvsp[-3].name), scope, depth, 0);}
+#line 1606 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 79 "basic.y" /* yacc.c:1646  */
-    {char temp[1000];strcpy(temp,(yyvsp[-7].str));strcat(temp,"*"); insert ((yyvsp[-6].str),temp, scope, depth, 0);}
-#line 1609 "y.tab.c" /* yacc.c:1646  */
+#line 82 "basic.y" /* yacc.c:1646  */
+    {char temp[1000];strcpy(temp,(yyvsp[-7].name));strcat(temp,"*"); insert ((yyvsp[-6].name),temp, scope, depth, 0);}
+#line 1612 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 80 "basic.y" /* yacc.c:1646  */
-    {char temp[1000];strcpy(temp,(yyvsp[-8].str));strcat(temp,"*"); insert ((yyvsp[-7].str),temp, scope, depth, 0);}
-#line 1615 "y.tab.c" /* yacc.c:1646  */
+#line 83 "basic.y" /* yacc.c:1646  */
+    {char temp[1000];strcpy(temp,(yyvsp[-8].name));strcat(temp,"*"); insert ((yyvsp[-7].name),temp, scope, depth, 0);}
+#line 1618 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 81 "basic.y" /* yacc.c:1646  */
-    {char temp[1000]; strcpy(temp,(yyvsp[-4].str)); strcat(temp,"*"); insert ((yyvsp[-2].str),temp, scope, depth, 0);}
-#line 1621 "y.tab.c" /* yacc.c:1646  */
+#line 84 "basic.y" /* yacc.c:1646  */
+    {char temp[1000]; strcpy(temp,(yyvsp[-4].name)); strcat(temp,"*"); insert ((yyvsp[-2].name),temp, scope, depth, 0);}
+#line 1624 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 85 "basic.y" /* yacc.c:1646  */
+#line 88 "basic.y" /* yacc.c:1646  */
     {
 		varpt--;
 		while(varpt>=0)
@@ -1629,170 +1632,176 @@ yyreduce:
 			if(pnt[varpt])
 			{
 				char temp[1000];
-				strcpy(temp,(yyvsp[-1].str));
+				strcpy(temp,(yyvsp[-1].name));
 				strcat(temp,"*"); 
 				pnt[varpt] = 0;
-				insert (vars[varpt--], (yyvsp[-1].str), scope, depth, 0);
+				insert (vars[varpt--], (yyvsp[-1].name), scope, depth, 0);
 			}
 			else
-				insert (vars[varpt--], (yyvsp[-1].str), scope, depth, 0);
+				insert (vars[varpt--], (yyvsp[-1].name), scope, depth, 0);
 		}		
 	}
-#line 1642 "y.tab.c" /* yacc.c:1646  */
+#line 1645 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 124 "basic.y" /* yacc.c:1646  */
-    {change_scope((yyvsp[0].str), level);}
-#line 1648 "y.tab.c" /* yacc.c:1646  */
+#line 127 "basic.y" /* yacc.c:1646  */
+    {change_scope((yyvsp[0].name), level); strcpy((yyval.params), (yyvsp[0].type)); }
+#line 1651 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 40:
+#line 128 "basic.y" /* yacc.c:1646  */
+    {change_scope((yyvsp[-2].name), level); char temp[1000]; strcpy(temp, (yyvsp[-2].type)); strcat(temp, (yyvsp[0].params)); strcpy((yyval.params), temp); }
+#line 1657 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 133 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-2].str), scope, depth);}
-#line 1654 "y.tab.c" /* yacc.c:1646  */
+#line 136 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-2].name), scope, depth);}
+#line 1663 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 135 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[0].str), scope, depth);}
-#line 1660 "y.tab.c" /* yacc.c:1646  */
+#line 138 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[0].name), scope, depth);}
+#line 1669 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 136 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-1].str), scope, depth);}
-#line 1666 "y.tab.c" /* yacc.c:1646  */
+#line 139 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-1].name), scope, depth);}
+#line 1675 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 138 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-1].str), scope, depth);}
-#line 1672 "y.tab.c" /* yacc.c:1646  */
+#line 141 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-1].name), scope, depth);}
+#line 1681 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 139 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-1].str), scope, depth);}
-#line 1678 "y.tab.c" /* yacc.c:1646  */
+#line 142 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-1].name), scope, depth);}
+#line 1687 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 156 "basic.y" /* yacc.c:1646  */
-    { insert ((yyval.str), "int", scope, depth, 1);}
-#line 1684 "y.tab.c" /* yacc.c:1646  */
+#line 159 "basic.y" /* yacc.c:1646  */
+    { insert ((yyval.name), "int", scope, depth, 1);}
+#line 1693 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 157 "basic.y" /* yacc.c:1646  */
-    { insert ((yyval.str), "string", scope, depth, 1);}
-#line 1690 "y.tab.c" /* yacc.c:1646  */
+#line 160 "basic.y" /* yacc.c:1646  */
+    { insert ((yyval.name), "string", scope, depth, 1);}
+#line 1699 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 158 "basic.y" /* yacc.c:1646  */
-    { insert ((yyval.str), "float", scope, depth, 1);}
-#line 1696 "y.tab.c" /* yacc.c:1646  */
+#line 161 "basic.y" /* yacc.c:1646  */
+    { insert ((yyval.name), "float", scope, depth, 1);}
+#line 1705 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 159 "basic.y" /* yacc.c:1646  */
-    { insert ((yyval.str), "char", scope, depth, 1);}
-#line 1702 "y.tab.c" /* yacc.c:1646  */
+#line 162 "basic.y" /* yacc.c:1646  */
+    { insert ((yyval.name), "char", scope, depth, 1);}
+#line 1711 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 188 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-3].str), scope, depth);}
-#line 1708 "y.tab.c" /* yacc.c:1646  */
+#line 191 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-3].name), scope, depth);}
+#line 1717 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 189 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-2].str), scope, depth);}
-#line 1714 "y.tab.c" /* yacc.c:1646  */
+#line 192 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-2].name), scope, depth);}
+#line 1723 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 206 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-2].str), scope, depth);}
-#line 1720 "y.tab.c" /* yacc.c:1646  */
+#line 209 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-2].name), scope, depth);}
+#line 1729 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 207 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-2].str), scope, depth);}
-#line 1726 "y.tab.c" /* yacc.c:1646  */
+#line 210 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-2].name), scope, depth);}
+#line 1735 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 212 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt++],(yyvsp[0].str)); }
-#line 1732 "y.tab.c" /* yacc.c:1646  */
+#line 215 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt++],(yyvsp[0].name)); }
+#line 1741 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 213 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt++],(yyvsp[-2].str)); }
-#line 1738 "y.tab.c" /* yacc.c:1646  */
+#line 216 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt++],(yyvsp[-2].name)); }
+#line 1747 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 214 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt],(yyvsp[-1].str)); pnt[varpt] = 1; varpt++;}
-#line 1744 "y.tab.c" /* yacc.c:1646  */
+#line 217 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt],(yyvsp[-1].name)); pnt[varpt] = 1; varpt++;}
+#line 1753 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 215 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt],(yyvsp[-3].str)); pnt[varpt] = 1; varpt++;}
-#line 1750 "y.tab.c" /* yacc.c:1646  */
+#line 218 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt],(yyvsp[-3].name)); pnt[varpt] = 1; varpt++;}
+#line 1759 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 216 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt],(yyvsp[-3].str)); pnt[varpt] = 1; varpt++;}
-#line 1756 "y.tab.c" /* yacc.c:1646  */
+#line 219 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt],(yyvsp[-3].name)); pnt[varpt] = 1; varpt++;}
+#line 1765 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 217 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt],(yyvsp[-5].str)); pnt[varpt] = 1; varpt++;}
-#line 1762 "y.tab.c" /* yacc.c:1646  */
+#line 220 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt],(yyvsp[-5].name)); pnt[varpt] = 1; varpt++;}
+#line 1771 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 218 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt++],(yyvsp[-4].str)); }
-#line 1768 "y.tab.c" /* yacc.c:1646  */
+#line 221 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt++],(yyvsp[-4].name)); }
+#line 1777 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 219 "basic.y" /* yacc.c:1646  */
-    { strcpy(vars[varpt++],(yyvsp[-2].str)); }
-#line 1774 "y.tab.c" /* yacc.c:1646  */
+#line 222 "basic.y" /* yacc.c:1646  */
+    { strcpy(vars[varpt++],(yyvsp[-2].name)); }
+#line 1783 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 119:
-#line 235 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-3].str), scope, depth);}
-#line 1780 "y.tab.c" /* yacc.c:1646  */
+#line 238 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-3].name), scope, depth);}
+#line 1789 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 120:
-#line 236 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-4].str), scope, depth);}
-#line 1786 "y.tab.c" /* yacc.c:1646  */
+#line 239 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-4].name), scope, depth);}
+#line 1795 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 121:
-#line 237 "basic.y" /* yacc.c:1646  */
-    {check_scope((yyvsp[-6].str), scope, depth);}
-#line 1792 "y.tab.c" /* yacc.c:1646  */
+#line 240 "basic.y" /* yacc.c:1646  */
+    {check_scope((yyvsp[-6].name), scope, depth);}
+#line 1801 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1796 "y.tab.c" /* yacc.c:1646  */
+#line 1805 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2020,7 +2029,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 241 "basic.y" /* yacc.c:1906  */
+#line 244 "basic.y" /* yacc.c:1906  */
 
 
 
