@@ -16,6 +16,10 @@ node* sym_tbl[100];
 node* const_tbl[100];
 node* fun_tbl[100];
 
+#define SYM_TBL 0
+#define CONST_TBL 1
+#define FUN_TBL 2
+
 
 int hash(char* x, int M);
 

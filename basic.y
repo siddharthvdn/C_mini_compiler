@@ -129,23 +129,23 @@ params_list
 	;
 	
 brackets
-	:'('expression')'
+	:'('expression')'{strcpy($<type>$, $<type>2);}
 	;
 expression
-	:constant
-	|IDENTIFIER bin_op expression {check_scope($<name>1, scope, depth);}
-	|constant bin_op expression
-	|IDENTIFIER {check_scope($<name>1, scope, depth);}
-	|un_op IDENTIFIER {check_scope($<name>1, scope, depth);}
-	|un_op constant
-	|IDENTIFIER INCREMENT {check_scope($<name>1, scope, depth);}
-	|IDENTIFIER DECREMENT {check_scope($<name>1, scope, depth);}
-	|func_call bin_op expression
-	|func_call
+	:constant {strcpy($<type>$, $<type>1);}
+	|IDENTIFIER bin_op expression {check_scope($<name>1, scope, depth);strcpy($<type>$, "bool");}
+	|constant bin_op expression {strcpy($<type>$, $<type>1);strcpy($<type>$, "bool");}
+	|IDENTIFIER {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
+	|un_op IDENTIFIER {check_scope($<name>1, scope, depth); node* t = lookup($<name>2, SYM_TBL); strcpy($<type>$, t->type);}
+	|un_op constant {strcpy($<type>$, $<type>2);}
+	|IDENTIFIER INCREMENT {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
+	|IDENTIFIER DECREMENT {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
+	|func_call bin_op expression {strcpy($<type>$, "bool");}
+	|func_call 
 	|un_op func_call
-	|brackets 
-	|un_op brackets
-	|brackets bin_op expression
+	|brackets {strcpy($<type>$, $<type>1); strcpy($<type>$, $<type>1);}
+	|un_op brackets {strcpy($<type>$, $<type>2); strcpy($<type>$, $<type>2);}
+	|brackets bin_op expression {strcpy($<type>$, "bool");}
 	;
 const_list
 	:constant
@@ -156,10 +156,10 @@ statement_list
 	|statement statement_list
 	;
 constant
-	:INTCONST { insert ($<name>$, "int", scope, depth, 1);}
-	|STRCONST { insert ($<name>$, "string", scope, depth, 1);}
-	|FLTCONST { insert ($<name>$, "float", scope, depth, 1);}
-	|CHARCONST { insert ($<name>$, "char", scope, depth, 1);}
+	:INTCONST { insert ($<name>$, "int", scope, depth, 1); strcpy($<type>$, "int");}
+	|STRCONST { insert ($<name>$, "string", scope, depth, 1); strcpy($<type>$, "char*");}
+	|FLTCONST { insert ($<name>$, "float", scope, depth, 1); strcpy($<type>$, "float");}
+	|CHARCONST { insert ($<name>$, "char", scope, depth, 1); strcpy($<type>$, "char");}
 	;
 bin_op
 	:'+'
@@ -188,12 +188,12 @@ un_op
 	|DECREMENT %prec '$'
 	;
 func_call
-	:IDENTIFIER '('expression_list')' {check_scope($<name>1, scope, depth);}
+	:IDENTIFIER '('expression_list')' {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, FUN_TBL); if(strcmp($<params>3, t->params)) yyerror("Parameters type mismatch");}
 	|IDENTIFIER '('')' {check_scope($<name>1, scope, depth);}
 	;
 expression_list
-	:expression
-	|expression ',' expression_list
+	:expression { strcpy($<params>$, $<type>1); }
+	|expression ',' expression_list { char temp[1000]; strcpy(temp, $<type>1); strcat(temp, $<params>3); strcpy($<params>$, temp); }
 	;
 statement
 	:id_dec';'

@@ -4,9 +4,7 @@
 
 #include "symtbl.h"
 
-#define SYM_TBL 0
-#define CONST_TBL 1
-#define FUN_TBL 2
+
 
 
 int hash(char* x, int M) 
@@ -36,6 +34,14 @@ node* lookup(char* x, int table)
 	 		return NULL;
  		
  		t = const_tbl[idx];
+ 	}
+
+ 	else if(table==FUN_TBL)
+ 	{
+ 		if(fun_tbl[idx]==NULL)
+	 		return NULL;
+ 		
+ 		t = fun_tbl[idx];
  	}
 
 
