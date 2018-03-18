@@ -62,12 +62,12 @@ S
 	|	
 	;
 func_def
-	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' { insert_fun ($<name>3, $<name>2, scope, depth, $<params>5);}
-	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert_fun ($<name>3, $<name>2, scope, depth, NULL);}
+	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' { insert_fun ($<name>3, $<name>2, scope, depth, $<params>5); if(strcmp($<type>2, "void") && strcmp($<type>2, $<type>8)) yyerror("Return type not matching");}
+	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' { insert_fun ($<name>3, $<name>2, scope, depth, NULL); if(strcmp($<type>2, "void") && strcmp($<type>2, $<type>7)) yyerror("Return type not matching");}
 	|modifiers datatype IDENTIFIER '(' params_list')' ';' { insert_fun ($<name>3, $<name>2, scope, depth, $<params>5);}
 	|modifiers datatype IDENTIFIER '('')' ';' {insert_fun ($<name>3, $<name>2, scope, depth, NULL);}
-	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, $<params>6);}	
-	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, NULL);}	
+	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, $<params>6); if(strcmp(temp, "void") && strcmp(temp, $<type>9)) yyerror("Return type not matching");}	
+	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, NULL); if(strcmp(temp, "void") && strcmp(temp, $<type>8)) yyerror("Return type not matching");}	
 	|modifiers datatype'*' IDENTIFIER '(' params_list')' ';' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, $<params>6);}	
 	|modifiers datatype'*' IDENTIFIER '('')' ';' {char temp[1000];strcpy(temp,$<name>2);strcat(temp,"*"); insert_fun ($<name>3, $<name>2, scope, depth, NULL);}	
 	;
@@ -103,13 +103,13 @@ multidec
 	} 
 	;
 datatype
-	:INT
-	|FLOAT
-	|CHAR
-	|DOUBLE
-	|VOID
-	|LONG
-	|SHORT
+	:INT { strcpy($<type>$, "int"); }
+	|FLOAT { strcpy($<type>$, "float"); }
+	|CHAR { strcpy($<type>$, "char"); }
+	|DOUBLE { strcpy($<type>$, "double"); }
+	|VOID { strcpy($<type>$, "void"); }
+	|LONG { strcpy($<type>$, "long"); }
+	|SHORT { strcpy($<type>$, "short"); }
 	;
 
 modifiers
@@ -152,8 +152,8 @@ const_list
 	|constant ',' const_list
 	;
 statement_list
-	:statement 
-	|statement statement_list
+	:statement { strcpy($<type>$, $<type>1); }
+	|statement statement_list { strcpy($<type>$, $<type>2); }
 	;
 constant
 	:INTCONST { insert ($<name>$, "int", scope, depth, 1); strcpy($<type>$, "int");}
@@ -203,7 +203,7 @@ statement
 	|iterative
 	|assignment
 	|if_block
-	|RETURN expression ';'
+	|RETURN expression';' { strcpy($<type>$, $<type>2); }
 	|func_call';'
 	|func_def
 	|IDENTIFIER INCREMENT ';' {check_scope($<name>1, scope, depth, SYM_TBL);}
