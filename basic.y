@@ -133,16 +133,16 @@ brackets
 	;
 expression
 	:constant {strcpy($<type>$, $<type>1);}
-	|IDENTIFIER bin_op expression {check_scope($<name>1, scope, depth);strcpy($<type>$, "bool");}
+	|IDENTIFIER bin_op expression {check_scope($<name>1, scope, depth, SYM_TBL);strcpy($<type>$, "bool");}
 	|constant bin_op expression {strcpy($<type>$, $<type>1);strcpy($<type>$, "bool");}
-	|IDENTIFIER {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
-	|un_op IDENTIFIER {check_scope($<name>1, scope, depth); node* t = lookup($<name>2, SYM_TBL); strcpy($<type>$, t->type);}
+	|IDENTIFIER {check_scope($<name>1, scope, depth, SYM_TBL); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
+	|un_op IDENTIFIER {check_scope($<name>1, scope, depth, SYM_TBL); node* t = lookup($<name>2, SYM_TBL); strcpy($<type>$, t->type);}
 	|un_op constant {strcpy($<type>$, $<type>2);}
-	|IDENTIFIER INCREMENT {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
-	|IDENTIFIER DECREMENT {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
+	|IDENTIFIER INCREMENT {check_scope($<name>1, scope, depth, SYM_TBL); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
+	|IDENTIFIER DECREMENT {check_scope($<name>1, scope, depth, SYM_TBL); node* t = lookup($<name>1, SYM_TBL); strcpy($<type>$, t->type);}
 	|func_call bin_op expression {strcpy($<type>$, "bool");}
-	|func_call 
-	|un_op func_call
+	|func_call {check_scope($<name>1, scope, depth, FUN_TBL); node* t = lookup($<name>1, FUN_TBL); strcpy($<type>$, t->type);}
+	|un_op func_call {check_scope($<name>1, scope, depth, FUN_TBL); node* t = lookup($<name>2, FUN_TBL); strcpy($<type>$, t->type);}
 	|brackets {strcpy($<type>$, $<type>1); strcpy($<type>$, $<type>1);}
 	|un_op brackets {strcpy($<type>$, $<type>2); strcpy($<type>$, $<type>2);}
 	|brackets bin_op expression {strcpy($<type>$, "bool");}
@@ -188,8 +188,8 @@ un_op
 	|DECREMENT %prec '$'
 	;
 func_call
-	:IDENTIFIER '('expression_list')' {check_scope($<name>1, scope, depth); node* t = lookup($<name>1, FUN_TBL); if(strcmp($<params>3, t->params)) yyerror("Parameters type mismatch");}
-	|IDENTIFIER '('')' {check_scope($<name>1, scope, depth);}
+	:IDENTIFIER '('expression_list')' {check_scope($<name>1, scope, depth, FUN_TBL); node* t = lookup($<name>1, FUN_TBL); if(strcmp($<params>3, t->params)) yyerror("Parameters type mismatch"); strcpy($<name>$, $<name>1);}
+	|IDENTIFIER '('')' {check_scope($<name>1, scope, depth, FUN_TBL); node* t = lookup($<name>1, FUN_TBL); if(t->params!=NULL) yyerror("Parameters type mismatch"); strcpy($<name>$, $<name>1);}
 	;
 expression_list
 	:expression { strcpy($<params>$, $<type>1); }
@@ -206,8 +206,8 @@ statement
 	|RETURN expression ';'
 	|func_call';'
 	|func_def
-	|IDENTIFIER INCREMENT ';' {check_scope($<name>1, scope, depth);}
-	|IDENTIFIER DECREMENT ';' {check_scope($<name>1, scope, depth);}
+	|IDENTIFIER INCREMENT ';' {check_scope($<name>1, scope, depth, SYM_TBL);}
+	|IDENTIFIER DECREMENT ';' {check_scope($<name>1, scope, depth, SYM_TBL);}
 	|'{'statement_list'}'
 	|';'
 	;
@@ -235,9 +235,9 @@ iterative
 	|WHILE '('expression')''{'statement_list'}'
 	;
 assignment
-	:IDENTIFIER '=' expression ';'{check_scope($<name>1, scope, depth);}
-	|'*'IDENTIFIER '=' expression';' {check_scope($<name>1, scope, depth);}
-	|IDENTIFIER'['INTCONST']' '=' expression';' {check_scope($<name>1, scope, depth);}
+	:IDENTIFIER '=' expression ';'{check_scope($<name>1, scope, depth, SYM_TBL);}
+	|'*'IDENTIFIER '=' expression';' {check_scope($<name>1, scope, depth, SYM_TBL);}
+	|IDENTIFIER'['INTCONST']' '=' expression';' {check_scope($<name>1, scope, depth, SYM_TBL);}
 	;
 
 

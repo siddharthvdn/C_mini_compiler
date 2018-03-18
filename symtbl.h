@@ -29,7 +29,7 @@ void insert(char* x, char* type, int* scope_in, int depth_in, int table);
 
 void insert_fun(char* x, char* type, int* scope_in, int depth_in, char* param_list_in);
 
-void check_scope(char* x, int* scope_in, int depth_in);
+void check_scope(char* x, int* scope_in, int depth_in, int table);
 
 void change_scope(char* x, int level_in);
 

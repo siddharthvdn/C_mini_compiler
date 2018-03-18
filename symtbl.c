@@ -187,15 +187,15 @@ void insert_fun(char* x, char* type, int* scope_in, int depth_in, char* param_li
 	t->next = cell; 		
 }
 
-void check_scope(char* x, int* scope_in, int depth_in)
+void check_scope(char* x, int* scope_in, int depth_in, int table)
 {
 	char error_msg[100];	
  		
- 	node* t = lookup(x, 0);
+ 	node* t = lookup(x, table);
 
  	if(t==NULL)
  	{
- 		strcpy(error_msg,"Variable undeclared: ");
+ 		strcpy(error_msg,"Identifier undeclared: ");
  		strcat(error_msg, x); 
  		yyerror(error_msg); 
  		return;
@@ -204,7 +204,7 @@ void check_scope(char* x, int* scope_in, int depth_in)
 	int i;
 	if(depth_in<t->depth)
 	{
- 		strcpy(error_msg,"Variable out of scope: ");
+ 		strcpy(error_msg,"IdentifierIdentifier out of scope: ");
  		strcat(error_msg, x); 
  		yyerror(error_msg); 
  		return;
@@ -214,7 +214,7 @@ void check_scope(char* x, int* scope_in, int depth_in)
 	{
 		if(scope_in[i] != t->scope[i])	
 		{
-	 		strcpy(error_msg,"Variable out of scope: ");
+	 		strcpy(error_msg,"Identifier out of scope: ");
 	 		strcat(error_msg, x); 
 	 		yyerror(error_msg); 
 	 		return;

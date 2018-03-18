@@ -1,6 +1,7 @@
-int fun(int a, int b);
+int fun(int a);
 
-int c, d;
+int c;
+int d;
 
 int main()
 {
