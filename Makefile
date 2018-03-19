@@ -1,5 +1,5 @@
 all: symtbl.o symtbl.h
-	yacc -d basic.y -Wnone
+	yacc -d basic.y -v
 	lex scanner.l
 	cc symtbl.o y.tab.c lex.yy.c -ll
 	./a.out

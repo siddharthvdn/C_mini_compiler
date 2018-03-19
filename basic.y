@@ -46,6 +46,7 @@
 %left '+' '-'
 %left '*' '/'
 %left '$'
+%right IF
 %right ELSE
 
 
@@ -426,7 +427,6 @@ statement
 	|conditional
 	|iterative
 	|assignment
-	|if_block
 	|RETURN expression';' 
 	{ strcpy($<type>$, $<type>2); }
 	|func_call';'
@@ -468,18 +468,13 @@ id_chain
 	|IDENTIFIER ',' id_chain 
 	{ strcpy(vars[varpt++],$<name>1); }
 	;
-if_block
-	:IF '('expression')' statement 
-	|IF '('expression')' '{'statement_list'}'
-	;
+
 conditional
-	:if_block
-	|if_block ELSE statement
-	|if_block ELSE '{'statement_list'}'
+	:IF '('expression')' statement %prec IF
+	|IF '('expression')' statement  ELSE statement	
 	;
 iterative
 	:WHILE'('expression')' statement
-	|WHILE '('expression')''{'statement_list'}'
 	;
 assignment
 	:IDENTIFIER '=' expression ';'

@@ -205,7 +205,7 @@ void check_scope(char* x, int* scope_in, int depth_in, int table)
 	int i;
 	if(depth_in<t->depth)
 	{
- 		strcpy(error_msg,"IdentifierIdentifier out of scope: ");
+ 		strcpy(error_msg,"Identifier out of scope: ");
  		strcat(error_msg, x); 
  		yyerror(error_msg); 
  		return;
