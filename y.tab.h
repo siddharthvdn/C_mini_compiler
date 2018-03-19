@@ -146,10 +146,12 @@ union YYSTYPE
 
     char name[1000];
 
+    int size;
+
     char type[1000];
     char params[1000];
 
-#line 153 "y.tab.h" /* yacc.c:1909  */
+#line 155 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

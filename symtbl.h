@@ -6,6 +6,8 @@ typedef struct node
 	char* type;
 	char* params;
 
+	int array_bound;
+
 	int* scope;
 	int depth;
 		

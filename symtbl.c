@@ -93,6 +93,7 @@ void insert(char* x, char* type, int* scope_in, int depth_in, int table)
 		cell->scope[i] = scope_in[i];
 	}		
 
+	cell->array_bound = 0;
 
 	cell->next = NULL;		
 

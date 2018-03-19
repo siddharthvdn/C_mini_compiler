@@ -1,13 +1,6 @@
-int fun(int a, int b);
+int a[4] = {1, 2, 3, 4};
 
-int fun2();
-
-int c, d;
-char e;
-
-int main()
+void main()
 {
-	fun(c, fun(c,d));
-
-	return c;
+	a[4] = 6;
 }
