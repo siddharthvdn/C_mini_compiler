@@ -59,7 +59,7 @@ node* lookup(char* x, int table)
 
 void insert(char* x, char* type, int* scope_in, int depth_in, int table)
 {
-	if(lookup(x, table)!=NULL)
+	if(lookup(x, table)!=NULL&&table != 1)
 	{
 		char error_msg[100];
 		strcpy(error_msg,"Variable already declared: ");
@@ -170,7 +170,7 @@ void insert_fun(char* x, char* type, int* scope_in, int depth_in, char* param_li
 		strcpy(cell->params, param_list_in);
 	}
 
-	cell->array_def = 0;
+	cell->func_def = 0;
 
 	cell->next = NULL;		
 
