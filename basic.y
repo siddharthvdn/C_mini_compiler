@@ -20,10 +20,9 @@
 	void yyerror(char*);
 	int error = 0;
 	
-	char datatype_str[100];
-	char vars[100][1000];
-	int pnt[100]={0};
-	int varpt = 0; 
+	
+
+	char multidec_type[1000];
 %}
 
 %union{
@@ -59,8 +58,6 @@
 %%
 S
 	:func_def S
-	|id_dec ';' S
-	|id_assign_dec';' S
 	|multidec';' S
 	|	
 	;
@@ -120,7 +117,43 @@ func_def
 	}	
 	;
 
-id_dec
+
+multidec
+	:modifiers datatype id_chain 
+	{
+		strcpy(multidec_type, $<name>2);		
+	} 
+	;
+
+datatype
+	:INT 
+	{ strcpy($<type>$, "int"); }
+	|FLOAT 
+	{ strcpy($<type>$, "float"); }
+	|CHAR 
+	{ strcpy($<type>$, "char"); }
+	|DOUBLE 
+	{ strcpy($<type>$, "double"); }
+	|VOID 
+	{ strcpy($<type>$, "void"); }
+	|LONG 
+	{ strcpy($<type>$, "long"); }
+	|SHORT 
+	{ strcpy($<type>$, "short"); }
+	;
+
+modifiers
+	:AUTO
+	|CONST
+	|EXTERN
+	|REGISTER
+	|SIGNED
+	|UNSIGNED
+	|VOLATILE
+	|
+	;
+
+params_dec
 	:modifiers datatype IDENTIFIER 
 	{ 
 		strcpy($<name>$,$<name>3); 
@@ -154,105 +187,20 @@ id_dec
 	{ 
 		strcpy($<name>$,$<name>3); 
 		char temp[1000];
-		strcpy(temp,$<name>2);
+		strcpy(temp,multidec_type);
 		strcat(temp,"*"); 
-		insert ($<name>4,temp, scope, depth, 0); 
+		insert ($<name>4, temp, scope, depth, 0); 
 		strcpy($<type>$,temp);
 	}
 	;
-
-id_assign_dec
-	:modifiers datatype IDENTIFIER '=' expression 
-	{ 
-		insert ($<name>3, $<name>2, scope, depth, 0);
-	}
-	|modifiers datatype IDENTIFIER'['']' '=' '{'const_list'}' 
-	{
-		char temp[1000];strcpy(temp,$<name>2);
-		strcat(temp,"*"); 
-		insert ($<name>3,temp, scope, depth, 0);
-
-		node* t = lookup($<name>3, SYM_TBL);
-		t->array_bound = $<size>9;
-	}	
-	|modifiers datatype IDENTIFIER'['INTCONST']' '=' '{'const_list'}' 
-	{
-		char temp[1000];
-		strcpy(temp,$<name>2);
-		strcat(temp,"*"); 
-		insert ($<name>3,temp, scope, depth, 0);
-
-		int t_array = atoi($<name>5);
-
-		if(t_array != $<size>9)
-			yyerror("Array index out of bound");
-		node* t = lookup($<name>3, SYM_TBL);
-		t->array_bound = t_array;
-	}
-	|modifiers datatype '*' IDENTIFIER '=' expression 
-	{
-		char temp[1000]; 
-		strcpy(temp,$<name>2); 
-		strcat(temp,"*"); 
-		insert ($<name>4,temp, scope, depth, 0);
-	}
-	;
-
-multidec
-	:modifiers datatype id_chain 
-	{
-		varpt--;
-		while(varpt>=0)
-		{
-			if(pnt[varpt])
-			{
-				char temp[1000];
-				strcpy(temp,$<name>2);
-				strcat(temp,"*"); 
-				pnt[varpt] = 0;
-				insert (vars[varpt--], $<name>2, scope, depth, 0);
-			}
-			else
-				insert (vars[varpt--], $<name>2, scope, depth, 0);
-		}		
-	} 
-	;
-
-datatype
-	:INT 
-	{ strcpy($<type>$, "int"); }
-	|FLOAT 
-	{ strcpy($<type>$, "float"); }
-	|CHAR 
-	{ strcpy($<type>$, "char"); }
-	|DOUBLE 
-	{ strcpy($<type>$, "double"); }
-	|VOID 
-	{ strcpy($<type>$, "void"); }
-	|LONG 
-	{ strcpy($<type>$, "long"); }
-	|SHORT 
-	{ strcpy($<type>$, "short"); }
-	;
-
-modifiers
-	:AUTO
-	|CONST
-	|EXTERN
-	|REGISTER
-	|SIGNED
-	|UNSIGNED
-	|VOLATILE
-	|
-	;
 	
 params_list
-	:id_dec 
+	:params_dec 
 	{
 		change_scope($<name>1, level); 
 		strcpy($<params>$, $<type>1);
 	}
-	|id_dec ',' params_list 
+	|params_dec ',' params_list 
 	{
 		change_scope($<name>1, level); 
 		char temp[1000]; strcpy(temp, $<type>1); 
@@ -421,9 +369,7 @@ expression_list
 	;
 
 statement
-	:id_dec';'
-	|id_assign_dec';'
-	|multidec ';'
+	:multidec ';'
 	|conditional
 	|iterative
 	|assignment
@@ -438,35 +384,129 @@ statement
 	|'{'statement_list'}'
 	|';'
 	;
+
+
+
+
 id_chain
 	:IDENTIFIER 
-	{ strcpy(vars[varpt++],$<name>1); }
+	{ 
+		insert ($<name>1, multidec_type, scope, depth, 0); 
+	}
 	|IDENTIFIER '=' expression 
-	{ strcpy(vars[varpt++],$<name>1); }
+	{ 
+		insert ($<name>1, multidec_type, scope, depth, 0); 
+	}
 	|'*'IDENTIFIER 
 	{ 
-		strcpy(vars[varpt],$<name>1); 
-		pnt[varpt] = 1; varpt++;
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>2, multidec_type, scope, depth, 0); 
 	}
-	|'*'IDENTIFIER ',' id_chain 
+	|id_chain ',' '*'IDENTIFIER 
 	{ 
-		strcpy(vars[varpt],$<name>1); 
-		pnt[varpt] = 1; varpt++;
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>4, multidec_type, scope, depth, 0);
 	}
 	|'*'IDENTIFIER '=' expression 
 	{ 
-		strcpy(vars[varpt],$<name>1); 
-		pnt[varpt] = 1; varpt++;
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>2, multidec_type, scope, depth, 0);
 	}
-	|'*'IDENTIFIER '=' expression ',' id_chain 
+	|id_chain ',' '*'IDENTIFIER '=' expression 
 	{ 
-		strcpy(vars[varpt],$<name>1); 
-		pnt[varpt] = 1; varpt++;
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>4, multidec_type, scope, depth, 0);
 	}
-	|IDENTIFIER '=' expression ',' id_chain 
-	{ strcpy(vars[varpt++],$<name>1); }
-	|IDENTIFIER ',' id_chain 
-	{ strcpy(vars[varpt++],$<name>1); }
+	|id_chain ',' IDENTIFIER '=' expression 
+	{ 
+		insert ($<name>3, multidec_type, scope, depth, 0); 
+	}
+	|id_chain ',' IDENTIFIER 
+	{ 
+		insert ($<name>3, multidec_type, scope, depth, 0); 
+	}
+	|IDENTIFIER '['INTCONST']'
+	{ 
+		
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>1, temp, scope, depth, 0); 
+		
+		int t_array = atoi($<name>3);
+		node* t = lookup($<name>1, SYM_TBL);
+		t->array_bound = t_array; 
+
+	}
+	|IDENTIFIER'['']' '=' '{'const_list'}'
+	{
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>1,temp, scope, depth, 0);
+
+		node* t = lookup($<name>1, SYM_TBL);
+		t->array_bound = $<size>6;
+	}
+	|IDENTIFIER '['INTCONST']' '=' '{'const_list'}'
+	{
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>1,temp, scope, depth, 0);
+
+		int t_array = atoi($<name>3);
+
+		if(t_array < $<size>7)
+			yyerror("Array index out of bound");
+		node* t = lookup($<name>1, SYM_TBL);
+		t->array_bound = t_array;
+	}
+	|id_chain ',' IDENTIFIER'['INTCONST']'
+	{ 
+		
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>3, temp, scope, depth, 0); 
+		
+		int t_array = atoi($<name>5);
+		node* t = lookup($<name>3, SYM_TBL);
+		t->array_bound = t_array; 
+
+	}
+	|id_chain ',' IDENTIFIER '['']' '=' '{'const_list'}'
+	{
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>3,temp, scope, depth, 0);
+
+		node* t = lookup($<name>3, SYM_TBL);
+		t->array_bound = $<size>8;
+	}
+	|id_chain ',' IDENTIFIER '['INTCONST']' '=' '{'const_list'}'
+	{
+		char temp[1000];
+		strcpy(temp,multidec_type);
+		strcat(temp,"*"); 
+		insert ($<name>3,temp, scope, depth, 0);
+
+		int t_array = atoi($<name>5);
+
+		if(t_array < $<size>9)
+			yyerror("Array index out of bound");
+		node* t = lookup($<name>3, SYM_TBL);
+		t->array_bound = t_array;
+	}
 	;
 
 conditional
@@ -522,3 +562,7 @@ int main()
 	
 	return 0;
 }
+
+/*
+
+*/

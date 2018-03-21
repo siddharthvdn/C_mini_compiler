@@ -8,6 +8,8 @@ typedef struct node
 
 	int array_bound;
 
+	int array_def;
+
 	int* scope;
 	int depth;
 		

@@ -170,6 +170,8 @@ void insert_fun(char* x, char* type, int* scope_in, int depth_in, char* param_li
 		strcpy(cell->params, param_list_in);
 	}
 
+	cell->array_def = 0;
+
 	cell->next = NULL;		
 
 	node* t = NULL;

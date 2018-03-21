@@ -13,4 +13,4 @@ lex:
 	./a.out
 	
 clean:
-	rm -rf lex.yy.c *.out y.tab.h y.tab.c symtbl.o
+	rm -rf lex.yy.c *.out y.tab.h y.tab.c symtbl.o y.output
