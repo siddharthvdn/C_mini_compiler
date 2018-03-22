@@ -26,6 +26,8 @@
 	int varpt = -1; 	
 
 	char multidec_type[1000];
+	
+	int iterative = 0;
 %}
 
 %union{
@@ -268,7 +270,14 @@ brackets
 
 expression
 	:constant 
-	{strcpy($<type>$, $<type>1);}
+	{
+		node* t = lookup($<name>1, CONST_TBL);
+
+		if(t!=NULL)
+			strcpy($<type>$, t->type);	
+	
+	
+	}
 	|IDENTIFIER bin_op expression 
 	{
 		check_scope($<name>1, scope, depth, SYM_TBL);
@@ -281,14 +290,21 @@ expression
 	}
 	|constant bin_op expression 
 	{
-		printf("entered");
 		strcpy($<type>$, $<type>1);
+		
+
 		node* t = lookup($<name>1, CONST_TBL);
 
-		if(strcmp(t->type, $<type>3))
+		if(t!=NULL)
+		{
+			if(strcmp(t->type, $<type>3))
 			yyerror("Type mismatch");
 
-		strcpy($<type>$, t->type);
+			strcpy($<type>$, t->type);	
+		}
+		
+		
+		
 	}
 	|IDENTIFIER 
 	{
@@ -557,6 +573,7 @@ statement
 	{ strcpy($<type>$, ""); }
 	|iterative
 	{ strcpy($<type>$, ""); }
+	
 	|assignment
 	{ strcpy($<type>$, ""); }
 	|RETURN expression';' 
@@ -580,7 +597,13 @@ statement
 	|';'
 	{ strcpy($<type>$, ""); }
 	|BREAK';'
-	{ strcpy($<type>$, ""); }
+	{ 
+		//printf("iterative: %d\n", iterative);
+		if(iterative<=0)
+			yyerror("Invalid use of break statement");
+			
+		strcpy($<type>$, "");
+	}
 	;
 
 
@@ -735,10 +758,13 @@ conditional
 iterative
 	:WHILE'('expression')' statement
 	{
+		iterative--;
 		if(strcmp($<type>3,"int"))
 			yyerror("Invalid expression");	
 	}
 	;
+	
+
 assignment
 	:IDENTIFIER '=' expression ';'
 	{check_scope($<name>1, scope, depth, SYM_TBL);}
@@ -766,8 +792,8 @@ void yyerror(char* s)
 
 int main()
 {
-	yyin = fopen("test_cases/semantic/return_type.c", "r");
-	//yyin = fopen("test_cases/program.c", "r");
+	//yyin = fopen("test_cases/semantic/return_type.c", "r");
+	yyin = fopen("test_cases/program.c", "r");
 
 	yyparse();
 

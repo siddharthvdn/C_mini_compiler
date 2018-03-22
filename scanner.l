@@ -8,6 +8,8 @@
 	extern int depth ;
 	extern int scope[1000];
 	extern int yylineno;
+	
+	extern int iterative;
 %}
 
 
@@ -57,7 +59,7 @@
 "unsigned"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return UNSIGNED; }
 "void"                  { /*printf("Keyword:\t\t%s\n", yytext);*/ strcpy(yylval.name,yytext); return VOID; }
 "volatile"              { /*printf("Keyword:\t\t%s\n", yytext);*/ return VOLATILE; }
-"while"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ return WHILE; }
+"while"                 { /*printf("Keyword:\t\t%s\n", yytext);*/ iterative++; return WHILE; }
 
 
 [a-zA-Z_][a-zA-Z0-9_]*   { /*printf("Identifier:\t\t%s\n", yytext);*/  /*insert(yytext, 0, SYM_TBL);*/ strcpy(yylval.name,yytext); return IDENTIFIER; }

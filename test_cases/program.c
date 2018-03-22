@@ -1,9 +1,11 @@
-int fun(void a,void b)
+int main()
 {
-	return 1;
-}
-void fun2(int s,int w)
-{
-	void c;
-
+	int i = 0;
+	
+	while(1)
+	{	i++;
+	
+	break;
+	}	
+	return i;
 }
