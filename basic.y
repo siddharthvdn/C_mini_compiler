@@ -69,8 +69,8 @@ func_def
 	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' 
 	{ 
 		insert_fun ($<name>3, $<name>2, scope, depth, $<params>5); 
-		
-		if((!strcmp($<type>2, "void") && strlen($<type>8)!=0) || (strcmp($<type>2, $<type>8)) )
+		//printf("dw%s",$<type>8);
+		if((!strcmp($<type>2, "void") && strlen($<type>8)!=0) && (strcmp($<type>2, $<type>8)) )
 			yyerror("Return type not matching");
 
 		node* t = lookup($<name>3, FUN_TBL); 
@@ -79,7 +79,8 @@ func_def
 	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' 
 	{ 
 		insert_fun ($<name>3, $<name>2, scope, depth, NULL); 
-		if((!strcmp($<type>2, "void") && strlen($<type>8)!=0) || (strcmp($<type>2, $<type>7)) )
+		//printf("dw%s",$<type>7);
+		if((!strcmp($<type>2, "void") && strlen($<type>7)!=0) && (strcmp($<type>2, $<type>7)) )
 			yyerror("Return type not matching");
 
 		node* t = lookup($<name>3, FUN_TBL); 
@@ -137,7 +138,10 @@ func_def
 multidec
 	:modifiers datatype id_chain 
 	{
-		
+		if(!strcmp($<type>2 ,"void"))
+			yyerror("Variable of type void");
+		//printf("HIHI");
+		//varpt--;
 		while(varpt>=0)
 		{
 			//printf("%d - %s\n", varpt, vars[varpt]);
@@ -193,12 +197,16 @@ modifiers
 params_dec
 	:modifiers datatype IDENTIFIER 
 	{ 
+		if(!strcmp($<type>2 ,"void"))
+			yyerror("Parameter of type void");
 		strcpy($<name>$,$<name>3); 
 		insert ($<name>3, $<name>2, scope, depth, 0); 
 		strcpy($<type>$,$<name>2); 
 	}
 	|modifiers datatype IDENTIFIER '['INTCONST']' 
 	{ 
+		if(!strcmp($<type>2 ,"void"))
+			yyerror("Parameter of type void");
 		strcpy($<name>$,$<name>3); 
 		char temp[1000];
 		strcpy(temp,$<name>2);
@@ -213,7 +221,9 @@ params_dec
 
 	}
 	|modifiers datatype IDENTIFIER '['']' 
-	{ 
+	{
+		if(!strcmp($<type>2 ,"void"))
+			yyerror("Parameter of type void"); 
 		strcpy($<name>$,$<name>3); 
 		char temp[1000];strcpy(temp,$<name>2);
 		strcat(temp,"*"); 
@@ -345,13 +355,15 @@ expression
 	{
 		check_scope($<name>1, scope, depth, SYM_TBL); 	
 
-		node* t = lookup($<name>2, FUN_TBL);
+		node* t = lookup($<name>1, SYM_TBL);
 
 
 		if(strcmp($<type>3, "int"))
 			yyerror("Array index not integer");
-
-		strcpy($<type>$, t->type);
+		char temp[1000];
+		strcpy(temp, t->type);
+		temp[strlen(t->type)-1] = 0;
+		strcpy($<type>$, temp);
 	}	
 	|IDENTIFIER'['expression']' bin_op expression
 	{
@@ -360,15 +372,14 @@ expression
 		if(strcmp($<type>3, "int"))
 			yyerror("Array index not integer"); 
 
-		node* t = lookup($<name>2, FUN_TBL);
+		node* t = lookup($<name>1, SYM_TBL);
 		char temp[100];
-		strcpy(temp, $<type>3);
-		strcat(temp,"*");
-
-		if(strcmp($<type>1, temp))
+		strcpy(temp, t->type);
+		temp[strlen(t->type)-1] = 0;
+		if(strcmp($<type>3, temp))
 			yyerror("Type mismatch");
 
-		strcpy($<type>$, t->type);
+		strcpy($<type>$,temp);
 	}
 	|un_op IDENTIFIER'['expression']'
 	{
@@ -377,7 +388,7 @@ expression
 		if(strcmp($<type>4, "int"))
 			yyerror("Array index not integer");	
 
-		node* t = lookup($<name>2, FUN_TBL);	
+		node* t = lookup($<name>1, SYM_TBL);
 
 		strcpy($<type>$, t->type);
 	}
@@ -388,11 +399,14 @@ expression
 		if(strcmp($<type>3, "int"))
 			yyerror("Array index not integer");	
 
-		node* t = lookup($<name>2, FUN_TBL);
+		node* t = lookup($<name>1, SYM_TBL);
+		char temp[100];
+		strcpy(temp, t->type);
+		temp[strlen(t->type)-1] = 0;
 		if(strcmp($<type>1, "int*"))
 			yyerror("Type mismatch");
 
-		strcpy($<type>$, t->type);
+		strcpy($<type>$, temp);
 	}
 	|IDENTIFIER '['expression']' DECREMENT
 	{
@@ -401,12 +415,14 @@ expression
 		if(strcmp($<type>3, "int"))
 			yyerror("Array index not integer");		
 
-		node* t = lookup($<name>2, FUN_TBL);
-
+		node* t = lookup($<name>1, SYM_TBL);
+		char temp[100];
+		strcpy(temp, t->type);
+		temp[strlen(t->type)-1] = 0;
 		if(strcmp($<type>1, "int*"))
 			yyerror("Type mismatch");
 
-		strcpy($<type>$, t->type);
+		strcpy($<type>$, temp);
 	}
 	;
 
@@ -552,8 +568,10 @@ statement
 		check_scope($<name>1, scope, depth, SYM_TBL);
 	}
 	|'{'statement_list'}'
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<type>$, $<type>2); }
 	|';'
+	{ strcpy($<type>$, ""); }
+	|BREAK';'
 	{ strcpy($<type>$, ""); }
 	;
 
@@ -740,8 +758,8 @@ void yyerror(char* s)
 
 int main()
 {
-	//yyin = fopen("test_cases/yacc/8.c", "r");
-	yyin = fopen("test_cases/program.c", "r");
+	yyin = fopen("test_cases/semantic/array_bound.c", "r");
+	//yyin = fopen("test_cases/program.c", "r");
 
 	yyparse();
 
@@ -754,7 +772,3 @@ int main()
 	
 	return 0;
 }
-
-/*
-
-*/
