@@ -8,6 +8,7 @@ int main()
         //initially swapped is false
         int swapped = 1;
         i = 0;
+	
         while(i<6)
         {
             //comparing the adjacent elements

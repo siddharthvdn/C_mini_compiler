@@ -199,9 +199,11 @@ params_dec
 	{ 
 		if(!strcmp($<type>2 ,"void"))
 			yyerror("Parameter of type void");
+		//printf("\n SDA %s",$<name>3);
 		strcpy($<name>$,$<name>3); 
 		insert ($<name>3, $<name>2, scope, depth, 0); 
-		strcpy($<type>$,$<name>2); 
+		strcpy($<type>$,$<type>2); 
+		strcpy($<name>$,$<name>3); 
 	}
 	|modifiers datatype IDENTIFIER '['INTCONST']' 
 	{ 
@@ -217,6 +219,7 @@ params_dec
 		int t_array = atoi($<name>5);
 		node* t = lookup($<name>3, SYM_TBL);
 		t->array_bound = t_array; 
+		strcpy($<name>$,$<name>3); 
 
 
 	}
@@ -228,7 +231,8 @@ params_dec
 		char temp[1000];strcpy(temp,$<name>2);
 		strcat(temp,"*"); 
 		insert ($<name>3, temp, scope, depth, 0); 
-		strcpy($<type>$,temp); 
+		strcpy($<type>$,temp);
+		strcpy($<name>$,$<name>3);  
 	}
 	|modifiers datatype '*' IDENTIFIER 
 	{ 
@@ -238,17 +242,20 @@ params_dec
 		strcat(temp,"*"); 
 		insert ($<name>4, temp, scope, depth, 0); 
 		strcpy($<type>$,temp);
+		strcpy($<name>$,$<name>4); 
 	}
 	;
 	
 params_list
 	:params_dec 
 	{
+		printf("\n Name %s ",$<type>1);
 		change_scope($<name>1, level); 
 		strcpy($<params>$, $<type>1);
 	}
 	|params_dec ',' params_list 
 	{
+		//printf("\n Name %s ",$<name>1);
 		change_scope($<name>1, level); 
 		char temp[1000]; strcpy(temp, $<type>1); 
 		strcat(temp, $<params>3); strcpy($<params>$, temp); 
@@ -274,6 +281,7 @@ expression
 	}
 	|constant bin_op expression 
 	{
+		printf("entered");
 		strcpy($<type>$, $<type>1);
 		node* t = lookup($<name>1, CONST_TBL);
 
@@ -758,7 +766,7 @@ void yyerror(char* s)
 
 int main()
 {
-	yyin = fopen("test_cases/semantic/array_bound.c", "r");
+	yyin = fopen("test_cases/semantic/return_type.c", "r");
 	//yyin = fopen("test_cases/program.c", "r");
 
 	yyparse();

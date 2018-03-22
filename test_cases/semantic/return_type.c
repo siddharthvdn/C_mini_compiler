@@ -1,4 +1,7 @@
-int fun(int a, int b);
+int fun(int a, int b)
+{
+	return 0;
+}
 
 int fun2();
 
@@ -7,7 +10,7 @@ char e;
 
 int main()
 {
-	fun(c, fun(c,d));
+	fun(e, fun(c,d));
 
 	return c;
 }
