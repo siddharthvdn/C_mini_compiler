@@ -8,7 +8,7 @@ int fun(int a, int b)
 
 	return g;
 
-	//return h;
+	return h;
 	
 }
 
@@ -19,7 +19,7 @@ char e;
 
 int main()
 {
-	//fun(c, fun(c,d));
+	fun(c, fun(c,d));
 
 	return 0;
 }
