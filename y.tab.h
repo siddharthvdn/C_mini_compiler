@@ -142,16 +142,11 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 33 "basic.y" /* yacc.c:1909  */
+#line 77 "basic.y" /* yacc.c:1909  */
 
-    char name[1000];
+    struct Attributes attr;
 
-    int size;
-
-    char type[1000];
-    char params[1000];
-
-#line 155 "y.tab.h" /* yacc.c:1909  */
+#line 150 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

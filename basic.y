@@ -28,15 +28,54 @@
 	char multidec_type[1000];
 	
 	int iterative = 0;
+
+	struct Attributes 
+	{
+	    char name[1000];
+
+	    int size;
+
+	    char type[1000];
+	    char params[1000];
+	};
+
+
+	/* ICG Variables*/
+
+	char stack[1000][100];
+	char idx[2] = "0";
+	char temp[2] = "t";
+
+	int top = 0;
+
+	/* ICG Variables*/
+
+	/* ICG Functions*/
+	void gencode()
+	{
+		strcpy(temp,"t");
+		strcat(temp, idx);
+		printf("%s = %s %s %s\n",temp,stack[top-2],stack[top-1],stack[top]);
+		top-=2;
+		strcpy(stack[top],temp);
+		idx[0]++;
+	}
+
+	void gencode_umin()
+	{
+		strcpy(temp,"t");
+		strcat(temp,idx);
+		printf("%s = -%s\n",temp,stack[top]);
+		top--;
+		strcpy(stack[top],temp);
+		idx[0]++;
+	}
+	/* ICG Functions*/
 %}
 
-%union{
-    char name[1000];
-
-    int size;
-
-    char type[1000];
-    char params[1000];
+%union
+{
+    struct Attributes attr;
 }
 
 %right '='
@@ -70,69 +109,69 @@ S
 func_def
 	:modifiers datatype IDENTIFIER '(' params_list')' '{'statement_list'}' 
 	{ 
-		insert_fun ($<name>3, $<name>2, scope, depth, $<params>5); 
-		//printf("dw%s",$<type>8);
-		if((!strcmp($<type>2, "void") && strlen($<type>8)!=0) && (strcmp($<type>2, $<type>8)) )
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, $<attr.params>5); 
+		//printf("dw%s",$<attr.type>8);
+		if((!strcmp($<attr.type>2, "void") && strlen($<attr.type>8)!=0) && (strcmp($<attr.type>2, $<attr.type>8)) )
 			yyerror("Return type not matching");
 
-		node* t = lookup($<name>3, FUN_TBL); 
+		node* t = lookup($<attr.name>3, FUN_TBL); 
 		t->func_def = 1;
 	}
 	|modifiers datatype IDENTIFIER '('')' '{'statement_list'}' 
 	{ 
-		insert_fun ($<name>3, $<name>2, scope, depth, NULL); 
-		//printf("dw%s",$<type>7);
-		if((!strcmp($<type>2, "void") && strlen($<type>7)!=0) && (strcmp($<type>2, $<type>7)) )
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, NULL); 
+		//printf("dw%s",$<attr.type>7);
+		if((!strcmp($<attr.type>2, "void") && strlen($<attr.type>7)!=0) && (strcmp($<attr.type>2, $<attr.type>7)) )
 			yyerror("Return type not matching");
 
-		node* t = lookup($<name>3, FUN_TBL); 
+		node* t = lookup($<attr.name>3, FUN_TBL); 
 		t->func_def = 1;
 	}
 	|modifiers datatype IDENTIFIER '(' params_list')' ';' 
 	{ 
-		insert_fun ($<name>3, $<name>2, scope, depth, $<params>5);
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, $<attr.params>5);
 	}
 	|modifiers datatype IDENTIFIER '('')' ';' 
 	{
-		insert_fun ($<name>3, $<name>2, scope, depth, NULL);
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, NULL);
 	}
 	|modifiers datatype'*' IDENTIFIER '(' params_list')' '{'statement_list'}' 
 	{
 		char temp[1000];
-		strcpy(temp,$<name>2);
+		strcpy(temp,$<attr.name>2);
 		strcat(temp,"*"); 
-		insert_fun ($<name>3, $<name>2, scope, depth, $<params>6); 
-		if(strcmp(temp, "void") && strcmp(temp, $<type>9)) 
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, $<attr.params>6); 
+		if(strcmp(temp, "void") && strcmp(temp, $<attr.type>9)) 
 			yyerror("Return type not matching");
 
-		node* t = lookup($<name>3, FUN_TBL); 
+		node* t = lookup($<attr.name>3, FUN_TBL); 
 		t->func_def = 1;
 	}	
 	|modifiers datatype'*' IDENTIFIER '('')' '{'statement_list'}' 
 	{
 		char temp[1000];
-		strcpy(temp,$<name>2);
+		strcpy(temp,$<attr.name>2);
 		strcat(temp,"*"); 
-		insert_fun ($<name>3, $<name>2, scope, depth, NULL); 
-		if(strcmp(temp, "void") && strcmp(temp, $<type>8)) 
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, NULL); 
+		if(strcmp(temp, "void") && strcmp(temp, $<attr.type>8)) 
 			yyerror("Return type not matching");
 
-		node* t = lookup($<name>3, FUN_TBL); 
+		node* t = lookup($<attr.name>3, FUN_TBL); 
 		t->func_def = 1;
 	}	
 	|modifiers datatype'*' IDENTIFIER '(' params_list')' ';' 
 	{
 		char temp[1000];
-		strcpy(temp,$<name>2);
+		strcpy(temp,$<attr.name>2);
 		strcat(temp,"*"); 
-		insert_fun ($<name>3, $<name>2, scope, depth, $<params>6);
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, $<attr.params>6);
 	}	
 	|modifiers datatype'*' IDENTIFIER '('')' ';' 
 	{
 		char temp[1000];
-		strcpy(temp,$<name>2);
+		strcpy(temp,$<attr.name>2);
 		strcat(temp,"*"); 
-		insert_fun ($<name>3, $<name>2, scope, depth, NULL);
+		insert_fun ($<attr.name>3, $<attr.name>2, scope, depth, NULL);
 	}	
 	;
 
@@ -140,7 +179,7 @@ func_def
 multidec
 	:modifiers datatype id_chain 
 	{
-		if(!strcmp($<type>2 ,"void"))
+		if(!strcmp($<attr.type>2 ,"void"))
 			yyerror("Variable of type void");
 		//printf("HIHI");
 		//varpt--;
@@ -150,7 +189,7 @@ multidec
 			if(pnt[varpt])
 			{
 				char temp[1000];
-				strcpy(temp,$<name>2);
+				strcpy(temp,$<attr.name>2);
 				strcat(temp,"*"); 
 				pnt[varpt] = 0;
 
@@ -160,7 +199,7 @@ multidec
 			else
 			{
 				node* t = lookup(vars[varpt--], SYM_TBL); 
-				strcpy(t->type, $<name>2);
+				strcpy(t->type, $<attr.name>2);
 			}
 
 		}		
@@ -170,19 +209,19 @@ multidec
 
 datatype
 	:INT 
-	{ strcpy($<type>$, "int"); }
+	{ strcpy($<attr.type>$, "int"); }
 	|FLOAT 
-	{ strcpy($<type>$, "float"); }
+	{ strcpy($<attr.type>$, "float"); }
 	|CHAR 
-	{ strcpy($<type>$, "char"); }
+	{ strcpy($<attr.type>$, "char"); }
 	|DOUBLE 
-	{ strcpy($<type>$, "double"); }
+	{ strcpy($<attr.type>$, "double"); }
 	|VOID 
-	{ strcpy($<type>$, "void"); }
+	{ strcpy($<attr.type>$, "void"); }
 	|LONG 
-	{ strcpy($<type>$, "long"); }
+	{ strcpy($<attr.type>$, "long"); }
 	|SHORT 
-	{ strcpy($<type>$, "short"); }
+	{ strcpy($<attr.type>$, "short"); }
 	;
 
 modifiers
@@ -199,276 +238,381 @@ modifiers
 params_dec
 	:modifiers datatype IDENTIFIER 
 	{ 
-		if(!strcmp($<type>2 ,"void"))
+		if(!strcmp($<attr.type>2 ,"void"))
 			yyerror("Parameter of type void");
-		//printf("\n SDA %s",$<name>3);
-		strcpy($<name>$,$<name>3); 
-		insert ($<name>3, $<name>2, scope, depth, 0); 
-		strcpy($<type>$,$<type>2); 
-		strcpy($<name>$,$<name>3); 
+		//printf("\n SDA %s",$<attr.name>3);
+		strcpy($<attr.name>$,$<attr.name>3); 
+		insert ($<attr.name>3, $<attr.name>2, scope, depth, 0); 
+		strcpy($<attr.type>$,$<attr.type>2); 
+		strcpy($<attr.name>$,$<attr.name>3); 
 	}
 	|modifiers datatype IDENTIFIER '['INTCONST']' 
 	{ 
-		if(!strcmp($<type>2 ,"void"))
+		if(!strcmp($<attr.type>2 ,"void"))
 			yyerror("Parameter of type void");
-		strcpy($<name>$,$<name>3); 
+		strcpy($<attr.name>$,$<attr.name>3); 
 		char temp[1000];
-		strcpy(temp,$<name>2);
+		strcpy(temp,$<attr.name>2);
 		strcat(temp,"*"); 
-		insert ($<name>3, temp, scope, depth, 0); 
-		strcpy($<type>$,temp);
+		insert ($<attr.name>3, temp, scope, depth, 0); 
+		strcpy($<attr.type>$,temp);
 
-		int t_array = atoi($<name>5);
-		node* t = lookup($<name>3, SYM_TBL);
+		int t_array = atoi($<attr.name>5);
+		node* t = lookup($<attr.name>3, SYM_TBL);
 		t->array_bound = t_array; 
-		strcpy($<name>$,$<name>3); 
+		strcpy($<attr.name>$,$<attr.name>3); 
 
 
 	}
 	|modifiers datatype IDENTIFIER '['']' 
 	{
-		if(!strcmp($<type>2 ,"void"))
+		if(!strcmp($<attr.type>2 ,"void"))
 			yyerror("Parameter of type void"); 
-		strcpy($<name>$,$<name>3); 
-		char temp[1000];strcpy(temp,$<name>2);
+		strcpy($<attr.name>$,$<attr.name>3); 
+		char temp[1000];strcpy(temp,$<attr.name>2);
 		strcat(temp,"*"); 
-		insert ($<name>3, temp, scope, depth, 0); 
-		strcpy($<type>$,temp);
-		strcpy($<name>$,$<name>3);  
+		insert ($<attr.name>3, temp, scope, depth, 0); 
+		strcpy($<attr.type>$,temp);
+		strcpy($<attr.name>$,$<attr.name>3);  
 	}
 	|modifiers datatype '*' IDENTIFIER 
 	{ 
-		strcpy($<name>$,$<name>3); 
+		strcpy($<attr.name>$,$<attr.name>3); 
 		char temp[1000];
 		strcpy(temp,multidec_type);
 		strcat(temp,"*"); 
-		insert ($<name>4, temp, scope, depth, 0); 
-		strcpy($<type>$,temp);
-		strcpy($<name>$,$<name>4); 
+		insert ($<attr.name>4, temp, scope, depth, 0); 
+		strcpy($<attr.type>$,temp);
+		strcpy($<attr.name>$,$<attr.name>4); 
 	}
 	;
 	
 params_list
 	:params_dec 
 	{
-		printf("\n Name %s ",$<type>1);
-		change_scope($<name>1, level); 
-		strcpy($<params>$, $<type>1);
+		printf("\n Name %s ",$<attr.type>1);
+		change_scope($<attr.name>1, level); 
+		strcpy($<attr.params>$, $<attr.type>1);
 	}
 	|params_dec ',' params_list 
 	{
-		//printf("\n Name %s ",$<name>1);
-		change_scope($<name>1, level); 
-		char temp[1000]; strcpy(temp, $<type>1); 
-		strcat(temp, $<params>3); strcpy($<params>$, temp); 
+		//printf("\n Name %s ",$<attr.name>1);
+		change_scope($<attr.name>1, level); 
+		char temp[1000]; strcpy(temp, $<attr.type>1); 
+		strcat(temp, $<attr.params>3); strcpy($<attr.params>$, temp); 
 	}
 	;
 	
 brackets
-	:'('expression')'{strcpy($<type>$, $<type>2);}
+	:'('expression')'{strcpy($<attr.type>$, $<attr.type>2);}
 	;
 
 expression
 	:constant 
 	{
-		node* t = lookup($<name>1, CONST_TBL);
+		node* t = lookup($<attr.name>1, CONST_TBL);
 
 		if(t!=NULL)
-			strcpy($<type>$, t->type);	
+			strcpy($<attr.type>$, t->type);	
+
+		strcpy(stack[++top],$<attr.name>1);
 	
 	
 	}
-	|IDENTIFIER bin_op expression 
+	|expression '+' {strcpy(stack[++top],"+");} expression
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL);
-		node* t = lookup($<name>1, SYM_TBL); 
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
 
-		if(strcmp(t->type, $<type>3))
+		if(strcmp($<attr.type>1, $<attr.type>4))
 			yyerror("Type mismatch");
 
-		strcpy($<type>$, t->type);
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
 	}
-	|constant bin_op expression 
+	|expression '*' {strcpy(stack[++top],"*");} expression
 	{
-		strcpy($<type>$, $<type>1);
-		
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
 
-		node* t = lookup($<name>1, CONST_TBL);
-
-		if(t!=NULL)
-		{
-			if(strcmp(t->type, $<type>3))
+		if(strcmp($<attr.type>1, $<attr.type>4))
 			yyerror("Type mismatch");
 
-			strcpy($<type>$, t->type);	
-		}
-		
-		
-		
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression '-' {strcpy(stack[++top],"-");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression '/' {strcpy(stack[++top],"/");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression '>' {strcpy(stack[++top],">");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression '<' {strcpy(stack[++top],"<");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression AND {strcpy(stack[++top],"&&");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression OR {strcpy(stack[++top],"||");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression EQUAL {strcpy(stack[++top],"==");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression GREATER {strcpy(stack[++top],">=");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression LESSER {strcpy(stack[++top],"<=");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>4))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
+	}
+	|expression NOTEQUAL {strcpy(stack[++top],"!=");} expression
+	{
+		//check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		//node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp($<attr.type>1, $<attr.type>3))
+			yyerror("Type mismatch");
+
+		strcpy($<attr.type>$, $<attr.type>1);
+
+		gencode();
 	}
 	|IDENTIFIER 
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL); 
-		node* t = lookup($<name>1, SYM_TBL); 
-		strcpy($<type>$, t->type);
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
+		node* t = lookup($<attr.name>1, SYM_TBL); 
+		strcpy($<attr.type>$, t->type);
+
+		strcpy(stack[++top],$<attr.name>1);
 	}
 	|un_op IDENTIFIER 
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL); 
-		node* t = lookup($<name>2, SYM_TBL); 
-		strcpy($<type>$, t->type);
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
+		node* t = lookup($<attr.name>2, SYM_TBL); 
+		strcpy($<attr.type>$, t->type);
+
+	}
+	|'-' IDENTIFIER %prec '$'
+	{
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
+		node* t = lookup($<attr.name>2, SYM_TBL); 
+		strcpy($<attr.type>$, t->type);
+
+		strcpy(stack[++top], $<attr.name>2);
+		gencode_umin();
+		
 	}
 	|un_op constant 
-	{strcpy($<type>$, $<type>2);}
+	{strcpy($<attr.type>$, $<attr.type>2);}
+	|'-' constant %prec '$'
+	{
+		strcpy($<attr.type>$, $<attr.type>2);
+
+		strcpy(stack[++top], $<attr.name>2);
+		gencode_umin();
+	}
 	|IDENTIFIER INCREMENT 
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL); 
-		node* t = lookup($<name>1, SYM_TBL); 
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
+		node* t = lookup($<attr.name>1, SYM_TBL); 
 
 		if(strcmp(t->type, "int"))
 			yyerror("Increment not possible");
 
-		strcpy($<type>$, t->type);
+		strcpy($<attr.type>$, t->type);
 	}
 	|IDENTIFIER DECREMENT 
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL); 
-		node* t = lookup($<name>1, SYM_TBL); 
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
+		node* t = lookup($<attr.name>1, SYM_TBL); 
 
 		if(strcmp(t->type, "int"))
 			yyerror("Increment not possible");
 
-		strcpy($<type>$, t->type);
-	}
-	|func_call bin_op expression 
-	{
-		check_scope($<name>1, scope, depth, FUN_TBL); 
-		node* t = lookup($<name>1, FUN_TBL); 
-
-		if(strcmp(t->type, $<type>3))
-			yyerror("Type mismatch");
-
-		strcpy($<type>$, t->type);
+		strcpy($<attr.type>$, t->type);
 	}
 	|func_call 
 	{
-		check_scope($<name>1, scope, depth, FUN_TBL); 
-		node* t = lookup($<name>1, FUN_TBL); 
+		check_scope($<attr.name>1, scope, depth, FUN_TBL); 
+		node* t = lookup($<attr.name>1, FUN_TBL); 
 
-		strcpy($<type>$, t->type);
+		strcpy($<attr.type>$, t->type);
 	}
 	|un_op func_call 
 	{
-		check_scope($<name>1, scope, depth, FUN_TBL); 
-		node* t = lookup($<name>2, FUN_TBL);
+		check_scope($<attr.name>1, scope, depth, FUN_TBL); 
+		node* t = lookup($<attr.name>2, FUN_TBL);
 
-		strcpy($<type>$, t->type);
+		strcpy($<attr.type>$, t->type);
 	}
 	|brackets 
-	{ strcpy($<type>$, $<type>1); }
+	{ strcpy($<attr.type>$, $<attr.type>1); }
 	|un_op brackets 
-	{ strcpy($<type>$, $<type>2); }
-	|brackets bin_op expression 
-	{
-		if(strcmp($<type>1, $<type>3))
-			yyerror("Type mismatch");
-
-		strcpy($<type>$, $<type>3);
-	}
+	{ strcpy($<attr.type>$, $<attr.type>2); }
 	|IDENTIFIER'['expression']'
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL); 	
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 	
 
-		node* t = lookup($<name>1, SYM_TBL);
+		node* t = lookup($<attr.name>1, SYM_TBL);
 
 
-		if(strcmp($<type>3, "int"))
+		if(strcmp($<attr.type>3, "int"))
 			yyerror("Array index not integer");
 		char temp[1000];
 		strcpy(temp, t->type);
 		temp[strlen(t->type)-1] = 0;
-		strcpy($<type>$, temp);
+		strcpy($<attr.type>$, temp);
 	}	
-	|IDENTIFIER'['expression']' bin_op expression
-	{
-		check_scope($<name>1, scope, depth, SYM_TBL);
-
-		if(strcmp($<type>3, "int"))
-			yyerror("Array index not integer"); 
-
-		node* t = lookup($<name>1, SYM_TBL);
-		char temp[100];
-		strcpy(temp, t->type);
-		temp[strlen(t->type)-1] = 0;
-		if(strcmp($<type>3, temp))
-			yyerror("Type mismatch");
-
-		strcpy($<type>$,temp);
-	}
 	|un_op IDENTIFIER'['expression']'
 	{
-		check_scope($<name>3, scope, depth, SYM_TBL);
+		check_scope($<attr.name>3, scope, depth, SYM_TBL);
 
-		if(strcmp($<type>4, "int"))
+		if(strcmp($<attr.type>4, "int"))
 			yyerror("Array index not integer");	
 
-		node* t = lookup($<name>1, SYM_TBL);
+		node* t = lookup($<attr.name>1, SYM_TBL);
 
-		strcpy($<type>$, t->type);
+		strcpy($<attr.type>$, t->type);
 	}
 	|IDENTIFIER '['expression']' INCREMENT
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL); 
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
 
-		if(strcmp($<type>3, "int"))
+		if(strcmp($<attr.type>3, "int"))
 			yyerror("Array index not integer");	
 
-		node* t = lookup($<name>1, SYM_TBL);
+		node* t = lookup($<attr.name>1, SYM_TBL);
 		char temp[100];
 		strcpy(temp, t->type);
 		temp[strlen(t->type)-1] = 0;
-		if(strcmp($<type>1, "int*"))
+		if(strcmp($<attr.type>1, "int*"))
 			yyerror("Type mismatch");
 
-		strcpy($<type>$, temp);
+		strcpy($<attr.type>$, temp);
 	}
 	|IDENTIFIER '['expression']' DECREMENT
 	{
-		check_scope($<name>1, scope, depth, SYM_TBL); 	
+		check_scope($<attr.name>1, scope, depth, SYM_TBL); 	
 
-		if(strcmp($<type>3, "int"))
+		if(strcmp($<attr.type>3, "int"))
 			yyerror("Array index not integer");		
 
-		node* t = lookup($<name>1, SYM_TBL);
+		node* t = lookup($<attr.name>1, SYM_TBL);
 		char temp[100];
 		strcpy(temp, t->type);
 		temp[strlen(t->type)-1] = 0;
-		if(strcmp($<type>1, "int*"))
+		if(strcmp($<attr.type>1, "int*"))
 			yyerror("Type mismatch");
 
-		strcpy($<type>$, temp);
+		strcpy($<attr.type>$, temp);
 	}
 	;
 
 const_list
 	:constant 
-	{ $<size>$ = 1; }
+	{ $<attr.size>$ = 1; }
 	|constant ',' const_list 
-	{ $<size>$ = $<size>3 + 1; }
+	{ $<attr.size>$ = $<attr.size>3 + 1; }
 	;
 
 statement_list
 	:statement 
-	{ strcpy($<type>$, $<type>1); }
+	{ strcpy($<attr.type>$, $<attr.type>1); }
 	|statement statement_list 
 	{ 
-		strcpy($<type>$, $<type>2);
+		strcpy($<attr.type>$, $<attr.type>2);
 
-		if(strlen($<type>1)>0 && strlen($<type>2)>0 && strcmp($<type>1, $<type>2))
+		if(strlen($<attr.type>1)>0 && strlen($<attr.type>2)>0 && strcmp($<attr.type>1, $<attr.type>2))
 			yyerror("Return type not matching");
 
-		if(strlen($<type>1)>0)
-			strcpy($<type>$, $<type>1);
+		if(strlen($<attr.type>1)>0)
+			strcpy($<attr.type>$, $<attr.type>1);
 
 
 	}
@@ -477,48 +621,41 @@ statement_list
 constant
 	:INTCONST 
 	{ 
-		insert ($<name>$, "int", scope, depth, 1); 
-		strcpy($<type>$, "int");
+		insert ($<attr.name>1, "int", scope, depth, 1); 
+		
+		strcpy($<attr.type>$, "int");
+
+		strcpy($<attr.name>$, $<attr.name>1);
 	}
 	|STRCONST 
 	{ 
-		insert ($<name>$, "string", scope, depth, 1); 
-		strcpy($<type>$, "char*");
+		insert ($<attr.name>1, "string", scope, depth, 1); 
+		
+		strcpy($<attr.type>$, "char*");
+
+		strcpy($<attr.name>$, $<attr.name>1);
 	}
 	|FLTCONST 
 	{ 
-		insert ($<name>$, "float", scope, depth, 1); 
-		strcpy($<type>$, "float");
+		insert ($<attr.name>1, "float", scope, depth, 1); 
+		
+		strcpy($<attr.type>$, "float");
+
+		strcpy($<attr.name>$, $<attr.name>1);
 	}
 	|CHARCONST 
 	{ 
-		insert ($<name>$, "char", scope, depth, 1); 
-		strcpy($<type>$, "char");
-	}
-	;
+		insert ($<attr.name>1, "char", scope, depth, 1); 
+		
+		strcpy($<attr.type>$, "char");
 
-bin_op
-	:'+'
-	|'-'
-	|'*'
-	|'/'
-	|AND
-	|OR
-	|EQUAL
-	|GREATER
-	|LESSER
-	|NOTEQUAL
-	|'%'
-	|'^'
-	|'|'
-	|'>'
-	|'<'
+		strcpy($<attr.name>$, $<attr.name>1);
+	}
 	;
 
 un_op
 	:'!' %prec '$'
 	|'+' %prec '$'
-	|'-' %prec '$'
 	|'*' %prec '$'
 	|'&' %prec '$'
 	|INCREMENT %prec '$'
@@ -528,81 +665,81 @@ un_op
 func_call
 	:IDENTIFIER '('expression_list')' 
 	{
-		check_scope($<name>1, scope, depth, FUN_TBL); 
-		node* t = lookup($<name>1, FUN_TBL); 
+		check_scope($<attr.name>1, scope, depth, FUN_TBL); 
+		node* t = lookup($<attr.name>1, FUN_TBL); 
 
 		if(t->func_def!=1)
 			yyerror("Function not defined"); 
 
-		if(strcmp($<params>3, t->params)) 
+		if(strcmp($<attr.params>3, t->params)) 
 			yyerror("Parameters type mismatch"); 
-		strcpy($<name>$, $<name>1);
+		strcpy($<attr.name>$, $<attr.name>1);
 
 
 	}
 	|IDENTIFIER '('')' 
 	{
-		check_scope($<name>1, scope, depth, FUN_TBL); 
-		node* t = lookup($<name>1, FUN_TBL); 
+		check_scope($<attr.name>1, scope, depth, FUN_TBL); 
+		node* t = lookup($<attr.name>1, FUN_TBL); 
 
 		if(t->func_def!=1)
 			yyerror("Function not defined"); 
 
 		if(t->params!=NULL) 
 			yyerror("Parameters type mismatch"); 
-		strcpy($<name>$, $<name>1);
+		strcpy($<attr.name>$, $<attr.name>1);
 	}
 	;
 
 expression_list
 	:expression 
-	{ strcpy($<params>$, $<type>1); }
+	{ strcpy($<attr.params>$, $<attr.type>1); }
 	|expression ',' expression_list 
 	{ 
 		char temp[1000]; 
-		strcpy(temp, $<type>1); 
-		strcat(temp, $<params>3); 
-		strcpy($<params>$, temp); 
+		strcpy(temp, $<attr.type>1); 
+		strcat(temp, $<attr.params>3); 
+		strcpy($<attr.params>$, temp); 
 	}
 	;
 
 statement
 	:multidec ';'
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<attr.type>$, ""); }
 	|conditional
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<attr.type>$, ""); }
 	|iterative
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<attr.type>$, ""); }
 	
 	|assignment
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<attr.type>$, ""); }
 	|RETURN expression';' 
-	{ strcpy($<type>$, $<type>2); }
+	{ strcpy($<attr.type>$, $<attr.type>2); }
 	|func_call';'
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<attr.type>$, ""); }
 	|func_def
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<attr.type>$, ""); }
 	|IDENTIFIER INCREMENT ';' 
 	{
-		strcpy($<type>$, "");
-		check_scope($<name>1, scope, depth, SYM_TBL);
+		strcpy($<attr.type>$, "");
+		check_scope($<attr.name>1, scope, depth, SYM_TBL);
 	}
 	|IDENTIFIER DECREMENT ';' 
 	{
-		strcpy($<type>$, "");
-		check_scope($<name>1, scope, depth, SYM_TBL);
+		strcpy($<attr.type>$, "");
+		check_scope($<attr.name>1, scope, depth, SYM_TBL);
 	}
 	|'{'statement_list'}'
-	{ strcpy($<type>$, $<type>2); }
+	{ strcpy($<attr.type>$, $<attr.type>2); }
 	|';'
-	{ strcpy($<type>$, ""); }
+	{ strcpy($<attr.type>$, ""); }
 	|BREAK';'
 	{ 
 		//printf("iterative: %d\n", iterative);
 		if(iterative<=0)
 			yyerror("Invalid use of break statement");
 			
-		strcpy($<type>$, "");
+		strcpy($<attr.type>$, "");
 	}
 	;
 
@@ -612,133 +749,133 @@ statement
 id_chain
 	:IDENTIFIER 
 	{ 
-		varpt++;strcpy(vars[varpt],$<name>1);
+		varpt++;strcpy(vars[varpt],$<attr.name>1);
 
-		insert ($<name>1, multidec_type, scope, depth, 0); 
+		insert ($<attr.name>1, multidec_type, scope, depth, 0); 
 	}
 	|IDENTIFIER '=' expression 
 	{ 
-		varpt++;strcpy(vars[varpt],$<name>1);
+		varpt++;strcpy(vars[varpt],$<attr.name>1);
 
-		insert ($<name>1, multidec_type, scope, depth, 0); 
+		insert ($<attr.name>1, multidec_type, scope, depth, 0); 
 	}
 	|'*'IDENTIFIER 
 	{ 
-		varpt++; strcpy(vars[varpt],$<name>2); 
+		varpt++; strcpy(vars[varpt],$<attr.name>2); 
 		pnt[varpt] = 1;
 
-		insert ($<name>2, multidec_type, scope, depth, 0); 
+		insert ($<attr.name>2, multidec_type, scope, depth, 0); 
 	}
 	|id_chain ',' '*'IDENTIFIER 
 	{ 
-		varpt++; strcpy(vars[varpt],$<name>4); 
+		varpt++; strcpy(vars[varpt],$<attr.name>4); 
 		pnt[varpt] = 1;
 
-		insert ($<name>4, multidec_type, scope, depth, 0);
+		insert ($<attr.name>4, multidec_type, scope, depth, 0);
 	}
 	|'*'IDENTIFIER '=' expression 
 	{ 
-		varpt++; strcpy(vars[varpt],$<name>2); 
+		varpt++; strcpy(vars[varpt],$<attr.name>2); 
 		pnt[varpt] = 1;
 
-		insert ($<name>2, multidec_type, scope, depth, 0);
+		insert ($<attr.name>2, multidec_type, scope, depth, 0);
 	}
 	|id_chain ',' '*'IDENTIFIER '=' expression 
 	{ 
-		varpt++; strcpy(vars[varpt],$<name>4); 
+		varpt++; strcpy(vars[varpt],$<attr.name>4); 
 		pnt[varpt] = 1;
-		insert ($<name>4, multidec_type, scope, depth, 0);
+		insert ($<attr.name>4, multidec_type, scope, depth, 0);
 	}
 	|id_chain ',' IDENTIFIER '=' expression 
 	{ 
-		varpt++;strcpy(vars[varpt],$<name>3);
+		varpt++;strcpy(vars[varpt],$<attr.name>3);
 
-		insert ($<name>3, multidec_type, scope, depth, 0); 
+		insert ($<attr.name>3, multidec_type, scope, depth, 0); 
 	}
 	|id_chain ',' IDENTIFIER 
 	{ 
-		varpt++;strcpy(vars[varpt],$<name>3);
+		varpt++;strcpy(vars[varpt],$<attr.name>3);
 
-		insert ($<name>3, multidec_type, scope, depth, 0); 
+		insert ($<attr.name>3, multidec_type, scope, depth, 0); 
 	}
 	|IDENTIFIER '['INTCONST']'
 	{ 
-		varpt++; strcpy(vars[varpt],$<name>1); 
+		varpt++; strcpy(vars[varpt],$<attr.name>1); 
 		pnt[varpt] = 1;
 
-		insert ($<name>1, multidec_type, scope, depth, 0); 
+		insert ($<attr.name>1, multidec_type, scope, depth, 0); 
 		
-		int t_array = atoi($<name>3);
+		int t_array = atoi($<attr.name>3);
 
 		if(t_array<=0)
 			yyerror("Invalid array size");
 
-		node* t = lookup($<name>1, SYM_TBL);
+		node* t = lookup($<attr.name>1, SYM_TBL);
 		t->array_bound = t_array; 
 
 	}
 	|IDENTIFIER'['']' '=' '{'const_list'}'
 	{
-		varpt++; strcpy(vars[varpt],$<name>1); 
+		varpt++; strcpy(vars[varpt],$<attr.name>1); 
 		pnt[varpt] = 1;
 
-		insert ($<name>1,multidec_type, scope, depth, 0);
+		insert ($<attr.name>1,multidec_type, scope, depth, 0);
 
-		node* t = lookup($<name>1, SYM_TBL);
-		t->array_bound = $<size>6;
+		node* t = lookup($<attr.name>1, SYM_TBL);
+		t->array_bound = $<attr.size>6;
 	}
 	|IDENTIFIER '['INTCONST']' '=' '{'const_list'}'
 	{
-		varpt++; strcpy(vars[varpt],$<name>1); 
+		varpt++; strcpy(vars[varpt],$<attr.name>1); 
 		pnt[varpt] = 1;
 
-		insert ($<name>1,multidec_type, scope, depth, 0);
+		insert ($<attr.name>1,multidec_type, scope, depth, 0);
 
-		int t_array = atoi($<name>3);
+		int t_array = atoi($<attr.name>3);
 
-		if(t_array < $<size>7)
+		if(t_array < $<attr.size>7)
 			yyerror("Array index out of bound");
-		node* t = lookup($<name>1, SYM_TBL);
+		node* t = lookup($<attr.name>1, SYM_TBL);
 		t->array_bound = t_array;
 	}
 	|id_chain ',' IDENTIFIER'['INTCONST']'
 	{ 
-		varpt++; strcpy(vars[varpt],$<name>3); 
+		varpt++; strcpy(vars[varpt],$<attr.name>3); 
 		pnt[varpt] = 1;
 		
-		insert ($<name>3, multidec_type, scope, depth, 0); 
+		insert ($<attr.name>3, multidec_type, scope, depth, 0); 
 		
-		int t_array = atoi($<name>5);
+		int t_array = atoi($<attr.name>5);
 
 		if(t_array<=0)
 			yyerror("Invalid array size");
 
-		node* t = lookup($<name>3, SYM_TBL);
+		node* t = lookup($<attr.name>3, SYM_TBL);
 		t->array_bound = t_array; 
 
 	}
 	|id_chain ',' IDENTIFIER '['']' '=' '{'const_list'}'
 	{
-		varpt++; strcpy(vars[varpt],$<name>3); 
+		varpt++; strcpy(vars[varpt],$<attr.name>3); 
 		pnt[varpt] = 1;
 
-		insert ($<name>3,multidec_type, scope, depth, 0);
+		insert ($<attr.name>3,multidec_type, scope, depth, 0);
 
-		node* t = lookup($<name>3, SYM_TBL);
-		t->array_bound = $<size>8;
+		node* t = lookup($<attr.name>3, SYM_TBL);
+		t->array_bound = $<attr.size>8;
 	}
 	|id_chain ',' IDENTIFIER '['INTCONST']' '=' '{'const_list'}'
 	{
-		varpt++; strcpy(vars[varpt],$<name>3); 
+		varpt++; strcpy(vars[varpt],$<attr.name>3); 
 		pnt[varpt] = 1; 
 
-		insert ($<name>3,multidec_type, scope, depth, 0);
+		insert ($<attr.name>3,multidec_type, scope, depth, 0);
 
-		int t_array = atoi($<name>5);
+		int t_array = atoi($<attr.name>5);
 
-		if(t_array < $<size>9)
+		if(t_array < $<attr.size>9)
 			yyerror("Array index out of bound");
-		node* t = lookup($<name>3, SYM_TBL);
+		node* t = lookup($<attr.name>3, SYM_TBL);
 		t->array_bound = t_array;
 	}
 	;
@@ -746,12 +883,12 @@ id_chain
 conditional
 	:IF '('expression')' statement %prec IF
 	{
-		if(strcmp($<type>3,"int"))
+		if(strcmp($<attr.type>3,"int"))
 			yyerror("Invalid expression");	
 	}
 	|IF '('expression')' statement  ELSE statement	
 	{
-		if(strcmp($<type>3,"int"))
+		if(strcmp($<attr.type>3,"int"))
 			yyerror("Invalid expression");	
 	}
 	;
@@ -759,7 +896,7 @@ iterative
 	:WHILE'('expression')' statement
 	{
 		iterative--;
-		if(strcmp($<type>3,"int"))
+		if(strcmp($<attr.type>3,"int"))
 			yyerror("Invalid expression");	
 	}
 	;
@@ -767,12 +904,12 @@ iterative
 
 assignment
 	:IDENTIFIER '=' expression ';'
-	{check_scope($<name>1, scope, depth, SYM_TBL);}
+	{check_scope($<attr.name>1, scope, depth, SYM_TBL);}
 	|'*'IDENTIFIER '=' expression';' 
-	{check_scope($<name>1, scope, depth, SYM_TBL);}
+	{check_scope($<attr.name>1, scope, depth, SYM_TBL);}
 	|IDENTIFIER'['expression']' '=' expression';'
 	{
-		if(strcmp($<type>3,"int"))
+		if(strcmp($<attr.type>3,"int"))
 			yyerror("Invalid array index");	
 	}
 	;

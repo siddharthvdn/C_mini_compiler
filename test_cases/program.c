@@ -1,11 +1,10 @@
 int main()
 {
-	int i = 0;
-	
-	while(1)
-	{	i++;
-	
-	break;
-	}	
-	return i;
+	int a;
+	int b;
+	int c;
+	int d;
+	d = -1;
+	d=a-c*a/d+b;
+	return 0;
 }
