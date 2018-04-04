@@ -76,7 +76,7 @@
 
 	void post_increment()
 	{
-		while(top!=0)
+		while(top>0)
 			printf("%s\n", stack[top--]);
 	}
 
@@ -128,6 +128,31 @@
 		int y=label[ltop--];
 		printf("goto L%d\n",label[ltop--]);
 		printf("L%d:\n",y);
+	}
+
+	void array(char* x)
+	{
+		strcpy(temp,"t");
+		strcat(temp,idx);
+		printf("%s = %s * 4\n",temp,stack[top]);
+		strcpy(stack[top],temp);
+		idx[0]++;
+		strcpy(temp,"t");
+		strcat(temp,idx);
+		printf("%s = %s [ %s ] \n",temp,x,stack[top]);
+		top--;
+		strcpy(stack[top],temp);
+		idx[0]++;	
+	}
+
+	void array_assign(char* x)
+	{
+		strcpy(temp,"t");
+		strcat(temp,idx);
+		printf("%s = %s * 4\n",temp,stack[top-1]);
+		idx[0]++;
+		printf("%s [ %s ] = %s \n",x,temp,stack[top]);
+		top-=2;
 	}
 	/* ICG Functions*/
 %}
@@ -681,7 +706,7 @@ expression
 	{ strcpy($<attr.type>$, $<attr.type>1); }
 	|un_op brackets 
 	{ strcpy($<attr.type>$, $<attr.type>2); }
-	|IDENTIFIER'['expression']'
+	|IDENTIFIER '['expression']'
 	{
 		check_scope($<attr.name>1, scope, depth, SYM_TBL); 	
 
@@ -694,6 +719,8 @@ expression
 		strcpy(temp, t->type);
 		temp[strlen(t->type)-1] = 0;
 		strcpy($<attr.type>$, temp);
+
+		array($<attr.name>1);
 	}	
 	|un_op IDENTIFIER'['expression']'
 	{
@@ -1108,7 +1135,9 @@ assignment
 	|IDENTIFIER'['expression']' '=' expression';'
 	{
 		if(strcmp($<attr.type>3,"int"))
-			yyerror("Invalid array index");	
+			yyerror("Invalid array index");
+
+		array_assign($<attr.name>1);
 	}
 	;
 
