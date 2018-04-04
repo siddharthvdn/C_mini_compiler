@@ -45,8 +45,11 @@
 	char stack[1000][100];
 	char idx[2] = "0";
 	char temp[2] = "t";
-
 	int top = 0;
+
+	int label[1000];
+	int ltop = 0;
+	int lnum = 0;
 
 	/* ICG Variables*/
 
@@ -69,6 +72,62 @@
 		top--;
 		strcpy(stack[top],temp);
 		idx[0]++;
+	}
+
+	void post_increment()
+	{
+		while(top!=0)
+			printf("%s\n", stack[top--]);
+	}
+
+	void if1()
+	{
+		lnum++;
+		strcpy(temp,"t");
+		strcat(temp,idx);
+		printf("%s = not %s\n",temp,stack[top]);
+	 	printf("if %s goto L%d\n",temp,lnum);
+		idx[0]++;
+		label[++ltop]=lnum;	
+		
+	}
+
+	void if2()
+	{
+		lnum++;
+		printf("goto L%d\n",lnum);
+		printf("L%d: \n",label[ltop--]);
+		label[++ltop]=lnum;
+	}
+
+	void if3()
+	{
+		printf("L%d:\n",label[ltop--]);
+	}
+
+	void w1()
+	{
+		lnum++;
+		label[++ltop]=lnum;
+		printf("L%d:\n",lnum);
+	}
+
+	void w2()
+	{
+		lnum++;
+		strcpy(temp,"t");
+		strcat(temp,idx);
+		printf("%s = not %s\n",temp,stack[top--]);
+	 	printf("if %s goto L%d\n",temp,lnum);
+		idx[0]++;
+		label[++ltop]=lnum;
+	}
+
+	void w3()
+	{
+		int y=label[ltop--];
+		printf("goto L%d\n",label[ltop--]);
+		printf("L%d:\n",y);
 	}
 	/* ICG Functions*/
 %}
@@ -497,6 +556,36 @@ expression
 		strcpy(stack[++top], $<attr.name>2);
 		gencode_umin();
 	}
+	|INCREMENT IDENTIFIER  
+	{
+		check_scope($<attr.name>2, scope, depth, SYM_TBL); 
+		node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		printf("\n");	
+		if(strcmp(t->type, "int"))
+			yyerror("Increment not possible");
+
+		strcpy($<attr.type>$, t->type);
+
+		
+		printf("%s = %s + 1\n", $<attr.name>2, $<attr.name>2);
+		strcpy(stack[++top], $<attr.name>2);
+
+
+	}
+	|DECREMENT IDENTIFIER  
+	{
+		check_scope($<attr.name>2, scope, depth, SYM_TBL); 
+		node* t = lookup($<attr.name>1, SYM_TBL); 
+
+		if(strcmp(t->type, "int"))
+			yyerror("Increment not possible");
+
+		strcpy($<attr.type>$, t->type);
+
+		printf("%s = %s - 1\n", $<attr.name>2, $<attr.name>2);
+		strcpy(stack[++top], $<attr.name>2);
+	}
 	|IDENTIFIER INCREMENT 
 	{
 		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
@@ -506,7 +595,38 @@ expression
 			yyerror("Increment not possible");
 
 		strcpy($<attr.type>$, t->type);
+
+		int i = 0;
+
+		char tstack[1000][100];
+
+		int ttop = 0;
+
+		
+		for(i=top; i>0; i--)
+			strcpy(tstack[++ttop],stack[i]);
+
+		top=0;
+			strcpy(temp,$<attr.name>1);
+		strcat(temp, " = ");
+		strcat(temp, $<attr.name>1);
+		strcat(temp, " + 1");
+		
+		strcpy(stack[++top], temp);
+
+
+		for(i=ttop; i>0; i--)
+			strcpy(stack[++top],tstack[i]);
+
+
+
+
+		strcpy(stack[++top], $<attr.name>1);
+
+	
+		
 	}
+
 	|IDENTIFIER DECREMENT 
 	{
 		check_scope($<attr.name>1, scope, depth, SYM_TBL); 
@@ -516,6 +636,32 @@ expression
 			yyerror("Increment not possible");
 
 		strcpy($<attr.type>$, t->type);
+
+		int i = 0;
+
+		char tstack[1000][100];
+
+		int ttop = 0;
+
+		
+		for(i=top; i>0; i--)
+			strcpy(tstack[++ttop],stack[i]);
+
+		top=0;
+		strcpy(temp,$<attr.name>1);
+		strcat(temp, " = ");
+		strcat(temp, $<attr.name>1);
+		strcat(temp, " - 1");
+		
+		strcpy(stack[++top], temp);
+
+
+		for(i=ttop; i>0; i--)
+			strcpy(stack[++top],tstack[i]);
+
+
+
+		strcpy(stack[++top], $<attr.name>1);	
 	}
 	|func_call 
 	{
@@ -658,8 +804,6 @@ un_op
 	|'+' %prec '$'
 	|'*' %prec '$'
 	|'&' %prec '$'
-	|INCREMENT %prec '$'
-	|DECREMENT %prec '$'
 	;
 
 func_call
@@ -705,34 +849,75 @@ expression_list
 
 statement
 	:multidec ';'
-	{ strcpy($<attr.type>$, ""); }
+	{ 
+		strcpy($<attr.type>$, ""); 
+		post_increment();
+	}
 	|conditional
-	{ strcpy($<attr.type>$, ""); }
+	{ 
+		strcpy($<attr.type>$, ""); 
+		post_increment();
+	}
 	|iterative
-	{ strcpy($<attr.type>$, ""); }
+	{ 
+		strcpy($<attr.type>$, ""); 
+		post_increment();
+	}
 	
 	|assignment
-	{ strcpy($<attr.type>$, ""); }
+	{ 
+		strcpy($<attr.type>$, ""); 
+		post_increment();
+	}
 	|RETURN expression';' 
-	{ strcpy($<attr.type>$, $<attr.type>2); }
+	{ 
+		strcpy($<attr.type>$, $<attr.type>2); 
+		post_increment();
+	}
 	|func_call';'
-	{ strcpy($<attr.type>$, ""); }
+	{ 
+		strcpy($<attr.type>$, ""); 
+		post_increment();
+	}
 	|func_def
-	{ strcpy($<attr.type>$, ""); }
+	{ 
+		strcpy($<attr.type>$, ""); 
+		post_increment();
+	}
 	|IDENTIFIER INCREMENT ';' 
 	{
 		strcpy($<attr.type>$, "");
 		check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		post_increment();
 	}
 	|IDENTIFIER DECREMENT ';' 
 	{
 		strcpy($<attr.type>$, "");
 		check_scope($<attr.name>1, scope, depth, SYM_TBL);
+		post_increment();
+	}
+	|INCREMENT IDENTIFIER  ';' 
+	{
+		strcpy($<attr.type>$, "");
+		check_scope($<attr.name>2, scope, depth, SYM_TBL);
+		post_increment();
+	}
+	|DECREMENT IDENTIFIER  ';' 
+	{
+		strcpy($<attr.type>$, "");
+		check_scope($<attr.name>2, scope, depth, SYM_TBL);
+		post_increment();
 	}
 	|'{'statement_list'}'
-	{ strcpy($<attr.type>$, $<attr.type>2); }
+	{ 
+		strcpy($<attr.type>$, $<attr.type>2); 
+		post_increment();
+	}
 	|';'
-	{ strcpy($<attr.type>$, ""); }
+	{ 
+		strcpy($<attr.type>$, ""); 
+		post_increment();
+	}
 	|BREAK';'
 	{ 
 		//printf("iterative: %d\n", iterative);
@@ -740,6 +925,8 @@ statement
 			yyerror("Invalid use of break statement");
 			
 		strcpy($<attr.type>$, "");
+
+		printf("goto L%d\n",label[ltop]);
 	}
 	;
 
@@ -880,23 +1067,28 @@ id_chain
 	}
 	;
 
+
 conditional
-	:IF '('expression')' statement %prec IF
+	:ifblock  %prec IF
 	{
-		if(strcmp($<attr.type>3,"int"))
-			yyerror("Invalid expression");	
+		printf("L%d: \n",label[ltop--]);
 	}
-	|IF '('expression')' statement  ELSE statement	
-	{
-		if(strcmp($<attr.type>3,"int"))
-			yyerror("Invalid expression");	
-	}
+	|ifblock  ELSE statement {if3();}	
 	;
+
+ifblock
+	:IF '('expression')'{if1();} statement
+	{
+
+		if(strcmp($<attr.type>3,"int"))
+			yyerror("Invalid expression");
+		if2();
+	}
 iterative
-	:WHILE'('expression')' statement
+	:WHILE {w1();} '('expression')' {w2();} statement {w3();}
 	{
 		iterative--;
-		if(strcmp($<attr.type>3,"int"))
+		if(strcmp($<attr.type>4,"int"))
 			yyerror("Invalid expression");	
 	}
 	;
@@ -904,7 +1096,13 @@ iterative
 
 assignment
 	:IDENTIFIER '=' expression ';'
-	{check_scope($<attr.name>1, scope, depth, SYM_TBL);}
+	{
+		check_scope($<attr.name>1, scope, depth, SYM_TBL);
+
+
+		printf("%s = %s\n",$<attr.name>1,stack[top]);
+		top--;
+	}
 	|'*'IDENTIFIER '=' expression';' 
 	{check_scope($<attr.name>1, scope, depth, SYM_TBL);}
 	|IDENTIFIER'['expression']' '=' expression';'

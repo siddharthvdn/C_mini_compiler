@@ -142,7 +142,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 77 "basic.y" /* yacc.c:1909  */
+#line 136 "basic.y" /* yacc.c:1909  */
 
     struct Attributes attr;
 

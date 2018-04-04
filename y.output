@@ -116,34 +116,34 @@ Grammar
    62           | '-' IDENTIFIER
    63           | un_op constant
    64           | '-' constant
-   65           | IDENTIFIER INCREMENT
-   66           | IDENTIFIER DECREMENT
-   67           | func_call
-   68           | un_op func_call
-   69           | brackets
-   70           | un_op brackets
-   71           | IDENTIFIER '[' expression ']'
-   72           | un_op IDENTIFIER '[' expression ']'
-   73           | IDENTIFIER '[' expression ']' INCREMENT
-   74           | IDENTIFIER '[' expression ']' DECREMENT
+   65           | INCREMENT IDENTIFIER
+   66           | DECREMENT IDENTIFIER
+   67           | IDENTIFIER INCREMENT
+   68           | IDENTIFIER DECREMENT
+   69           | func_call
+   70           | un_op func_call
+   71           | brackets
+   72           | un_op brackets
+   73           | IDENTIFIER '[' expression ']'
+   74           | un_op IDENTIFIER '[' expression ']'
+   75           | IDENTIFIER '[' expression ']' INCREMENT
+   76           | IDENTIFIER '[' expression ']' DECREMENT
 
-   75 const_list: constant
-   76           | constant ',' const_list
+   77 const_list: constant
+   78           | constant ',' const_list
 
-   77 statement_list: statement
-   78               | statement statement_list
+   79 statement_list: statement
+   80               | statement statement_list
 
-   79 constant: INTCONST
-   80         | STRCONST
-   81         | FLTCONST
-   82         | CHARCONST
+   81 constant: INTCONST
+   82         | STRCONST
+   83         | FLTCONST
+   84         | CHARCONST
 
-   83 un_op: '!'
-   84      | '+'
-   85      | '*'
-   86      | '&'
-   87      | INCREMENT
-   88      | DECREMENT
+   85 un_op: '!'
+   86      | '+'
+   87      | '*'
+   88      | '&'
 
    89 func_call: IDENTIFIER '(' expression_list ')'
    90          | IDENTIFIER '(' ')'
@@ -160,58 +160,70 @@ Grammar
    99          | func_def
   100          | IDENTIFIER INCREMENT ';'
   101          | IDENTIFIER DECREMENT ';'
-  102          | '{' statement_list '}'
-  103          | ';'
-  104          | BREAK ';'
+  102          | INCREMENT IDENTIFIER ';'
+  103          | DECREMENT IDENTIFIER ';'
+  104          | '{' statement_list '}'
+  105          | ';'
+  106          | BREAK ';'
 
-  105 id_chain: IDENTIFIER
-  106         | IDENTIFIER '=' expression
-  107         | '*' IDENTIFIER
-  108         | id_chain ',' '*' IDENTIFIER
-  109         | '*' IDENTIFIER '=' expression
-  110         | id_chain ',' '*' IDENTIFIER '=' expression
-  111         | id_chain ',' IDENTIFIER '=' expression
-  112         | id_chain ',' IDENTIFIER
-  113         | IDENTIFIER '[' INTCONST ']'
-  114         | IDENTIFIER '[' ']' '=' '{' const_list '}'
-  115         | IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
-  116         | id_chain ',' IDENTIFIER '[' INTCONST ']'
-  117         | id_chain ',' IDENTIFIER '[' ']' '=' '{' const_list '}'
-  118         | id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
+  107 id_chain: IDENTIFIER
+  108         | IDENTIFIER '=' expression
+  109         | '*' IDENTIFIER
+  110         | id_chain ',' '*' IDENTIFIER
+  111         | '*' IDENTIFIER '=' expression
+  112         | id_chain ',' '*' IDENTIFIER '=' expression
+  113         | id_chain ',' IDENTIFIER '=' expression
+  114         | id_chain ',' IDENTIFIER
+  115         | IDENTIFIER '[' INTCONST ']'
+  116         | IDENTIFIER '[' ']' '=' '{' const_list '}'
+  117         | IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
+  118         | id_chain ',' IDENTIFIER '[' INTCONST ']'
+  119         | id_chain ',' IDENTIFIER '[' ']' '=' '{' const_list '}'
+  120         | id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
 
-  119 conditional: IF '(' expression ')' statement
-  120            | IF '(' expression ')' statement ELSE statement
+  121 conditional: ifblock
+  122            | ifblock ELSE statement
 
-  121 iterative: WHILE '(' expression ')' statement
+  123 $@13: %empty
 
-  122 assignment: IDENTIFIER '=' expression ';'
-  123           | '*' IDENTIFIER '=' expression ';'
-  124           | IDENTIFIER '[' expression ']' '=' expression ';'
+  124 ifblock: IF '(' expression ')' $@13 statement
+
+  125 $@14: %empty
+
+  126 $@15: %empty
+
+  127 $@16: %empty
+
+  128 iterative: WHILE $@14 '(' expression ')' $@15 statement $@16
+
+  129 assignment: IDENTIFIER '=' expression ';'
+  130           | '*' IDENTIFIER '=' expression ';'
+  131           | IDENTIFIER '[' expression ']' '=' expression ';'
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'!' (33) 83
+'!' (33) 85
 '$' (36)
-'&' (38) 86
-'(' (40) 4 5 6 7 8 9 10 11 34 89 90 119 120 121
-')' (41) 4 5 6 7 8 9 10 11 34 89 90 119 120 121
-'*' (42) 8 9 10 11 31 39 85 107 108 109 110 123
-'+' (43) 37 84
-',' (44) 33 76 92 108 110 111 112 116 117 118
+'&' (38) 88
+'(' (40) 4 5 6 7 8 9 10 11 34 89 90 124 128
+')' (41) 4 5 6 7 8 9 10 11 34 89 90 124 128
+'*' (42) 8 9 10 11 31 39 87 109 110 111 112 130
+'+' (43) 37 86
+',' (44) 33 78 92 110 112 113 114 118 119 120
 '-' (45) 41 62 64
 '/' (47) 43
-';' (59) 2 6 7 10 11 93 97 98 100 101 103 104 122 123 124
+';' (59) 2 6 7 10 11 93 97 98 100 101 102 103 105 106 129 130 131
 '<' (60) 47
-'=' (61) 106 109 110 111 114 115 117 118 122 123 124
+'=' (61) 108 111 112 113 116 117 119 120 129 130 131
 '>' (62) 45
-'[' (91) 29 30 71 72 73 74 113 114 115 116 117 118 124
-']' (93) 29 30 71 72 73 74 113 114 115 116 117 118 124
+'[' (91) 29 30 73 74 75 76 115 116 117 118 119 120 131
+']' (93) 29 30 73 74 75 76 115 116 117 118 119 120 131
 '^' (94)
-'{' (123) 4 5 8 9 102 114 115 117 118
+'{' (123) 4 5 8 9 104 116 117 119 120
 '|' (124)
-'}' (125) 4 5 8 9 102 114 115 117 118
+'}' (125) 4 5 8 9 104 116 117 119 120
 error (256)
 OR (258) 51
 AND (259) 49
@@ -219,14 +231,14 @@ EQUAL (260) 53
 NOTEQUAL (261) 59
 LESSER (262) 57
 GREATER (263) 55
-IF (264) 119 120
-ELSE (265) 120
-STRCONST (266) 80
-INTCONST (267) 29 79 113 115 116 118
-FLTCONST (268) 81
-CHARCONST (269) 82
+IF (264) 124
+ELSE (265) 122
+STRCONST (266) 82
+INTCONST (267) 29 81 115 117 118 120
+FLTCONST (268) 83
+CHARCONST (269) 84
 AUTO (270) 20
-BREAK (271) 104
+BREAK (271) 106
 CASE (272)
 CHAR (273) 15
 CONST (274) 21
@@ -253,12 +265,12 @@ UNION (294)
 UNSIGNED (295) 25
 VOID (296) 17
 VOLATILE (297) 26
-WHILE (298) 121
-IDENTIFIER (299) 4 5 6 7 8 9 10 11 28 29 30 31 60 61 62 65 66 71 72
-    73 74 89 90 100 101 105 106 107 108 109 110 111 112 113 114 115
-    116 117 118 122 123 124
-INCREMENT (300) 65 73 87 100
-DECREMENT (301) 66 74 88 101
+WHILE (298) 128
+IDENTIFIER (299) 4 5 6 7 8 9 10 11 28 29 30 31 60 61 62 65 66 67 68
+    73 74 75 76 89 90 100 101 102 103 107 108 109 110 111 112 113 114
+    115 116 117 118 119 120 129 130 131
+INCREMENT (300) 65 67 75 100 102
+DECREMENT (301) 66 68 76 101 103
 
 
 Nonterminals, with rules where they appear
@@ -282,12 +294,12 @@ params_dec (73)
 params_list (74)
     on left: 32 33, on right: 4 6 8 10 33
 brackets (75)
-    on left: 34, on right: 69 70
+    on left: 34, on right: 71 72
 expression (76)
     on left: 35 37 39 41 43 45 47 49 51 53 55 57 59 60 61 62 63 64
-    65 66 67 68 69 70 71 72 73 74, on right: 34 37 39 41 43 45 47 49
-    51 53 55 57 59 71 72 73 74 91 92 97 106 109 110 111 119 120 121
-    122 123 124
+    65 66 67 68 69 70 71 72 73 74 75 76, on right: 34 37 39 41 43 45
+    47 49 51 53 55 57 59 73 74 75 76 91 92 97 108 111 112 113 124 128
+    129 130 131
 $@1 (77)
     on left: 36, on right: 37
 $@2 (78)
@@ -313,29 +325,39 @@ $@11 (87)
 @12 (88)
     on left: 58, on right: 59
 const_list (89)
-    on left: 75 76, on right: 76 114 115 117 118
+    on left: 77 78, on right: 78 116 117 119 120
 statement_list (90)
-    on left: 77 78, on right: 4 5 8 9 78 102
+    on left: 79 80, on right: 4 5 8 9 80 104
 constant (91)
-    on left: 79 80 81 82, on right: 35 63 64 75 76
+    on left: 81 82 83 84, on right: 35 63 64 77 78
 un_op (92)
-    on left: 83 84 85 86 87 88, on right: 61 63 68 70 72
+    on left: 85 86 87 88, on right: 61 63 70 72 74
 func_call (93)
-    on left: 89 90, on right: 67 68 98
+    on left: 89 90, on right: 69 70 98
 expression_list (94)
     on left: 91 92, on right: 89 92
 statement (95)
-    on left: 93 94 95 96 97 98 99 100 101 102 103 104, on right: 77
-    78 119 120 121
+    on left: 93 94 95 96 97 98 99 100 101 102 103 104 105 106, on right:
+    79 80 122 124 128
 id_chain (96)
-    on left: 105 106 107 108 109 110 111 112 113 114 115 116 117 118,
-    on right: 12 108 110 111 112 116 117 118
+    on left: 107 108 109 110 111 112 113 114 115 116 117 118 119 120,
+    on right: 12 110 112 113 114 118 119 120
 conditional (97)
-    on left: 119 120, on right: 94
-iterative (98)
-    on left: 121, on right: 95
-assignment (99)
-    on left: 122 123 124, on right: 96
+    on left: 121 122, on right: 94
+ifblock (98)
+    on left: 124, on right: 121 122
+$@13 (99)
+    on left: 123, on right: 124
+iterative (100)
+    on left: 128, on right: 95
+$@14 (101)
+    on left: 125, on right: 128
+$@15 (102)
+    on left: 126, on right: 128
+$@16 (103)
+    on left: 127, on right: 128
+assignment (104)
+    on left: 129 130 131, on right: 96
 
 
 State 0
@@ -581,8 +603,8 @@ State 24
     9         | modifiers datatype '*' . IDENTIFIER '(' ')' '{' statement_list '}'
    10         | modifiers datatype '*' . IDENTIFIER '(' params_list ')' ';'
    11         | modifiers datatype '*' . IDENTIFIER '(' ')' ';'
-  107 id_chain: '*' . IDENTIFIER
-  109         | '*' . IDENTIFIER '=' expression
+  109 id_chain: '*' . IDENTIFIER
+  111         | '*' . IDENTIFIER '=' expression
 
     IDENTIFIER  shift, and go to state 27
 
@@ -593,29 +615,29 @@ State 25
     5         | modifiers datatype IDENTIFIER . '(' ')' '{' statement_list '}'
     6         | modifiers datatype IDENTIFIER . '(' params_list ')' ';'
     7         | modifiers datatype IDENTIFIER . '(' ')' ';'
-  105 id_chain: IDENTIFIER .
-  106         | IDENTIFIER . '=' expression
-  113         | IDENTIFIER . '[' INTCONST ']'
-  114         | IDENTIFIER . '[' ']' '=' '{' const_list '}'
-  115         | IDENTIFIER . '[' INTCONST ']' '=' '{' const_list '}'
+  107 id_chain: IDENTIFIER .
+  108         | IDENTIFIER . '=' expression
+  115         | IDENTIFIER . '[' INTCONST ']'
+  116         | IDENTIFIER . '[' ']' '=' '{' const_list '}'
+  117         | IDENTIFIER . '[' INTCONST ']' '=' '{' const_list '}'
 
     '='  shift, and go to state 28
     '('  shift, and go to state 29
     '['  shift, and go to state 30
 
-    $default  reduce using rule 105 (id_chain)
+    $default  reduce using rule 107 (id_chain)
 
 
 State 26
 
    12 multidec: modifiers datatype id_chain .
-  108 id_chain: id_chain . ',' '*' IDENTIFIER
-  110         | id_chain . ',' '*' IDENTIFIER '=' expression
-  111         | id_chain . ',' IDENTIFIER '=' expression
-  112         | id_chain . ',' IDENTIFIER
-  116         | id_chain . ',' IDENTIFIER '[' INTCONST ']'
-  117         | id_chain . ',' IDENTIFIER '[' ']' '=' '{' const_list '}'
-  118         | id_chain . ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
+  110 id_chain: id_chain . ',' '*' IDENTIFIER
+  112         | id_chain . ',' '*' IDENTIFIER '=' expression
+  113         | id_chain . ',' IDENTIFIER '=' expression
+  114         | id_chain . ',' IDENTIFIER
+  118         | id_chain . ',' IDENTIFIER '[' INTCONST ']'
+  119         | id_chain . ',' IDENTIFIER '[' ']' '=' '{' const_list '}'
+  120         | id_chain . ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
 
     ','  shift, and go to state 31
 
@@ -628,18 +650,18 @@ State 27
     9         | modifiers datatype '*' IDENTIFIER . '(' ')' '{' statement_list '}'
    10         | modifiers datatype '*' IDENTIFIER . '(' params_list ')' ';'
    11         | modifiers datatype '*' IDENTIFIER . '(' ')' ';'
-  107 id_chain: '*' IDENTIFIER .
-  109         | '*' IDENTIFIER . '=' expression
+  109 id_chain: '*' IDENTIFIER .
+  111         | '*' IDENTIFIER . '=' expression
 
     '='  shift, and go to state 32
     '('  shift, and go to state 33
 
-    $default  reduce using rule 107 (id_chain)
+    $default  reduce using rule 109 (id_chain)
 
 
 State 28
 
-  106 id_chain: IDENTIFIER '=' . expression
+  108 id_chain: IDENTIFIER '=' . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -687,9 +709,9 @@ State 29
 
 State 30
 
-  113 id_chain: IDENTIFIER '[' . INTCONST ']'
-  114         | IDENTIFIER '[' . ']' '=' '{' const_list '}'
-  115         | IDENTIFIER '[' . INTCONST ']' '=' '{' const_list '}'
+  115 id_chain: IDENTIFIER '[' . INTCONST ']'
+  116         | IDENTIFIER '[' . ']' '=' '{' const_list '}'
+  117         | IDENTIFIER '[' . INTCONST ']' '=' '{' const_list '}'
 
     INTCONST  shift, and go to state 56
     ']'       shift, and go to state 57
@@ -697,13 +719,13 @@ State 30
 
 State 31
 
-  108 id_chain: id_chain ',' . '*' IDENTIFIER
-  110         | id_chain ',' . '*' IDENTIFIER '=' expression
-  111         | id_chain ',' . IDENTIFIER '=' expression
-  112         | id_chain ',' . IDENTIFIER
-  116         | id_chain ',' . IDENTIFIER '[' INTCONST ']'
-  117         | id_chain ',' . IDENTIFIER '[' ']' '=' '{' const_list '}'
-  118         | id_chain ',' . IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
+  110 id_chain: id_chain ',' . '*' IDENTIFIER
+  112         | id_chain ',' . '*' IDENTIFIER '=' expression
+  113         | id_chain ',' . IDENTIFIER '=' expression
+  114         | id_chain ',' . IDENTIFIER
+  118         | id_chain ',' . IDENTIFIER '[' INTCONST ']'
+  119         | id_chain ',' . IDENTIFIER '[' ']' '=' '{' const_list '}'
+  120         | id_chain ',' . IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}'
 
     '*'         shift, and go to state 58
     IDENTIFIER  shift, and go to state 59
@@ -711,7 +733,7 @@ State 31
 
 State 32
 
-  109 id_chain: '*' IDENTIFIER '=' . expression
+  111 id_chain: '*' IDENTIFIER '=' . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -759,16 +781,16 @@ State 33
 
 State 34
 
-   86 un_op: '&' .
+   88 un_op: '&' .
 
-    $default  reduce using rule 86 (un_op)
+    $default  reduce using rule 88 (un_op)
 
 
 State 35
 
-   84 un_op: '+' .
+   86 un_op: '+' .
 
-    $default  reduce using rule 84 (un_op)
+    $default  reduce using rule 86 (un_op)
 
 
 State 36
@@ -787,47 +809,47 @@ State 36
 
 State 37
 
-   85 un_op: '*' .
+   87 un_op: '*' .
 
-    $default  reduce using rule 85 (un_op)
+    $default  reduce using rule 87 (un_op)
 
 
 State 38
 
-   80 constant: STRCONST .
+   82 constant: STRCONST .
 
-    $default  reduce using rule 80 (constant)
+    $default  reduce using rule 82 (constant)
 
 
 State 39
 
-   79 constant: INTCONST .
-
-    $default  reduce using rule 79 (constant)
-
-
-State 40
-
-   81 constant: FLTCONST .
+   81 constant: INTCONST .
 
     $default  reduce using rule 81 (constant)
 
 
+State 40
+
+   83 constant: FLTCONST .
+
+    $default  reduce using rule 83 (constant)
+
+
 State 41
 
-   82 constant: CHARCONST .
+   84 constant: CHARCONST .
 
-    $default  reduce using rule 82 (constant)
+    $default  reduce using rule 84 (constant)
 
 
 State 42
 
    60 expression: IDENTIFIER .
-   65           | IDENTIFIER . INCREMENT
-   66           | IDENTIFIER . DECREMENT
-   71           | IDENTIFIER . '[' expression ']'
-   73           | IDENTIFIER . '[' expression ']' INCREMENT
-   74           | IDENTIFIER . '[' expression ']' DECREMENT
+   67           | IDENTIFIER . INCREMENT
+   68           | IDENTIFIER . DECREMENT
+   73           | IDENTIFIER . '[' expression ']'
+   75           | IDENTIFIER . '[' expression ']' INCREMENT
+   76           | IDENTIFIER . '[' expression ']' DECREMENT
    89 func_call: IDENTIFIER . '(' expression_list ')'
    90          | IDENTIFIER . '(' ')'
 
@@ -841,16 +863,16 @@ State 42
 
 State 43
 
-   87 un_op: INCREMENT .
+   65 expression: INCREMENT . IDENTIFIER
 
-    $default  reduce using rule 87 (un_op)
+    IDENTIFIER  shift, and go to state 69
 
 
 State 44
 
-   88 un_op: DECREMENT .
+   66 expression: DECREMENT . IDENTIFIER
 
-    $default  reduce using rule 88 (un_op)
+    IDENTIFIER  shift, and go to state 70
 
 
 State 45
@@ -872,7 +894,7 @@ State 45
     '!'         shift, and go to state 46
 
     brackets    go to state 47
-    expression  go to state 69
+    expression  go to state 71
     constant    go to state 49
     un_op       go to state 50
     func_call   go to state 51
@@ -880,16 +902,16 @@ State 45
 
 State 46
 
-   83 un_op: '!' .
+   85 un_op: '!' .
 
-    $default  reduce using rule 83 (un_op)
+    $default  reduce using rule 85 (un_op)
 
 
 State 47
 
-   69 expression: brackets .
+   71 expression: brackets .
 
-    $default  reduce using rule 69 (expression)
+    $default  reduce using rule 71 (expression)
 
 
 State 48
@@ -906,22 +928,22 @@ State 48
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-  106 id_chain: IDENTIFIER '=' expression .
+  108 id_chain: IDENTIFIER '=' expression .
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
 
-    $default  reduce using rule 106 (id_chain)
+    $default  reduce using rule 108 (id_chain)
 
 
 State 49
@@ -935,27 +957,27 @@ State 50
 
    61 expression: un_op . IDENTIFIER
    63           | un_op . constant
-   68           | un_op . func_call
-   70           | un_op . brackets
-   72           | un_op . IDENTIFIER '[' expression ']'
+   70           | un_op . func_call
+   72           | un_op . brackets
+   74           | un_op . IDENTIFIER '[' expression ']'
 
     STRCONST    shift, and go to state 38
     INTCONST    shift, and go to state 39
     FLTCONST    shift, and go to state 40
     CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 82
+    IDENTIFIER  shift, and go to state 84
     '('         shift, and go to state 45
 
-    brackets   go to state 83
-    constant   go to state 84
-    func_call  go to state 85
+    brackets   go to state 85
+    constant   go to state 86
+    func_call  go to state 87
 
 
 State 51
 
-   67 expression: func_call .
+   69 expression: func_call .
 
-    $default  reduce using rule 67 (expression)
+    $default  reduce using rule 69 (expression)
 
 
 State 52
@@ -963,8 +985,8 @@ State 52
     5 func_def: modifiers datatype IDENTIFIER '(' ')' . '{' statement_list '}'
     7         | modifiers datatype IDENTIFIER '(' ')' . ';'
 
-    ';'  shift, and go to state 86
-    '{'  shift, and go to state 87
+    ';'  shift, and go to state 88
+    '{'  shift, and go to state 89
 
 
 State 53
@@ -982,7 +1004,7 @@ State 53
     SHORT   shift, and go to state 20
     VOID    shift, and go to state 21
 
-    datatype  go to state 88
+    datatype  go to state 90
 
 
 State 54
@@ -990,7 +1012,7 @@ State 54
    32 params_list: params_dec .
    33            | params_dec . ',' params_list
 
-    ','  shift, and go to state 89
+    ','  shift, and go to state 91
 
     $default  reduce using rule 32 (params_list)
 
@@ -1000,44 +1022,44 @@ State 55
     4 func_def: modifiers datatype IDENTIFIER '(' params_list . ')' '{' statement_list '}'
     6         | modifiers datatype IDENTIFIER '(' params_list . ')' ';'
 
-    ')'  shift, and go to state 90
+    ')'  shift, and go to state 92
 
 
 State 56
 
-  113 id_chain: IDENTIFIER '[' INTCONST . ']'
-  115         | IDENTIFIER '[' INTCONST . ']' '=' '{' const_list '}'
+  115 id_chain: IDENTIFIER '[' INTCONST . ']'
+  117         | IDENTIFIER '[' INTCONST . ']' '=' '{' const_list '}'
 
-    ']'  shift, and go to state 91
+    ']'  shift, and go to state 93
 
 
 State 57
 
-  114 id_chain: IDENTIFIER '[' ']' . '=' '{' const_list '}'
+  116 id_chain: IDENTIFIER '[' ']' . '=' '{' const_list '}'
 
-    '='  shift, and go to state 92
+    '='  shift, and go to state 94
 
 
 State 58
 
-  108 id_chain: id_chain ',' '*' . IDENTIFIER
-  110         | id_chain ',' '*' . IDENTIFIER '=' expression
+  110 id_chain: id_chain ',' '*' . IDENTIFIER
+  112         | id_chain ',' '*' . IDENTIFIER '=' expression
 
-    IDENTIFIER  shift, and go to state 93
+    IDENTIFIER  shift, and go to state 95
 
 
 State 59
 
-  111 id_chain: id_chain ',' IDENTIFIER . '=' expression
-  112         | id_chain ',' IDENTIFIER .
-  116         | id_chain ',' IDENTIFIER . '[' INTCONST ']'
-  117         | id_chain ',' IDENTIFIER . '[' ']' '=' '{' const_list '}'
-  118         | id_chain ',' IDENTIFIER . '[' INTCONST ']' '=' '{' const_list '}'
+  113 id_chain: id_chain ',' IDENTIFIER . '=' expression
+  114         | id_chain ',' IDENTIFIER .
+  118         | id_chain ',' IDENTIFIER . '[' INTCONST ']'
+  119         | id_chain ',' IDENTIFIER . '[' ']' '=' '{' const_list '}'
+  120         | id_chain ',' IDENTIFIER . '[' INTCONST ']' '=' '{' const_list '}'
 
-    '='  shift, and go to state 94
-    '['  shift, and go to state 95
+    '='  shift, and go to state 96
+    '['  shift, and go to state 97
 
-    $default  reduce using rule 112 (id_chain)
+    $default  reduce using rule 114 (id_chain)
 
 
 State 60
@@ -1054,22 +1076,22 @@ State 60
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-  109 id_chain: '*' IDENTIFIER '=' expression .
+  111 id_chain: '*' IDENTIFIER '=' expression .
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
 
-    $default  reduce using rule 109 (id_chain)
+    $default  reduce using rule 111 (id_chain)
 
 
 State 61
@@ -1077,8 +1099,8 @@ State 61
     9 func_def: modifiers datatype '*' IDENTIFIER '(' ')' . '{' statement_list '}'
    11         | modifiers datatype '*' IDENTIFIER '(' ')' . ';'
 
-    ';'  shift, and go to state 96
-    '{'  shift, and go to state 97
+    ';'  shift, and go to state 98
+    '{'  shift, and go to state 99
 
 
 State 62
@@ -1086,7 +1108,7 @@ State 62
     8 func_def: modifiers datatype '*' IDENTIFIER '(' params_list . ')' '{' statement_list '}'
    10         | modifiers datatype '*' IDENTIFIER '(' params_list . ')' ';'
 
-    ')'  shift, and go to state 98
+    ')'  shift, and go to state 100
 
 
 State 63
@@ -1105,16 +1127,16 @@ State 64
 
 State 65
 
-   65 expression: IDENTIFIER INCREMENT .
+   67 expression: IDENTIFIER INCREMENT .
 
-    $default  reduce using rule 65 (expression)
+    $default  reduce using rule 67 (expression)
 
 
 State 66
 
-   66 expression: IDENTIFIER DECREMENT .
+   68 expression: IDENTIFIER DECREMENT .
 
-    $default  reduce using rule 66 (expression)
+    $default  reduce using rule 68 (expression)
 
 
 State 67
@@ -1134,22 +1156,22 @@ State 67
     INCREMENT   shift, and go to state 43
     DECREMENT   shift, and go to state 44
     '('         shift, and go to state 45
-    ')'         shift, and go to state 99
+    ')'         shift, and go to state 101
     '!'         shift, and go to state 46
 
     brackets         go to state 47
-    expression       go to state 100
+    expression       go to state 102
     constant         go to state 49
     un_op            go to state 50
     func_call        go to state 51
-    expression_list  go to state 101
+    expression_list  go to state 103
 
 
 State 68
 
-   71 expression: IDENTIFIER '[' . expression ']'
-   73           | IDENTIFIER '[' . expression ']' INCREMENT
-   74           | IDENTIFIER '[' . expression ']' DECREMENT
+   73 expression: IDENTIFIER '[' . expression ']'
+   75           | IDENTIFIER '[' . expression ']' INCREMENT
+   76           | IDENTIFIER '[' . expression ']' DECREMENT
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1166,13 +1188,27 @@ State 68
     '!'         shift, and go to state 46
 
     brackets    go to state 47
-    expression  go to state 102
+    expression  go to state 104
     constant    go to state 49
     un_op       go to state 50
     func_call   go to state 51
 
 
 State 69
+
+   65 expression: INCREMENT IDENTIFIER .
+
+    $default  reduce using rule 65 (expression)
+
+
+State 70
+
+   66 expression: DECREMENT IDENTIFIER .
+
+    $default  reduce using rule 66 (expression)
+
+
+State 71
 
    34 brackets: '(' expression . ')'
    37 expression: expression . '+' $@1 expression
@@ -1188,215 +1224,218 @@ State 69
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ')'       shift, and go to state 103
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ')'       shift, and go to state 105
 
 
-State 70
+State 72
 
    51 expression: expression OR . $@8 expression
 
     $default  reduce using rule 50 ($@8)
 
-    $@8  go to state 104
+    $@8  go to state 106
 
 
-State 71
+State 73
 
    49 expression: expression AND . $@7 expression
 
     $default  reduce using rule 48 ($@7)
 
-    $@7  go to state 105
+    $@7  go to state 107
 
 
-State 72
+State 74
 
    53 expression: expression EQUAL . $@9 expression
 
     $default  reduce using rule 52 ($@9)
 
-    $@9  go to state 106
+    $@9  go to state 108
 
 
-State 73
+State 75
 
    59 expression: expression NOTEQUAL . @12 expression
 
     $default  reduce using rule 58 (@12)
 
-    @12  go to state 107
+    @12  go to state 109
 
 
-State 74
+State 76
 
    47 expression: expression '<' . $@6 expression
 
     $default  reduce using rule 46 ($@6)
 
-    $@6  go to state 108
+    $@6  go to state 110
 
 
-State 75
+State 77
 
    45 expression: expression '>' . $@5 expression
 
     $default  reduce using rule 44 ($@5)
 
-    $@5  go to state 109
+    $@5  go to state 111
 
 
-State 76
+State 78
 
    57 expression: expression LESSER . $@11 expression
 
     $default  reduce using rule 56 ($@11)
 
-    $@11  go to state 110
+    $@11  go to state 112
 
 
-State 77
+State 79
 
    55 expression: expression GREATER . $@10 expression
 
     $default  reduce using rule 54 ($@10)
 
-    $@10  go to state 111
+    $@10  go to state 113
 
 
-State 78
+State 80
 
    37 expression: expression '+' . $@1 expression
 
     $default  reduce using rule 36 ($@1)
 
-    $@1  go to state 112
+    $@1  go to state 114
 
 
-State 79
+State 81
 
    41 expression: expression '-' . $@3 expression
 
     $default  reduce using rule 40 ($@3)
 
-    $@3  go to state 113
+    $@3  go to state 115
 
 
-State 80
+State 82
 
    39 expression: expression '*' . $@2 expression
 
     $default  reduce using rule 38 ($@2)
 
-    $@2  go to state 114
+    $@2  go to state 116
 
 
-State 81
+State 83
 
    43 expression: expression '/' . $@4 expression
 
     $default  reduce using rule 42 ($@4)
 
-    $@4  go to state 115
+    $@4  go to state 117
 
 
-State 82
+State 84
 
    61 expression: un_op IDENTIFIER .
-   72           | un_op IDENTIFIER . '[' expression ']'
+   74           | un_op IDENTIFIER . '[' expression ']'
    89 func_call: IDENTIFIER . '(' expression_list ')'
    90          | IDENTIFIER . '(' ')'
 
     '('  shift, and go to state 67
-    '['  shift, and go to state 116
+    '['  shift, and go to state 118
 
     $default  reduce using rule 61 (expression)
 
 
-State 83
+State 85
 
-   70 expression: un_op brackets .
+   72 expression: un_op brackets .
 
-    $default  reduce using rule 70 (expression)
+    $default  reduce using rule 72 (expression)
 
 
-State 84
+State 86
 
    63 expression: un_op constant .
 
     $default  reduce using rule 63 (expression)
 
 
-State 85
+State 87
 
-   68 expression: un_op func_call .
+   70 expression: un_op func_call .
 
-    $default  reduce using rule 68 (expression)
+    $default  reduce using rule 70 (expression)
 
 
-State 86
+State 88
 
     7 func_def: modifiers datatype IDENTIFIER '(' ')' ';' .
 
     $default  reduce using rule 7 (func_def)
 
 
-State 87
+State 89
 
     5 func_def: modifiers datatype IDENTIFIER '(' ')' '{' . statement_list '}'
 
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
     AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
+    BREAK       shift, and go to state 121
     CONST       shift, and go to state 2
     EXTERN      shift, and go to state 3
     REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
+    RETURN      shift, and go to state 122
     SIGNED      shift, and go to state 5
     UNSIGNED    shift, and go to state 6
     VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
 
     $default  reduce using rule 27 (modifiers)
 
-    func_def        go to state 125
-    multidec        go to state 126
+    func_def        go to state 129
+    multidec        go to state 130
     modifiers       go to state 11
-    statement_list  go to state 127
-    func_call       go to state 128
-    statement       go to state 129
-    conditional     go to state 130
-    iterative       go to state 131
-    assignment      go to state 132
+    statement_list  go to state 131
+    func_call       go to state 132
+    statement       go to state 133
+    conditional     go to state 134
+    ifblock         go to state 135
+    iterative       go to state 136
+    assignment      go to state 137
 
 
-State 88
+State 90
 
    28 params_dec: modifiers datatype . IDENTIFIER
    29           | modifiers datatype . IDENTIFIER '[' INTCONST ']'
    30           | modifiers datatype . IDENTIFIER '[' ']'
    31           | modifiers datatype . '*' IDENTIFIER
 
-    '*'         shift, and go to state 133
-    IDENTIFIER  shift, and go to state 134
+    '*'         shift, and go to state 138
+    IDENTIFIER  shift, and go to state 139
 
 
-State 89
+State 91
 
    33 params_list: params_dec ',' . params_list
 
@@ -1412,48 +1451,48 @@ State 89
 
     modifiers    go to state 53
     params_dec   go to state 54
-    params_list  go to state 135
-
-
-State 90
-
-    4 func_def: modifiers datatype IDENTIFIER '(' params_list ')' . '{' statement_list '}'
-    6         | modifiers datatype IDENTIFIER '(' params_list ')' . ';'
-
-    ';'  shift, and go to state 136
-    '{'  shift, and go to state 137
-
-
-State 91
-
-  113 id_chain: IDENTIFIER '[' INTCONST ']' .
-  115         | IDENTIFIER '[' INTCONST ']' . '=' '{' const_list '}'
-
-    '='  shift, and go to state 138
-
-    $default  reduce using rule 113 (id_chain)
+    params_list  go to state 140
 
 
 State 92
 
-  114 id_chain: IDENTIFIER '[' ']' '=' . '{' const_list '}'
+    4 func_def: modifiers datatype IDENTIFIER '(' params_list ')' . '{' statement_list '}'
+    6         | modifiers datatype IDENTIFIER '(' params_list ')' . ';'
 
-    '{'  shift, and go to state 139
+    ';'  shift, and go to state 141
+    '{'  shift, and go to state 142
 
 
 State 93
 
-  108 id_chain: id_chain ',' '*' IDENTIFIER .
-  110         | id_chain ',' '*' IDENTIFIER . '=' expression
+  115 id_chain: IDENTIFIER '[' INTCONST ']' .
+  117         | IDENTIFIER '[' INTCONST ']' . '=' '{' const_list '}'
 
-    '='  shift, and go to state 140
+    '='  shift, and go to state 143
 
-    $default  reduce using rule 108 (id_chain)
+    $default  reduce using rule 115 (id_chain)
 
 
 State 94
 
-  111 id_chain: id_chain ',' IDENTIFIER '=' . expression
+  116 id_chain: IDENTIFIER '[' ']' '=' . '{' const_list '}'
+
+    '{'  shift, and go to state 144
+
+
+State 95
+
+  110 id_chain: id_chain ',' '*' IDENTIFIER .
+  112         | id_chain ',' '*' IDENTIFIER . '=' expression
+
+    '='  shift, and go to state 145
+
+    $default  reduce using rule 110 (id_chain)
+
+
+State 96
+
+  113 id_chain: id_chain ',' IDENTIFIER '=' . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1470,117 +1509,79 @@ State 94
     '!'         shift, and go to state 46
 
     brackets    go to state 47
-    expression  go to state 141
+    expression  go to state 146
     constant    go to state 49
     un_op       go to state 50
     func_call   go to state 51
 
 
-State 95
+State 97
 
-  116 id_chain: id_chain ',' IDENTIFIER '[' . INTCONST ']'
-  117         | id_chain ',' IDENTIFIER '[' . ']' '=' '{' const_list '}'
-  118         | id_chain ',' IDENTIFIER '[' . INTCONST ']' '=' '{' const_list '}'
+  118 id_chain: id_chain ',' IDENTIFIER '[' . INTCONST ']'
+  119         | id_chain ',' IDENTIFIER '[' . ']' '=' '{' const_list '}'
+  120         | id_chain ',' IDENTIFIER '[' . INTCONST ']' '=' '{' const_list '}'
 
-    INTCONST  shift, and go to state 142
-    ']'       shift, and go to state 143
+    INTCONST  shift, and go to state 147
+    ']'       shift, and go to state 148
 
 
-State 96
+State 98
 
    11 func_def: modifiers datatype '*' IDENTIFIER '(' ')' ';' .
 
     $default  reduce using rule 11 (func_def)
 
 
-State 97
+State 99
 
     9 func_def: modifiers datatype '*' IDENTIFIER '(' ')' '{' . statement_list '}'
 
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
     AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
+    BREAK       shift, and go to state 121
     CONST       shift, and go to state 2
     EXTERN      shift, and go to state 3
     REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
+    RETURN      shift, and go to state 122
     SIGNED      shift, and go to state 5
     UNSIGNED    shift, and go to state 6
     VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
 
     $default  reduce using rule 27 (modifiers)
 
-    func_def        go to state 125
-    multidec        go to state 126
+    func_def        go to state 129
+    multidec        go to state 130
     modifiers       go to state 11
-    statement_list  go to state 144
-    func_call       go to state 128
-    statement       go to state 129
-    conditional     go to state 130
-    iterative       go to state 131
-    assignment      go to state 132
-
-
-State 98
-
-    8 func_def: modifiers datatype '*' IDENTIFIER '(' params_list ')' . '{' statement_list '}'
-   10         | modifiers datatype '*' IDENTIFIER '(' params_list ')' . ';'
-
-    ';'  shift, and go to state 145
-    '{'  shift, and go to state 146
-
-
-State 99
-
-   90 func_call: IDENTIFIER '(' ')' .
-
-    $default  reduce using rule 90 (func_call)
+    statement_list  go to state 149
+    func_call       go to state 132
+    statement       go to state 133
+    conditional     go to state 134
+    ifblock         go to state 135
+    iterative       go to state 136
+    assignment      go to state 137
 
 
 State 100
 
-   37 expression: expression . '+' $@1 expression
-   39           | expression . '*' $@2 expression
-   41           | expression . '-' $@3 expression
-   43           | expression . '/' $@4 expression
-   45           | expression . '>' $@5 expression
-   47           | expression . '<' $@6 expression
-   49           | expression . AND $@7 expression
-   51           | expression . OR $@8 expression
-   53           | expression . EQUAL $@9 expression
-   55           | expression . GREATER $@10 expression
-   57           | expression . LESSER $@11 expression
-   59           | expression . NOTEQUAL @12 expression
-   91 expression_list: expression .
-   92                | expression . ',' expression_list
+    8 func_def: modifiers datatype '*' IDENTIFIER '(' params_list ')' . '{' statement_list '}'
+   10         | modifiers datatype '*' IDENTIFIER '(' params_list ')' . ';'
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ','       shift, and go to state 147
-
-    $default  reduce using rule 91 (expression_list)
+    ';'  shift, and go to state 150
+    '{'  shift, and go to state 151
 
 
 State 101
 
-   89 func_call: IDENTIFIER '(' expression_list . ')'
+   90 func_call: IDENTIFIER '(' ')' .
 
-    ')'  shift, and go to state 148
+    $default  reduce using rule 90 (func_call)
 
 
 State 102
@@ -1597,160 +1598,76 @@ State 102
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-   71           | IDENTIFIER '[' expression . ']'
-   73           | IDENTIFIER '[' expression . ']' INCREMENT
-   74           | IDENTIFIER '[' expression . ']' DECREMENT
+   91 expression_list: expression .
+   92                | expression . ',' expression_list
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ']'       shift, and go to state 149
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ','       shift, and go to state 152
+
+    $default  reduce using rule 91 (expression_list)
 
 
 State 103
+
+   89 func_call: IDENTIFIER '(' expression_list . ')'
+
+    ')'  shift, and go to state 153
+
+
+State 104
+
+   37 expression: expression . '+' $@1 expression
+   39           | expression . '*' $@2 expression
+   41           | expression . '-' $@3 expression
+   43           | expression . '/' $@4 expression
+   45           | expression . '>' $@5 expression
+   47           | expression . '<' $@6 expression
+   49           | expression . AND $@7 expression
+   51           | expression . OR $@8 expression
+   53           | expression . EQUAL $@9 expression
+   55           | expression . GREATER $@10 expression
+   57           | expression . LESSER $@11 expression
+   59           | expression . NOTEQUAL @12 expression
+   73           | IDENTIFIER '[' expression . ']'
+   75           | IDENTIFIER '[' expression . ']' INCREMENT
+   76           | IDENTIFIER '[' expression . ']' DECREMENT
+
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ']'       shift, and go to state 154
+
+
+State 105
 
    34 brackets: '(' expression ')' .
 
     $default  reduce using rule 34 (brackets)
 
 
-State 104
-
-   51 expression: expression OR $@8 . expression
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 150
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
-
-
-State 105
-
-   49 expression: expression AND $@7 . expression
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 151
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
-
-
 State 106
 
-   53 expression: expression EQUAL $@9 . expression
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 152
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
-
-
-State 107
-
-   59 expression: expression NOTEQUAL @12 . expression
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 153
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
-
-
-State 108
-
-   47 expression: expression '<' $@6 . expression
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 154
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
-
-
-State 109
-
-   45 expression: expression '>' $@5 . expression
+   51 expression: expression OR $@8 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1773,9 +1690,9 @@ State 109
     func_call   go to state 51
 
 
-State 110
+State 107
 
-   57 expression: expression LESSER $@11 . expression
+   49 expression: expression AND $@7 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1798,9 +1715,9 @@ State 110
     func_call   go to state 51
 
 
-State 111
+State 108
 
-   55 expression: expression GREATER $@10 . expression
+   53 expression: expression EQUAL $@9 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1823,9 +1740,9 @@ State 111
     func_call   go to state 51
 
 
-State 112
+State 109
 
-   37 expression: expression '+' $@1 . expression
+   59 expression: expression NOTEQUAL @12 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1848,9 +1765,9 @@ State 112
     func_call   go to state 51
 
 
-State 113
+State 110
 
-   41 expression: expression '-' $@3 . expression
+   47 expression: expression '<' $@6 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1873,9 +1790,9 @@ State 113
     func_call   go to state 51
 
 
-State 114
+State 111
 
-   39 expression: expression '*' $@2 . expression
+   45 expression: expression '>' $@5 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1898,9 +1815,9 @@ State 114
     func_call   go to state 51
 
 
-State 115
+State 112
 
-   43 expression: expression '/' $@4 . expression
+   57 expression: expression LESSER $@11 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1923,9 +1840,9 @@ State 115
     func_call   go to state 51
 
 
-State 116
+State 113
 
-   72 expression: un_op IDENTIFIER '[' . expression ']'
+   55 expression: expression GREATER $@10 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1948,31 +1865,84 @@ State 116
     func_call   go to state 51
 
 
+State 114
+
+   37 expression: expression '+' $@1 . expression
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 163
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
+State 115
+
+   41 expression: expression '-' $@3 . expression
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 164
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
+State 116
+
+   39 expression: expression '*' $@2 . expression
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 165
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
 State 117
 
-  123 assignment: '*' . IDENTIFIER '=' expression ';'
-
-    IDENTIFIER  shift, and go to state 163
-
-
-State 118
-
-  119 conditional: IF . '(' expression ')' statement
-  120            | IF . '(' expression ')' statement ELSE statement
-
-    '('  shift, and go to state 164
-
-
-State 119
-
-  104 statement: BREAK . ';'
-
-    ';'  shift, and go to state 165
-
-
-State 120
-
-   97 statement: RETURN . expression ';'
+   43 expression: expression '/' $@4 . expression
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -1995,241 +1965,9 @@ State 120
     func_call   go to state 51
 
 
-State 121
+State 118
 
-  121 iterative: WHILE . '(' expression ')' statement
-
-    '('  shift, and go to state 167
-
-
-State 122
-
-   89 func_call: IDENTIFIER . '(' expression_list ')'
-   90          | IDENTIFIER . '(' ')'
-  100 statement: IDENTIFIER . INCREMENT ';'
-  101          | IDENTIFIER . DECREMENT ';'
-  122 assignment: IDENTIFIER . '=' expression ';'
-  124           | IDENTIFIER . '[' expression ']' '=' expression ';'
-
-    '='        shift, and go to state 168
-    INCREMENT  shift, and go to state 169
-    DECREMENT  shift, and go to state 170
-    '('        shift, and go to state 67
-    '['        shift, and go to state 171
-
-
-State 123
-
-  103 statement: ';' .
-
-    $default  reduce using rule 103 (statement)
-
-
-State 124
-
-  102 statement: '{' . statement_list '}'
-
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
-    AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
-    CONST       shift, and go to state 2
-    EXTERN      shift, and go to state 3
-    REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
-    SIGNED      shift, and go to state 5
-    UNSIGNED    shift, and go to state 6
-    VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
-
-    $default  reduce using rule 27 (modifiers)
-
-    func_def        go to state 125
-    multidec        go to state 126
-    modifiers       go to state 11
-    statement_list  go to state 172
-    func_call       go to state 128
-    statement       go to state 129
-    conditional     go to state 130
-    iterative       go to state 131
-    assignment      go to state 132
-
-
-State 125
-
-   99 statement: func_def .
-
-    $default  reduce using rule 99 (statement)
-
-
-State 126
-
-   93 statement: multidec . ';'
-
-    ';'  shift, and go to state 173
-
-
-State 127
-
-    5 func_def: modifiers datatype IDENTIFIER '(' ')' '{' statement_list . '}'
-
-    '}'  shift, and go to state 174
-
-
-State 128
-
-   98 statement: func_call . ';'
-
-    ';'  shift, and go to state 175
-
-
-State 129
-
-   77 statement_list: statement .
-   78               | statement . statement_list
-
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
-    AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
-    CONST       shift, and go to state 2
-    EXTERN      shift, and go to state 3
-    REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
-    SIGNED      shift, and go to state 5
-    UNSIGNED    shift, and go to state 6
-    VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
-
-    '}'       reduce using rule 77 (statement_list)
-    $default  reduce using rule 27 (modifiers)
-
-    func_def        go to state 125
-    multidec        go to state 126
-    modifiers       go to state 11
-    statement_list  go to state 176
-    func_call       go to state 128
-    statement       go to state 129
-    conditional     go to state 130
-    iterative       go to state 131
-    assignment      go to state 132
-
-
-State 130
-
-   94 statement: conditional .
-
-    $default  reduce using rule 94 (statement)
-
-
-State 131
-
-   95 statement: iterative .
-
-    $default  reduce using rule 95 (statement)
-
-
-State 132
-
-   96 statement: assignment .
-
-    $default  reduce using rule 96 (statement)
-
-
-State 133
-
-   31 params_dec: modifiers datatype '*' . IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 177
-
-
-State 134
-
-   28 params_dec: modifiers datatype IDENTIFIER .
-   29           | modifiers datatype IDENTIFIER . '[' INTCONST ']'
-   30           | modifiers datatype IDENTIFIER . '[' ']'
-
-    '['  shift, and go to state 178
-
-    $default  reduce using rule 28 (params_dec)
-
-
-State 135
-
-   33 params_list: params_dec ',' params_list .
-
-    $default  reduce using rule 33 (params_list)
-
-
-State 136
-
-    6 func_def: modifiers datatype IDENTIFIER '(' params_list ')' ';' .
-
-    $default  reduce using rule 6 (func_def)
-
-
-State 137
-
-    4 func_def: modifiers datatype IDENTIFIER '(' params_list ')' '{' . statement_list '}'
-
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
-    AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
-    CONST       shift, and go to state 2
-    EXTERN      shift, and go to state 3
-    REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
-    SIGNED      shift, and go to state 5
-    UNSIGNED    shift, and go to state 6
-    VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
-
-    $default  reduce using rule 27 (modifiers)
-
-    func_def        go to state 125
-    multidec        go to state 126
-    modifiers       go to state 11
-    statement_list  go to state 179
-    func_call       go to state 128
-    statement       go to state 129
-    conditional     go to state 130
-    iterative       go to state 131
-    assignment      go to state 132
-
-
-State 138
-
-  115 id_chain: IDENTIFIER '[' INTCONST ']' '=' . '{' const_list '}'
-
-    '{'  shift, and go to state 180
-
-
-State 139
-
-  114 id_chain: IDENTIFIER '[' ']' '=' '{' . const_list '}'
-
-    STRCONST   shift, and go to state 38
-    INTCONST   shift, and go to state 39
-    FLTCONST   shift, and go to state 40
-    CHARCONST  shift, and go to state 41
-
-    const_list  go to state 181
-    constant    go to state 182
-
-
-State 140
-
-  110 id_chain: id_chain ',' '*' IDENTIFIER '=' . expression
+   74 expression: un_op IDENTIFIER '[' . expression ']'
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -2246,13 +1984,351 @@ State 140
     '!'         shift, and go to state 46
 
     brackets    go to state 47
-    expression  go to state 183
+    expression  go to state 167
     constant    go to state 49
     un_op       go to state 50
     func_call   go to state 51
 
 
+State 119
+
+  130 assignment: '*' . IDENTIFIER '=' expression ';'
+
+    IDENTIFIER  shift, and go to state 168
+
+
+State 120
+
+  124 ifblock: IF . '(' expression ')' $@13 statement
+
+    '('  shift, and go to state 169
+
+
+State 121
+
+  106 statement: BREAK . ';'
+
+    ';'  shift, and go to state 170
+
+
+State 122
+
+   97 statement: RETURN . expression ';'
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 171
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
+State 123
+
+  128 iterative: WHILE . $@14 '(' expression ')' $@15 statement $@16
+
+    $default  reduce using rule 125 ($@14)
+
+    $@14  go to state 172
+
+
+State 124
+
+   89 func_call: IDENTIFIER . '(' expression_list ')'
+   90          | IDENTIFIER . '(' ')'
+  100 statement: IDENTIFIER . INCREMENT ';'
+  101          | IDENTIFIER . DECREMENT ';'
+  129 assignment: IDENTIFIER . '=' expression ';'
+  131           | IDENTIFIER . '[' expression ']' '=' expression ';'
+
+    '='        shift, and go to state 173
+    INCREMENT  shift, and go to state 174
+    DECREMENT  shift, and go to state 175
+    '('        shift, and go to state 67
+    '['        shift, and go to state 176
+
+
+State 125
+
+  102 statement: INCREMENT . IDENTIFIER ';'
+
+    IDENTIFIER  shift, and go to state 177
+
+
+State 126
+
+  103 statement: DECREMENT . IDENTIFIER ';'
+
+    IDENTIFIER  shift, and go to state 178
+
+
+State 127
+
+  105 statement: ';' .
+
+    $default  reduce using rule 105 (statement)
+
+
+State 128
+
+  104 statement: '{' . statement_list '}'
+
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
+    AUTO        shift, and go to state 1
+    BREAK       shift, and go to state 121
+    CONST       shift, and go to state 2
+    EXTERN      shift, and go to state 3
+    REGISTER    shift, and go to state 4
+    RETURN      shift, and go to state 122
+    SIGNED      shift, and go to state 5
+    UNSIGNED    shift, and go to state 6
+    VOLATILE    shift, and go to state 7
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
+
+    $default  reduce using rule 27 (modifiers)
+
+    func_def        go to state 129
+    multidec        go to state 130
+    modifiers       go to state 11
+    statement_list  go to state 179
+    func_call       go to state 132
+    statement       go to state 133
+    conditional     go to state 134
+    ifblock         go to state 135
+    iterative       go to state 136
+    assignment      go to state 137
+
+
+State 129
+
+   99 statement: func_def .
+
+    $default  reduce using rule 99 (statement)
+
+
+State 130
+
+   93 statement: multidec . ';'
+
+    ';'  shift, and go to state 180
+
+
+State 131
+
+    5 func_def: modifiers datatype IDENTIFIER '(' ')' '{' statement_list . '}'
+
+    '}'  shift, and go to state 181
+
+
+State 132
+
+   98 statement: func_call . ';'
+
+    ';'  shift, and go to state 182
+
+
+State 133
+
+   79 statement_list: statement .
+   80               | statement . statement_list
+
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
+    AUTO        shift, and go to state 1
+    BREAK       shift, and go to state 121
+    CONST       shift, and go to state 2
+    EXTERN      shift, and go to state 3
+    REGISTER    shift, and go to state 4
+    RETURN      shift, and go to state 122
+    SIGNED      shift, and go to state 5
+    UNSIGNED    shift, and go to state 6
+    VOLATILE    shift, and go to state 7
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
+
+    '}'       reduce using rule 79 (statement_list)
+    $default  reduce using rule 27 (modifiers)
+
+    func_def        go to state 129
+    multidec        go to state 130
+    modifiers       go to state 11
+    statement_list  go to state 183
+    func_call       go to state 132
+    statement       go to state 133
+    conditional     go to state 134
+    ifblock         go to state 135
+    iterative       go to state 136
+    assignment      go to state 137
+
+
+State 134
+
+   94 statement: conditional .
+
+    $default  reduce using rule 94 (statement)
+
+
+State 135
+
+  121 conditional: ifblock .
+  122            | ifblock . ELSE statement
+
+    ELSE  shift, and go to state 184
+
+    $default  reduce using rule 121 (conditional)
+
+
+State 136
+
+   95 statement: iterative .
+
+    $default  reduce using rule 95 (statement)
+
+
+State 137
+
+   96 statement: assignment .
+
+    $default  reduce using rule 96 (statement)
+
+
+State 138
+
+   31 params_dec: modifiers datatype '*' . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 185
+
+
+State 139
+
+   28 params_dec: modifiers datatype IDENTIFIER .
+   29           | modifiers datatype IDENTIFIER . '[' INTCONST ']'
+   30           | modifiers datatype IDENTIFIER . '[' ']'
+
+    '['  shift, and go to state 186
+
+    $default  reduce using rule 28 (params_dec)
+
+
+State 140
+
+   33 params_list: params_dec ',' params_list .
+
+    $default  reduce using rule 33 (params_list)
+
+
 State 141
+
+    6 func_def: modifiers datatype IDENTIFIER '(' params_list ')' ';' .
+
+    $default  reduce using rule 6 (func_def)
+
+
+State 142
+
+    4 func_def: modifiers datatype IDENTIFIER '(' params_list ')' '{' . statement_list '}'
+
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
+    AUTO        shift, and go to state 1
+    BREAK       shift, and go to state 121
+    CONST       shift, and go to state 2
+    EXTERN      shift, and go to state 3
+    REGISTER    shift, and go to state 4
+    RETURN      shift, and go to state 122
+    SIGNED      shift, and go to state 5
+    UNSIGNED    shift, and go to state 6
+    VOLATILE    shift, and go to state 7
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
+
+    $default  reduce using rule 27 (modifiers)
+
+    func_def        go to state 129
+    multidec        go to state 130
+    modifiers       go to state 11
+    statement_list  go to state 187
+    func_call       go to state 132
+    statement       go to state 133
+    conditional     go to state 134
+    ifblock         go to state 135
+    iterative       go to state 136
+    assignment      go to state 137
+
+
+State 143
+
+  117 id_chain: IDENTIFIER '[' INTCONST ']' '=' . '{' const_list '}'
+
+    '{'  shift, and go to state 188
+
+
+State 144
+
+  116 id_chain: IDENTIFIER '[' ']' '=' '{' . const_list '}'
+
+    STRCONST   shift, and go to state 38
+    INTCONST   shift, and go to state 39
+    FLTCONST   shift, and go to state 40
+    CHARCONST  shift, and go to state 41
+
+    const_list  go to state 189
+    constant    go to state 190
+
+
+State 145
+
+  112 id_chain: id_chain ',' '*' IDENTIFIER '=' . expression
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 191
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
+State 146
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2266,87 +2342,90 @@ State 141
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-  111 id_chain: id_chain ',' IDENTIFIER '=' expression .
+  113 id_chain: id_chain ',' IDENTIFIER '=' expression .
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
 
-    $default  reduce using rule 111 (id_chain)
-
-
-State 142
-
-  116 id_chain: id_chain ',' IDENTIFIER '[' INTCONST . ']'
-  118         | id_chain ',' IDENTIFIER '[' INTCONST . ']' '=' '{' const_list '}'
-
-    ']'  shift, and go to state 184
+    $default  reduce using rule 113 (id_chain)
 
 
-State 143
+State 147
 
-  117 id_chain: id_chain ',' IDENTIFIER '[' ']' . '=' '{' const_list '}'
+  118 id_chain: id_chain ',' IDENTIFIER '[' INTCONST . ']'
+  120         | id_chain ',' IDENTIFIER '[' INTCONST . ']' '=' '{' const_list '}'
 
-    '='  shift, and go to state 185
+    ']'  shift, and go to state 192
 
 
-State 144
+State 148
+
+  119 id_chain: id_chain ',' IDENTIFIER '[' ']' . '=' '{' const_list '}'
+
+    '='  shift, and go to state 193
+
+
+State 149
 
     9 func_def: modifiers datatype '*' IDENTIFIER '(' ')' '{' statement_list . '}'
 
-    '}'  shift, and go to state 186
+    '}'  shift, and go to state 194
 
 
-State 145
+State 150
 
    10 func_def: modifiers datatype '*' IDENTIFIER '(' params_list ')' ';' .
 
     $default  reduce using rule 10 (func_def)
 
 
-State 146
+State 151
 
     8 func_def: modifiers datatype '*' IDENTIFIER '(' params_list ')' '{' . statement_list '}'
 
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
     AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
+    BREAK       shift, and go to state 121
     CONST       shift, and go to state 2
     EXTERN      shift, and go to state 3
     REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
+    RETURN      shift, and go to state 122
     SIGNED      shift, and go to state 5
     UNSIGNED    shift, and go to state 6
     VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
 
     $default  reduce using rule 27 (modifiers)
 
-    func_def        go to state 125
-    multidec        go to state 126
+    func_def        go to state 129
+    multidec        go to state 130
     modifiers       go to state 11
-    statement_list  go to state 187
-    func_call       go to state 128
-    statement       go to state 129
-    conditional     go to state 130
-    iterative       go to state 131
-    assignment      go to state 132
+    statement_list  go to state 195
+    func_call       go to state 132
+    statement       go to state 133
+    conditional     go to state 134
+    ifblock         go to state 135
+    iterative       go to state 136
+    assignment      go to state 137
 
 
-State 147
+State 152
 
    92 expression_list: expression ',' . expression_list
 
@@ -2365,33 +2444,33 @@ State 147
     '!'         shift, and go to state 46
 
     brackets         go to state 47
-    expression       go to state 100
+    expression       go to state 102
     constant         go to state 49
     un_op            go to state 50
     func_call        go to state 51
-    expression_list  go to state 188
+    expression_list  go to state 196
 
 
-State 148
+State 153
 
    89 func_call: IDENTIFIER '(' expression_list ')' .
 
     $default  reduce using rule 89 (func_call)
 
 
-State 149
+State 154
 
-   71 expression: IDENTIFIER '[' expression ']' .
-   73           | IDENTIFIER '[' expression ']' . INCREMENT
-   74           | IDENTIFIER '[' expression ']' . DECREMENT
+   73 expression: IDENTIFIER '[' expression ']' .
+   75           | IDENTIFIER '[' expression ']' . INCREMENT
+   76           | IDENTIFIER '[' expression ']' . DECREMENT
 
-    INCREMENT  shift, and go to state 189
-    DECREMENT  shift, and go to state 190
+    INCREMENT  shift, and go to state 197
+    DECREMENT  shift, and go to state 198
 
-    $default  reduce using rule 71 (expression)
+    $default  reduce using rule 73 (expression)
 
 
-State 150
+State 155
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2407,22 +2486,22 @@ State 150
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
 
     $default  reduce using rule 51 (expression)
 
 
-State 151
+State 156
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2438,21 +2517,21 @@ State 151
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
 
     $default  reduce using rule 49 (expression)
 
 
-State 152
+State 157
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2468,19 +2547,19 @@ State 152
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    '<'      shift, and go to state 74
-    '>'      shift, and go to state 75
-    LESSER   shift, and go to state 76
-    GREATER  shift, and go to state 77
-    '+'      shift, and go to state 78
-    '-'      shift, and go to state 79
-    '*'      shift, and go to state 80
-    '/'      shift, and go to state 81
+    '<'      shift, and go to state 76
+    '>'      shift, and go to state 77
+    LESSER   shift, and go to state 78
+    GREATER  shift, and go to state 79
+    '+'      shift, and go to state 80
+    '-'      shift, and go to state 81
+    '*'      shift, and go to state 82
+    '/'      shift, and go to state 83
 
     $default  reduce using rule 53 (expression)
 
 
-State 153
+State 158
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2496,19 +2575,19 @@ State 153
    59           | expression . NOTEQUAL @12 expression
    59           | expression NOTEQUAL @12 expression .
 
-    '<'      shift, and go to state 74
-    '>'      shift, and go to state 75
-    LESSER   shift, and go to state 76
-    GREATER  shift, and go to state 77
-    '+'      shift, and go to state 78
-    '-'      shift, and go to state 79
-    '*'      shift, and go to state 80
-    '/'      shift, and go to state 81
+    '<'      shift, and go to state 76
+    '>'      shift, and go to state 77
+    LESSER   shift, and go to state 78
+    GREATER  shift, and go to state 79
+    '+'      shift, and go to state 80
+    '-'      shift, and go to state 81
+    '*'      shift, and go to state 82
+    '/'      shift, and go to state 83
 
     $default  reduce using rule 59 (expression)
 
 
-State 154
+State 159
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2524,15 +2603,15 @@ State 154
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    '+'  shift, and go to state 78
-    '-'  shift, and go to state 79
-    '*'  shift, and go to state 80
-    '/'  shift, and go to state 81
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
 
     $default  reduce using rule 47 (expression)
 
 
-State 155
+State 160
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2548,15 +2627,15 @@ State 155
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    '+'  shift, and go to state 78
-    '-'  shift, and go to state 79
-    '*'  shift, and go to state 80
-    '/'  shift, and go to state 81
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
 
     $default  reduce using rule 45 (expression)
 
 
-State 156
+State 161
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2572,15 +2651,15 @@ State 156
    57           | expression LESSER $@11 expression .
    59           | expression . NOTEQUAL @12 expression
 
-    '+'  shift, and go to state 78
-    '-'  shift, and go to state 79
-    '*'  shift, and go to state 80
-    '/'  shift, and go to state 81
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
 
     $default  reduce using rule 57 (expression)
 
 
-State 157
+State 162
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2596,15 +2675,15 @@ State 157
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    '+'  shift, and go to state 78
-    '-'  shift, and go to state 79
-    '*'  shift, and go to state 80
-    '/'  shift, and go to state 81
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
 
     $default  reduce using rule 55 (expression)
 
 
-State 158
+State 163
 
    37 expression: expression . '+' $@1 expression
    37           | expression '+' $@1 expression .
@@ -2620,13 +2699,13 @@ State 158
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    '*'  shift, and go to state 80
-    '/'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
 
     $default  reduce using rule 37 (expression)
 
 
-State 159
+State 164
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2642,13 +2721,13 @@ State 159
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
 
-    '*'  shift, and go to state 80
-    '/'  shift, and go to state 81
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
 
     $default  reduce using rule 41 (expression)
 
 
-State 160
+State 165
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2667,7 +2746,7 @@ State 160
     $default  reduce using rule 39 (expression)
 
 
-State 161
+State 166
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2686,7 +2765,7 @@ State 161
     $default  reduce using rule 43 (expression)
 
 
-State 162
+State 167
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2700,34 +2779,33 @@ State 162
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-   72           | un_op IDENTIFIER '[' expression . ']'
+   74           | un_op IDENTIFIER '[' expression . ']'
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ']'       shift, and go to state 191
-
-
-State 163
-
-  123 assignment: '*' IDENTIFIER . '=' expression ';'
-
-    '='  shift, and go to state 192
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ']'       shift, and go to state 199
 
 
-State 164
+State 168
 
-  119 conditional: IF '(' . expression ')' statement
-  120            | IF '(' . expression ')' statement ELSE statement
+  130 assignment: '*' IDENTIFIER . '=' expression ';'
+
+    '='  shift, and go to state 200
+
+
+State 169
+
+  124 ifblock: IF '(' . expression ')' $@13 statement
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -2744,20 +2822,20 @@ State 164
     '!'         shift, and go to state 46
 
     brackets    go to state 47
-    expression  go to state 193
+    expression  go to state 201
     constant    go to state 49
     un_op       go to state 50
     func_call   go to state 51
 
 
-State 165
+State 170
 
-  104 statement: BREAK ';' .
+  106 statement: BREAK ';' .
 
-    $default  reduce using rule 104 (statement)
+    $default  reduce using rule 106 (statement)
 
 
-State 166
+State 171
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2773,199 +2851,230 @@ State 166
    59           | expression . NOTEQUAL @12 expression
    97 statement: RETURN expression . ';'
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ';'       shift, and go to state 194
-
-
-State 167
-
-  121 iterative: WHILE '(' . expression ')' statement
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 195
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
-
-
-State 168
-
-  122 assignment: IDENTIFIER '=' . expression ';'
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 196
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
-
-
-State 169
-
-  100 statement: IDENTIFIER INCREMENT . ';'
-
-    ';'  shift, and go to state 197
-
-
-State 170
-
-  101 statement: IDENTIFIER DECREMENT . ';'
-
-    ';'  shift, and go to state 198
-
-
-State 171
-
-  124 assignment: IDENTIFIER '[' . expression ']' '=' expression ';'
-
-    '&'         shift, and go to state 34
-    '+'         shift, and go to state 35
-    '-'         shift, and go to state 36
-    '*'         shift, and go to state 37
-    STRCONST    shift, and go to state 38
-    INTCONST    shift, and go to state 39
-    FLTCONST    shift, and go to state 40
-    CHARCONST   shift, and go to state 41
-    IDENTIFIER  shift, and go to state 42
-    INCREMENT   shift, and go to state 43
-    DECREMENT   shift, and go to state 44
-    '('         shift, and go to state 45
-    '!'         shift, and go to state 46
-
-    brackets    go to state 47
-    expression  go to state 199
-    constant    go to state 49
-    un_op       go to state 50
-    func_call   go to state 51
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ';'       shift, and go to state 202
 
 
 State 172
 
-  102 statement: '{' statement_list . '}'
+  128 iterative: WHILE $@14 . '(' expression ')' $@15 statement $@16
 
-    '}'  shift, and go to state 200
+    '('  shift, and go to state 203
 
 
 State 173
+
+  129 assignment: IDENTIFIER '=' . expression ';'
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 204
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
+State 174
+
+  100 statement: IDENTIFIER INCREMENT . ';'
+
+    ';'  shift, and go to state 205
+
+
+State 175
+
+  101 statement: IDENTIFIER DECREMENT . ';'
+
+    ';'  shift, and go to state 206
+
+
+State 176
+
+  131 assignment: IDENTIFIER '[' . expression ']' '=' expression ';'
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 207
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
+State 177
+
+  102 statement: INCREMENT IDENTIFIER . ';'
+
+    ';'  shift, and go to state 208
+
+
+State 178
+
+  103 statement: DECREMENT IDENTIFIER . ';'
+
+    ';'  shift, and go to state 209
+
+
+State 179
+
+  104 statement: '{' statement_list . '}'
+
+    '}'  shift, and go to state 210
+
+
+State 180
 
    93 statement: multidec ';' .
 
     $default  reduce using rule 93 (statement)
 
 
-State 174
+State 181
 
     5 func_def: modifiers datatype IDENTIFIER '(' ')' '{' statement_list '}' .
 
     $default  reduce using rule 5 (func_def)
 
 
-State 175
+State 182
 
    98 statement: func_call ';' .
 
     $default  reduce using rule 98 (statement)
 
 
-State 176
+State 183
 
-   78 statement_list: statement statement_list .
+   80 statement_list: statement statement_list .
 
-    $default  reduce using rule 78 (statement_list)
+    $default  reduce using rule 80 (statement_list)
 
 
-State 177
+State 184
+
+  122 conditional: ifblock ELSE . statement
+
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
+    AUTO        shift, and go to state 1
+    BREAK       shift, and go to state 121
+    CONST       shift, and go to state 2
+    EXTERN      shift, and go to state 3
+    REGISTER    shift, and go to state 4
+    RETURN      shift, and go to state 122
+    SIGNED      shift, and go to state 5
+    UNSIGNED    shift, and go to state 6
+    VOLATILE    shift, and go to state 7
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
+
+    $default  reduce using rule 27 (modifiers)
+
+    func_def     go to state 129
+    multidec     go to state 130
+    modifiers    go to state 11
+    func_call    go to state 132
+    statement    go to state 211
+    conditional  go to state 134
+    ifblock      go to state 135
+    iterative    go to state 136
+    assignment   go to state 137
+
+
+State 185
 
    31 params_dec: modifiers datatype '*' IDENTIFIER .
 
     $default  reduce using rule 31 (params_dec)
 
 
-State 178
+State 186
 
    29 params_dec: modifiers datatype IDENTIFIER '[' . INTCONST ']'
    30           | modifiers datatype IDENTIFIER '[' . ']'
 
-    INTCONST  shift, and go to state 201
-    ']'       shift, and go to state 202
+    INTCONST  shift, and go to state 212
+    ']'       shift, and go to state 213
 
 
-State 179
+State 187
 
     4 func_def: modifiers datatype IDENTIFIER '(' params_list ')' '{' statement_list . '}'
 
-    '}'  shift, and go to state 203
+    '}'  shift, and go to state 214
 
 
-State 180
+State 188
 
-  115 id_chain: IDENTIFIER '[' INTCONST ']' '=' '{' . const_list '}'
+  117 id_chain: IDENTIFIER '[' INTCONST ']' '=' '{' . const_list '}'
 
     STRCONST   shift, and go to state 38
     INTCONST   shift, and go to state 39
     FLTCONST   shift, and go to state 40
     CHARCONST  shift, and go to state 41
 
-    const_list  go to state 204
-    constant    go to state 182
+    const_list  go to state 215
+    constant    go to state 190
 
 
-State 181
+State 189
 
-  114 id_chain: IDENTIFIER '[' ']' '=' '{' const_list . '}'
+  116 id_chain: IDENTIFIER '[' ']' '=' '{' const_list . '}'
 
-    '}'  shift, and go to state 205
-
-
-State 182
-
-   75 const_list: constant .
-   76           | constant . ',' const_list
-
-    ','  shift, and go to state 206
-
-    $default  reduce using rule 75 (const_list)
+    '}'  shift, and go to state 216
 
 
-State 183
+State 190
+
+   77 const_list: constant .
+   78           | constant . ',' const_list
+
+    ','  shift, and go to state 217
+
+    $default  reduce using rule 77 (const_list)
+
+
+State 191
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -2979,86 +3088,86 @@ State 183
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-  110 id_chain: id_chain ',' '*' IDENTIFIER '=' expression .
+  112 id_chain: id_chain ',' '*' IDENTIFIER '=' expression .
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
 
-    $default  reduce using rule 110 (id_chain)
-
-
-State 184
-
-  116 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' .
-  118         | id_chain ',' IDENTIFIER '[' INTCONST ']' . '=' '{' const_list '}'
-
-    '='  shift, and go to state 207
-
-    $default  reduce using rule 116 (id_chain)
+    $default  reduce using rule 112 (id_chain)
 
 
-State 185
+State 192
 
-  117 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' . '{' const_list '}'
+  118 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' .
+  120         | id_chain ',' IDENTIFIER '[' INTCONST ']' . '=' '{' const_list '}'
 
-    '{'  shift, and go to state 208
+    '='  shift, and go to state 218
+
+    $default  reduce using rule 118 (id_chain)
 
 
-State 186
+State 193
+
+  119 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' . '{' const_list '}'
+
+    '{'  shift, and go to state 219
+
+
+State 194
 
     9 func_def: modifiers datatype '*' IDENTIFIER '(' ')' '{' statement_list '}' .
 
     $default  reduce using rule 9 (func_def)
 
 
-State 187
+State 195
 
     8 func_def: modifiers datatype '*' IDENTIFIER '(' params_list ')' '{' statement_list . '}'
 
-    '}'  shift, and go to state 209
+    '}'  shift, and go to state 220
 
 
-State 188
+State 196
 
    92 expression_list: expression ',' expression_list .
 
     $default  reduce using rule 92 (expression_list)
 
 
-State 189
+State 197
 
-   73 expression: IDENTIFIER '[' expression ']' INCREMENT .
+   75 expression: IDENTIFIER '[' expression ']' INCREMENT .
 
-    $default  reduce using rule 73 (expression)
+    $default  reduce using rule 75 (expression)
 
 
-State 190
+State 198
 
-   74 expression: IDENTIFIER '[' expression ']' DECREMENT .
+   76 expression: IDENTIFIER '[' expression ']' DECREMENT .
+
+    $default  reduce using rule 76 (expression)
+
+
+State 199
+
+   74 expression: un_op IDENTIFIER '[' expression ']' .
 
     $default  reduce using rule 74 (expression)
 
 
-State 191
+State 200
 
-   72 expression: un_op IDENTIFIER '[' expression ']' .
-
-    $default  reduce using rule 72 (expression)
-
-
-State 192
-
-  123 assignment: '*' IDENTIFIER '=' . expression ';'
+  130 assignment: '*' IDENTIFIER '=' . expression ';'
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -3075,13 +3184,13 @@ State 192
     '!'         shift, and go to state 46
 
     brackets    go to state 47
-    expression  go to state 210
+    expression  go to state 221
     constant    go to state 49
     un_op       go to state 50
     func_call   go to state 51
 
 
-State 193
+State 201
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -3095,398 +3204,33 @@ State 193
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-  119 conditional: IF '(' expression . ')' statement
-  120            | IF '(' expression . ')' statement ELSE statement
+  124 ifblock: IF '(' expression . ')' $@13 statement
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ')'       shift, and go to state 211
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ')'       shift, and go to state 222
 
 
-State 194
+State 202
 
    97 statement: RETURN expression ';' .
 
     $default  reduce using rule 97 (statement)
 
 
-State 195
-
-   37 expression: expression . '+' $@1 expression
-   39           | expression . '*' $@2 expression
-   41           | expression . '-' $@3 expression
-   43           | expression . '/' $@4 expression
-   45           | expression . '>' $@5 expression
-   47           | expression . '<' $@6 expression
-   49           | expression . AND $@7 expression
-   51           | expression . OR $@8 expression
-   53           | expression . EQUAL $@9 expression
-   55           | expression . GREATER $@10 expression
-   57           | expression . LESSER $@11 expression
-   59           | expression . NOTEQUAL @12 expression
-  121 iterative: WHILE '(' expression . ')' statement
-
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ')'       shift, and go to state 212
-
-
-State 196
-
-   37 expression: expression . '+' $@1 expression
-   39           | expression . '*' $@2 expression
-   41           | expression . '-' $@3 expression
-   43           | expression . '/' $@4 expression
-   45           | expression . '>' $@5 expression
-   47           | expression . '<' $@6 expression
-   49           | expression . AND $@7 expression
-   51           | expression . OR $@8 expression
-   53           | expression . EQUAL $@9 expression
-   55           | expression . GREATER $@10 expression
-   57           | expression . LESSER $@11 expression
-   59           | expression . NOTEQUAL @12 expression
-  122 assignment: IDENTIFIER '=' expression . ';'
-
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ';'       shift, and go to state 213
-
-
-State 197
-
-  100 statement: IDENTIFIER INCREMENT ';' .
-
-    $default  reduce using rule 100 (statement)
-
-
-State 198
-
-  101 statement: IDENTIFIER DECREMENT ';' .
-
-    $default  reduce using rule 101 (statement)
-
-
-State 199
-
-   37 expression: expression . '+' $@1 expression
-   39           | expression . '*' $@2 expression
-   41           | expression . '-' $@3 expression
-   43           | expression . '/' $@4 expression
-   45           | expression . '>' $@5 expression
-   47           | expression . '<' $@6 expression
-   49           | expression . AND $@7 expression
-   51           | expression . OR $@8 expression
-   53           | expression . EQUAL $@9 expression
-   55           | expression . GREATER $@10 expression
-   57           | expression . LESSER $@11 expression
-   59           | expression . NOTEQUAL @12 expression
-  124 assignment: IDENTIFIER '[' expression . ']' '=' expression ';'
-
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ']'       shift, and go to state 214
-
-
-State 200
-
-  102 statement: '{' statement_list '}' .
-
-    $default  reduce using rule 102 (statement)
-
-
-State 201
-
-   29 params_dec: modifiers datatype IDENTIFIER '[' INTCONST . ']'
-
-    ']'  shift, and go to state 215
-
-
-State 202
-
-   30 params_dec: modifiers datatype IDENTIFIER '[' ']' .
-
-    $default  reduce using rule 30 (params_dec)
-
-
 State 203
 
-    4 func_def: modifiers datatype IDENTIFIER '(' params_list ')' '{' statement_list '}' .
-
-    $default  reduce using rule 4 (func_def)
-
-
-State 204
-
-  115 id_chain: IDENTIFIER '[' INTCONST ']' '=' '{' const_list . '}'
-
-    '}'  shift, and go to state 216
-
-
-State 205
-
-  114 id_chain: IDENTIFIER '[' ']' '=' '{' const_list '}' .
-
-    $default  reduce using rule 114 (id_chain)
-
-
-State 206
-
-   76 const_list: constant ',' . const_list
-
-    STRCONST   shift, and go to state 38
-    INTCONST   shift, and go to state 39
-    FLTCONST   shift, and go to state 40
-    CHARCONST  shift, and go to state 41
-
-    const_list  go to state 217
-    constant    go to state 182
-
-
-State 207
-
-  118 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' . '{' const_list '}'
-
-    '{'  shift, and go to state 218
-
-
-State 208
-
-  117 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' '{' . const_list '}'
-
-    STRCONST   shift, and go to state 38
-    INTCONST   shift, and go to state 39
-    FLTCONST   shift, and go to state 40
-    CHARCONST  shift, and go to state 41
-
-    const_list  go to state 219
-    constant    go to state 182
-
-
-State 209
-
-    8 func_def: modifiers datatype '*' IDENTIFIER '(' params_list ')' '{' statement_list '}' .
-
-    $default  reduce using rule 8 (func_def)
-
-
-State 210
-
-   37 expression: expression . '+' $@1 expression
-   39           | expression . '*' $@2 expression
-   41           | expression . '-' $@3 expression
-   43           | expression . '/' $@4 expression
-   45           | expression . '>' $@5 expression
-   47           | expression . '<' $@6 expression
-   49           | expression . AND $@7 expression
-   51           | expression . OR $@8 expression
-   53           | expression . EQUAL $@9 expression
-   55           | expression . GREATER $@10 expression
-   57           | expression . LESSER $@11 expression
-   59           | expression . NOTEQUAL @12 expression
-  123 assignment: '*' IDENTIFIER '=' expression . ';'
-
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ';'       shift, and go to state 220
-
-
-State 211
-
-  119 conditional: IF '(' expression ')' . statement
-  120            | IF '(' expression ')' . statement ELSE statement
-
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
-    AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
-    CONST       shift, and go to state 2
-    EXTERN      shift, and go to state 3
-    REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
-    SIGNED      shift, and go to state 5
-    UNSIGNED    shift, and go to state 6
-    VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
-
-    $default  reduce using rule 27 (modifiers)
-
-    func_def     go to state 125
-    multidec     go to state 126
-    modifiers    go to state 11
-    func_call    go to state 128
-    statement    go to state 221
-    conditional  go to state 130
-    iterative    go to state 131
-    assignment   go to state 132
-
-
-State 212
-
-  121 iterative: WHILE '(' expression ')' . statement
-
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
-    AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
-    CONST       shift, and go to state 2
-    EXTERN      shift, and go to state 3
-    REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
-    SIGNED      shift, and go to state 5
-    UNSIGNED    shift, and go to state 6
-    VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
-
-    $default  reduce using rule 27 (modifiers)
-
-    func_def     go to state 125
-    multidec     go to state 126
-    modifiers    go to state 11
-    func_call    go to state 128
-    statement    go to state 222
-    conditional  go to state 130
-    iterative    go to state 131
-    assignment   go to state 132
-
-
-State 213
-
-  122 assignment: IDENTIFIER '=' expression ';' .
-
-    $default  reduce using rule 122 (assignment)
-
-
-State 214
-
-  124 assignment: IDENTIFIER '[' expression ']' . '=' expression ';'
-
-    '='  shift, and go to state 223
-
-
-State 215
-
-   29 params_dec: modifiers datatype IDENTIFIER '[' INTCONST ']' .
-
-    $default  reduce using rule 29 (params_dec)
-
-
-State 216
-
-  115 id_chain: IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}' .
-
-    $default  reduce using rule 115 (id_chain)
-
-
-State 217
-
-   76 const_list: constant ',' const_list .
-
-    $default  reduce using rule 76 (const_list)
-
-
-State 218
-
-  118 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' . const_list '}'
-
-    STRCONST   shift, and go to state 38
-    INTCONST   shift, and go to state 39
-    FLTCONST   shift, and go to state 40
-    CHARCONST  shift, and go to state 41
-
-    const_list  go to state 224
-    constant    go to state 182
-
-
-State 219
-
-  117 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' '{' const_list . '}'
-
-    '}'  shift, and go to state 225
-
-
-State 220
-
-  123 assignment: '*' IDENTIFIER '=' expression ';' .
-
-    $default  reduce using rule 123 (assignment)
-
-
-State 221
-
-  119 conditional: IF '(' expression ')' statement .
-  120            | IF '(' expression ')' statement . ELSE statement
-
-    ELSE  shift, and go to state 226
-
-    $default  reduce using rule 119 (conditional)
-
-
-State 222
-
-  121 iterative: WHILE '(' expression ')' statement .
-
-    $default  reduce using rule 121 (iterative)
-
-
-State 223
-
-  124 assignment: IDENTIFIER '[' expression ']' '=' . expression ';'
+  128 iterative: WHILE $@14 '(' . expression ')' $@15 statement $@16
 
     '&'         shift, and go to state 34
     '+'         shift, and go to state 35
@@ -3503,59 +3247,13 @@ State 223
     '!'         shift, and go to state 46
 
     brackets    go to state 47
-    expression  go to state 227
+    expression  go to state 223
     constant    go to state 49
     un_op       go to state 50
     func_call   go to state 51
 
 
-State 224
-
-  118 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list . '}'
-
-    '}'  shift, and go to state 228
-
-
-State 225
-
-  117 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' '{' const_list '}' .
-
-    $default  reduce using rule 117 (id_chain)
-
-
-State 226
-
-  120 conditional: IF '(' expression ')' statement ELSE . statement
-
-    '*'         shift, and go to state 117
-    IF          shift, and go to state 118
-    AUTO        shift, and go to state 1
-    BREAK       shift, and go to state 119
-    CONST       shift, and go to state 2
-    EXTERN      shift, and go to state 3
-    REGISTER    shift, and go to state 4
-    RETURN      shift, and go to state 120
-    SIGNED      shift, and go to state 5
-    UNSIGNED    shift, and go to state 6
-    VOLATILE    shift, and go to state 7
-    WHILE       shift, and go to state 121
-    IDENTIFIER  shift, and go to state 122
-    ';'         shift, and go to state 123
-    '{'         shift, and go to state 124
-
-    $default  reduce using rule 27 (modifiers)
-
-    func_def     go to state 125
-    multidec     go to state 126
-    modifiers    go to state 11
-    func_call    go to state 128
-    statement    go to state 229
-    conditional  go to state 130
-    iterative    go to state 131
-    assignment   go to state 132
-
-
-State 227
+State 204
 
    37 expression: expression . '+' $@1 expression
    39           | expression . '*' $@2 expression
@@ -3569,39 +3267,485 @@ State 227
    55           | expression . GREATER $@10 expression
    57           | expression . LESSER $@11 expression
    59           | expression . NOTEQUAL @12 expression
-  124 assignment: IDENTIFIER '[' expression ']' '=' expression . ';'
+  129 assignment: IDENTIFIER '=' expression . ';'
 
-    OR        shift, and go to state 70
-    AND       shift, and go to state 71
-    EQUAL     shift, and go to state 72
-    NOTEQUAL  shift, and go to state 73
-    '<'       shift, and go to state 74
-    '>'       shift, and go to state 75
-    LESSER    shift, and go to state 76
-    GREATER   shift, and go to state 77
-    '+'       shift, and go to state 78
-    '-'       shift, and go to state 79
-    '*'       shift, and go to state 80
-    '/'       shift, and go to state 81
-    ';'       shift, and go to state 230
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ';'       shift, and go to state 224
+
+
+State 205
+
+  100 statement: IDENTIFIER INCREMENT ';' .
+
+    $default  reduce using rule 100 (statement)
+
+
+State 206
+
+  101 statement: IDENTIFIER DECREMENT ';' .
+
+    $default  reduce using rule 101 (statement)
+
+
+State 207
+
+   37 expression: expression . '+' $@1 expression
+   39           | expression . '*' $@2 expression
+   41           | expression . '-' $@3 expression
+   43           | expression . '/' $@4 expression
+   45           | expression . '>' $@5 expression
+   47           | expression . '<' $@6 expression
+   49           | expression . AND $@7 expression
+   51           | expression . OR $@8 expression
+   53           | expression . EQUAL $@9 expression
+   55           | expression . GREATER $@10 expression
+   57           | expression . LESSER $@11 expression
+   59           | expression . NOTEQUAL @12 expression
+  131 assignment: IDENTIFIER '[' expression . ']' '=' expression ';'
+
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ']'       shift, and go to state 225
+
+
+State 208
+
+  102 statement: INCREMENT IDENTIFIER ';' .
+
+    $default  reduce using rule 102 (statement)
+
+
+State 209
+
+  103 statement: DECREMENT IDENTIFIER ';' .
+
+    $default  reduce using rule 103 (statement)
+
+
+State 210
+
+  104 statement: '{' statement_list '}' .
+
+    $default  reduce using rule 104 (statement)
+
+
+State 211
+
+  122 conditional: ifblock ELSE statement .
+
+    $default  reduce using rule 122 (conditional)
+
+
+State 212
+
+   29 params_dec: modifiers datatype IDENTIFIER '[' INTCONST . ']'
+
+    ']'  shift, and go to state 226
+
+
+State 213
+
+   30 params_dec: modifiers datatype IDENTIFIER '[' ']' .
+
+    $default  reduce using rule 30 (params_dec)
+
+
+State 214
+
+    4 func_def: modifiers datatype IDENTIFIER '(' params_list ')' '{' statement_list '}' .
+
+    $default  reduce using rule 4 (func_def)
+
+
+State 215
+
+  117 id_chain: IDENTIFIER '[' INTCONST ']' '=' '{' const_list . '}'
+
+    '}'  shift, and go to state 227
+
+
+State 216
+
+  116 id_chain: IDENTIFIER '[' ']' '=' '{' const_list '}' .
+
+    $default  reduce using rule 116 (id_chain)
+
+
+State 217
+
+   78 const_list: constant ',' . const_list
+
+    STRCONST   shift, and go to state 38
+    INTCONST   shift, and go to state 39
+    FLTCONST   shift, and go to state 40
+    CHARCONST  shift, and go to state 41
+
+    const_list  go to state 228
+    constant    go to state 190
+
+
+State 218
+
+  120 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' . '{' const_list '}'
+
+    '{'  shift, and go to state 229
+
+
+State 219
+
+  119 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' '{' . const_list '}'
+
+    STRCONST   shift, and go to state 38
+    INTCONST   shift, and go to state 39
+    FLTCONST   shift, and go to state 40
+    CHARCONST  shift, and go to state 41
+
+    const_list  go to state 230
+    constant    go to state 190
+
+
+State 220
+
+    8 func_def: modifiers datatype '*' IDENTIFIER '(' params_list ')' '{' statement_list '}' .
+
+    $default  reduce using rule 8 (func_def)
+
+
+State 221
+
+   37 expression: expression . '+' $@1 expression
+   39           | expression . '*' $@2 expression
+   41           | expression . '-' $@3 expression
+   43           | expression . '/' $@4 expression
+   45           | expression . '>' $@5 expression
+   47           | expression . '<' $@6 expression
+   49           | expression . AND $@7 expression
+   51           | expression . OR $@8 expression
+   53           | expression . EQUAL $@9 expression
+   55           | expression . GREATER $@10 expression
+   57           | expression . LESSER $@11 expression
+   59           | expression . NOTEQUAL @12 expression
+  130 assignment: '*' IDENTIFIER '=' expression . ';'
+
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ';'       shift, and go to state 231
+
+
+State 222
+
+  124 ifblock: IF '(' expression ')' . $@13 statement
+
+    $default  reduce using rule 123 ($@13)
+
+    $@13  go to state 232
+
+
+State 223
+
+   37 expression: expression . '+' $@1 expression
+   39           | expression . '*' $@2 expression
+   41           | expression . '-' $@3 expression
+   43           | expression . '/' $@4 expression
+   45           | expression . '>' $@5 expression
+   47           | expression . '<' $@6 expression
+   49           | expression . AND $@7 expression
+   51           | expression . OR $@8 expression
+   53           | expression . EQUAL $@9 expression
+   55           | expression . GREATER $@10 expression
+   57           | expression . LESSER $@11 expression
+   59           | expression . NOTEQUAL @12 expression
+  128 iterative: WHILE $@14 '(' expression . ')' $@15 statement $@16
+
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ')'       shift, and go to state 233
+
+
+State 224
+
+  129 assignment: IDENTIFIER '=' expression ';' .
+
+    $default  reduce using rule 129 (assignment)
+
+
+State 225
+
+  131 assignment: IDENTIFIER '[' expression ']' . '=' expression ';'
+
+    '='  shift, and go to state 234
+
+
+State 226
+
+   29 params_dec: modifiers datatype IDENTIFIER '[' INTCONST ']' .
+
+    $default  reduce using rule 29 (params_dec)
+
+
+State 227
+
+  117 id_chain: IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}' .
+
+    $default  reduce using rule 117 (id_chain)
 
 
 State 228
 
-  118 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}' .
+   78 const_list: constant ',' const_list .
 
-    $default  reduce using rule 118 (id_chain)
+    $default  reduce using rule 78 (const_list)
 
 
 State 229
 
-  120 conditional: IF '(' expression ')' statement ELSE statement .
+  120 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' . const_list '}'
 
-    $default  reduce using rule 120 (conditional)
+    STRCONST   shift, and go to state 38
+    INTCONST   shift, and go to state 39
+    FLTCONST   shift, and go to state 40
+    CHARCONST  shift, and go to state 41
+
+    const_list  go to state 235
+    constant    go to state 190
 
 
 State 230
 
-  124 assignment: IDENTIFIER '[' expression ']' '=' expression ';' .
+  119 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' '{' const_list . '}'
 
-    $default  reduce using rule 124 (assignment)
+    '}'  shift, and go to state 236
+
+
+State 231
+
+  130 assignment: '*' IDENTIFIER '=' expression ';' .
+
+    $default  reduce using rule 130 (assignment)
+
+
+State 232
+
+  124 ifblock: IF '(' expression ')' $@13 . statement
+
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
+    AUTO        shift, and go to state 1
+    BREAK       shift, and go to state 121
+    CONST       shift, and go to state 2
+    EXTERN      shift, and go to state 3
+    REGISTER    shift, and go to state 4
+    RETURN      shift, and go to state 122
+    SIGNED      shift, and go to state 5
+    UNSIGNED    shift, and go to state 6
+    VOLATILE    shift, and go to state 7
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
+
+    $default  reduce using rule 27 (modifiers)
+
+    func_def     go to state 129
+    multidec     go to state 130
+    modifiers    go to state 11
+    func_call    go to state 132
+    statement    go to state 237
+    conditional  go to state 134
+    ifblock      go to state 135
+    iterative    go to state 136
+    assignment   go to state 137
+
+
+State 233
+
+  128 iterative: WHILE $@14 '(' expression ')' . $@15 statement $@16
+
+    $default  reduce using rule 126 ($@15)
+
+    $@15  go to state 238
+
+
+State 234
+
+  131 assignment: IDENTIFIER '[' expression ']' '=' . expression ';'
+
+    '&'         shift, and go to state 34
+    '+'         shift, and go to state 35
+    '-'         shift, and go to state 36
+    '*'         shift, and go to state 37
+    STRCONST    shift, and go to state 38
+    INTCONST    shift, and go to state 39
+    FLTCONST    shift, and go to state 40
+    CHARCONST   shift, and go to state 41
+    IDENTIFIER  shift, and go to state 42
+    INCREMENT   shift, and go to state 43
+    DECREMENT   shift, and go to state 44
+    '('         shift, and go to state 45
+    '!'         shift, and go to state 46
+
+    brackets    go to state 47
+    expression  go to state 239
+    constant    go to state 49
+    un_op       go to state 50
+    func_call   go to state 51
+
+
+State 235
+
+  120 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list . '}'
+
+    '}'  shift, and go to state 240
+
+
+State 236
+
+  119 id_chain: id_chain ',' IDENTIFIER '[' ']' '=' '{' const_list '}' .
+
+    $default  reduce using rule 119 (id_chain)
+
+
+State 237
+
+  124 ifblock: IF '(' expression ')' $@13 statement .
+
+    $default  reduce using rule 124 (ifblock)
+
+
+State 238
+
+  128 iterative: WHILE $@14 '(' expression ')' $@15 . statement $@16
+
+    '*'         shift, and go to state 119
+    IF          shift, and go to state 120
+    AUTO        shift, and go to state 1
+    BREAK       shift, and go to state 121
+    CONST       shift, and go to state 2
+    EXTERN      shift, and go to state 3
+    REGISTER    shift, and go to state 4
+    RETURN      shift, and go to state 122
+    SIGNED      shift, and go to state 5
+    UNSIGNED    shift, and go to state 6
+    VOLATILE    shift, and go to state 7
+    WHILE       shift, and go to state 123
+    IDENTIFIER  shift, and go to state 124
+    INCREMENT   shift, and go to state 125
+    DECREMENT   shift, and go to state 126
+    ';'         shift, and go to state 127
+    '{'         shift, and go to state 128
+
+    $default  reduce using rule 27 (modifiers)
+
+    func_def     go to state 129
+    multidec     go to state 130
+    modifiers    go to state 11
+    func_call    go to state 132
+    statement    go to state 241
+    conditional  go to state 134
+    ifblock      go to state 135
+    iterative    go to state 136
+    assignment   go to state 137
+
+
+State 239
+
+   37 expression: expression . '+' $@1 expression
+   39           | expression . '*' $@2 expression
+   41           | expression . '-' $@3 expression
+   43           | expression . '/' $@4 expression
+   45           | expression . '>' $@5 expression
+   47           | expression . '<' $@6 expression
+   49           | expression . AND $@7 expression
+   51           | expression . OR $@8 expression
+   53           | expression . EQUAL $@9 expression
+   55           | expression . GREATER $@10 expression
+   57           | expression . LESSER $@11 expression
+   59           | expression . NOTEQUAL @12 expression
+  131 assignment: IDENTIFIER '[' expression ']' '=' expression . ';'
+
+    OR        shift, and go to state 72
+    AND       shift, and go to state 73
+    EQUAL     shift, and go to state 74
+    NOTEQUAL  shift, and go to state 75
+    '<'       shift, and go to state 76
+    '>'       shift, and go to state 77
+    LESSER    shift, and go to state 78
+    GREATER   shift, and go to state 79
+    '+'       shift, and go to state 80
+    '-'       shift, and go to state 81
+    '*'       shift, and go to state 82
+    '/'       shift, and go to state 83
+    ';'       shift, and go to state 242
+
+
+State 240
+
+  120 id_chain: id_chain ',' IDENTIFIER '[' INTCONST ']' '=' '{' const_list '}' .
+
+    $default  reduce using rule 120 (id_chain)
+
+
+State 241
+
+  128 iterative: WHILE $@14 '(' expression ')' $@15 statement . $@16
+
+    $default  reduce using rule 127 ($@16)
+
+    $@16  go to state 243
+
+
+State 242
+
+  131 assignment: IDENTIFIER '[' expression ']' '=' expression ';' .
+
+    $default  reduce using rule 131 (assignment)
+
+
+State 243
+
+  128 iterative: WHILE $@14 '(' expression ')' $@15 statement $@16 .
+
+    $default  reduce using rule 128 (iterative)
