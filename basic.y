@@ -51,6 +51,10 @@
 	int ltop = 0;
 	int lnum = 0;
 
+	
+	char pstack[1000][100];
+	int ptop = 0;
+
 	/* ICG Variables*/
 
 	/* ICG Functions*/
@@ -329,6 +333,9 @@ params_dec
 		insert ($<attr.name>3, $<attr.name>2, scope, depth, 0); 
 		strcpy($<attr.type>$,$<attr.type>2); 
 		strcpy($<attr.name>$,$<attr.name>3); 
+
+		
+		
 	}
 	|modifiers datatype IDENTIFIER '['INTCONST']' 
 	{ 
@@ -346,7 +353,7 @@ params_dec
 		t->array_bound = t_array; 
 		strcpy($<attr.name>$,$<attr.name>3); 
 
-
+		
 	}
 	|modifiers datatype IDENTIFIER '['']' 
 	{
@@ -358,6 +365,9 @@ params_dec
 		insert ($<attr.name>3, temp, scope, depth, 0); 
 		strcpy($<attr.type>$,temp);
 		strcpy($<attr.name>$,$<attr.name>3);  
+
+	
+		
 	}
 	|modifiers datatype '*' IDENTIFIER 
 	{ 
@@ -367,16 +377,21 @@ params_dec
 		strcat(temp,"*"); 
 		insert ($<attr.name>4, temp, scope, depth, 0); 
 		strcpy($<attr.type>$,temp);
-		strcpy($<attr.name>$,$<attr.name>4); 
+		strcpy($<attr.name>$,$<attr.name>4);
+
+		
+		
 	}
 	;
 	
 params_list
 	:params_dec 
 	{
-		printf("\n Name %s ",$<attr.type>1);
+		//printf("\n Name %s ",$<attr.type>1);
 		change_scope($<attr.name>1, level); 
 		strcpy($<attr.params>$, $<attr.type>1);
+
+		top--;
 	}
 	|params_dec ',' params_list 
 	{
@@ -384,6 +399,8 @@ params_list
 		change_scope($<attr.name>1, level); 
 		char temp[1000]; strcpy(temp, $<attr.type>1); 
 		strcat(temp, $<attr.params>3); strcpy($<attr.params>$, temp); 
+
+		top--;
 	}
 	;
 	
@@ -554,6 +571,9 @@ expression
 		strcpy($<attr.type>$, t->type);
 
 		strcpy(stack[++top],$<attr.name>1);
+
+
+		strcpy($<attr.name>$,$<attr.name>1);
 	}
 	|un_op IDENTIFIER 
 	{
@@ -847,6 +867,14 @@ func_call
 		strcpy($<attr.name>$, $<attr.name>1);
 
 
+		int ttop = ptop;
+		while(ptop>0)
+			printf("param %s\n", pstack[ptop--]);
+		printf("call %s %d\n", $<attr.name>1, ttop);
+
+
+
+
 	}
 	|IDENTIFIER '('')' 
 	{
@@ -864,13 +892,21 @@ func_call
 
 expression_list
 	:expression 
-	{ strcpy($<attr.params>$, $<attr.type>1); }
+	{ 
+		strcpy($<attr.params>$, $<attr.type>1); 
+
+		strcpy(pstack[++ptop], $<attr.name>1);
+
+	}
 	|expression ',' expression_list 
 	{ 
 		char temp[1000]; 
 		strcpy(temp, $<attr.type>1); 
 		strcat(temp, $<attr.params>3); 
 		strcpy($<attr.params>$, temp); 
+
+
+		strcpy(pstack[++ptop], $<attr.name>1);
 	}
 	;
 
